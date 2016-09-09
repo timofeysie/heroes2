@@ -2,20 +2,29 @@
 
 The official Angular2 Tour of Heros for rc-6 using TypeScript.
 
+## Current work
+
+Completed [toh-pt1](https://angular.io/docs/ts/latest/tutorial/toh-pt1.html) step.
+Will jump ahead next and [add Webpack](https://angular.io/docs/ts/latest/guide/webpack.html) to replace SystemJS.
+
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
 ```
 QuinquenniumF:heroes2 tim$ git remote add origin https://github.com/timofeysie/heroes2.git
 fatal: remote origin already exists.
 QuinquenniumF:heroes2 tim$ git remote add remote https://github.com/timofeysie/heroes2.git
-QuinquenniumF:heroes2 tim$ git push -u remote master
-Counting objects: 1039, done.
 ```
 
 Next, the typings folder didn't show up after npm install, so installed them manually with:
 ```
 $ npm run typings -- install
 ```
+
+Then, to push changes to GitHub:
+```
+$ git push -u remote master
+```
+
 
 
 # Original Angular 2 QuickStart Source
