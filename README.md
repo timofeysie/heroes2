@@ -4,8 +4,52 @@ The official Angular2 Tour of Heros for rc-6 using TypeScript.
 
 ## Current work
 
+For part two, the master detail pattern, creating an array of heroes causes this error:
+```
+    const HEROES: Hero[] = [
+        { id: 11, name: 'Mr. Nice' },
+        ...
+        { id: 19, name: 'Magma' },
+        { id: 20, name: 'Tornado' }
+    ];
+```    
+[ts]
+A class member cannot have the 'const' keyword.
+
+If 'const' is changed to 'var', then most of the red squiggly lines are gone, but there is a red squiggly line under the var keyword, with the mouse-over message:
+[ts] 
+Unexpected token. A constructor, method, accessor, or property was expected.
+
+If the const keyword is removed altogether, there is no error.
+The problem was the location where this was.
+Originally, I put it in the AppComponent class.  But it should actually reside outside that class.
+It could be in it's own file, but putting it after the Hero class after the import statements works for now.
+
+On [StackOverflow, this answer said](http://stackoverflow.com/questions/36142879/const-keyword-in-typescript)
+Why a class member cannot have the 'const' keyword in TypeScript?
+const does not imply deep immutability so the following is valid:
+```
+const foo:any = {};
+foo.bar = 123;  // Okay
+```
+In that sense readonly makes better sense for class members and that is supported :
+
+
 Completed [toh-pt1](https://angular.io/docs/ts/latest/tutorial/toh-pt1.html) step.
 Will jump ahead next and [add Webpack](https://angular.io/docs/ts/latest/guide/webpack.html) to replace SystemJS.
+
+
+## Webpack
+This is an alternative to the SystemJS approach used throughout the tutorial.
+It has been chosen to replace SystemJS in the Angular CLI project, so getting used to it with Angular2 is the idea here.
+We will add a new config file for it.
+webpack.config.js
+If you look at systemjs.config.js, you can see that everything needed is added there manually.
+Webpack will inspects webpack.config.js and traverses files listed there for their import dependencies recursively.
+It sees that we're importing @angular/core so it adds that to its dependency list for (potential) inclusion in the bundle. It opens @angular/core and follows its network of import statements until it has build the complete dependency graph from app.ts down.
+Then it outputs these files to the app.js bundle file designated in configuration:
+separate our volatile application app code from comparatively stable vendor code modules.
+
 
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
