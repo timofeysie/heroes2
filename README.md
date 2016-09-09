@@ -1,4 +1,24 @@
-# Angular 2 QuickStart Source
+# heroes2
+
+The official Angular2 Tour of Heros for rc-6 using TypeScript.
+
+## Setup
+Following the section beolow in the original Angular 2 Quickstart, with the following exception:
+```
+QuinquenniumF:heroes2 tim$ git remote add origin https://github.com/timofeysie/heroes2.git
+fatal: remote origin already exists.
+QuinquenniumF:heroes2 tim$ git remote add remote https://github.com/timofeysie/heroes2.git
+QuinquenniumF:heroes2 tim$ git push -u remote master
+Counting objects: 1039, done.
+```
+
+Next, the typings folder didn't show up after npm install, so installed them manually with:
+```
+$ npm run typings -- install
+```
+
+
+# Original Angular 2 QuickStart Source
 [![Build Status][travis-badge]][travis-badge-url]
 
 This repository holds the TypeScript source code of the [angular.io quickstart](https://angular.io/docs/ts/latest/quickstart.html),
