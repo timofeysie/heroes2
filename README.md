@@ -4,6 +4,21 @@ The official Angular2 Tour of Heros for rc-6 using TypeScript.
 
 ## Current work
 
+Completed [part two](https://angular.io/docs/ts/latest/tutorial/toh-pt2.html) of the Angular2 Tour of Heros, titled Master/Detail.
+Added NodeJS server in preparation for push to Heroku.
+To run the server:
+```
+$ node server.js
+```
+There is also a smile route, /myra which will return the json object of app data.
+
+Having problems changing the favicon.ico (see below).
+
+Also changed the content using Myra the ferryboat as our hero.
+
+
+## Tour of Heros
+
 For part two, the master detail pattern, creating an array of heroes causes this error:
 ```
     const HEROES: Hero[] = [
@@ -37,6 +52,32 @@ In that sense readonly makes better sense for class members and that is supporte
 
 Completed [toh-pt1](https://angular.io/docs/ts/latest/tutorial/toh-pt1.html) step.
 Will jump ahead next and [add Webpack](https://angular.io/docs/ts/latest/guide/webpack.html) to replace SystemJS.
+
+
+## The favicon.ico
+
+The StackOverflow [#1 answer](http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh): 
+force browsers to download a new version using the link tag and a querystring on your 
+filename. This is especially helpful in production environments to make sure your users 
+get the update.
+```
+<link rel="icon" href="http://www.yoursite.com/favicon.ico?v=2" />
+```
+We're using this variation:
+```
+<link rel="shortcut icon" href="favicon.ico?v=2" />
+```
+
+Answer #2:
+he easy way to fix it is close to that of lineofbirds
+
+1. type in www.yoursite.com/favicon.ico
+2. push enter
+3. ctrl+f5
+4. Restart Browser (for IE and Firefox)
+
+However, this is not working.  There is either no icon, or the old Angular icon.
+When using Node, there is a Spring leaf icon.
 
 
 ## Webpack
