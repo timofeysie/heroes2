@@ -293,6 +293,56 @@ error: failed to push some refs to 'https://git.heroku.com/myra-the-ferryboat.gi
 
 This is the same error the the angular2-webpack-starter had.
 
+Some fixes call for removing the postinstall in the package.json file:
+```
+    "postinstall": "typings install",
+```
+
+However, this then deploys without an error, but the page is broken with similar errors in the heroku logs:
+```
+2016-09-11T01:49:01.928261+00:00 app[web.1]: sh: 1: tsc: not found
+2016-09-11T01:49:01.939402+00:00 app[web.1]: npm ERR! Linux 3.13.0-93-generic
+2016-09-11T01:49:01.939703+00:00 app[web.1]: npm ERR! argv "/app/.heroku/node/bin/node" "/app/.heroku/node/bin/npm" "start"
+2016-09-11T01:49:01.939883+00:00 app[web.1]: npm ERR! node v5.11.1
+2016-09-11T01:49:01.940262+00:00 app[web.1]: npm ERR! npm  v3.8.6
+2016-09-11T01:49:01.940488+00:00 app[web.1]: npm ERR! file sh
+2016-09-11T01:49:01.940634+00:00 app[web.1]: npm ERR! code ELIFECYCLE
+2016-09-11T01:49:01.940774+00:00 app[web.1]: npm ERR! errno ENOENT
+2016-09-11T01:49:01.940917+00:00 app[web.1]: npm ERR! syscall spawn
+2016-09-11T01:49:01.941187+00:00 app[web.1]: npm ERR! spawn ENOENT
+2016-09-11T01:49:01.941040+00:00 app[web.1]: npm ERR! angular2-quickstart@1.0.0 start: `tsc && concurrently "tsc -w" "lite-server" `
+2016-09-11T01:49:01.941425+00:00 app[web.1]: npm ERR! Failed at the angular2-quickstart@1.0.0 start script 'tsc && concurrently "tsc -w" "lite-server" '.
+2016-09-11T01:49:01.941558+00:00 app[web.1]: npm ERR! Make sure you have the latest version of node.js and npm installed.
+2016-09-11T01:49:01.941802+00:00 app[web.1]: npm ERR! If you do, this is most likely a problem with the angular2-quickstart package,
+2016-09-11T01:49:01.941942+00:00 app[web.1]: npm ERR! not with npm itself.
+2016-09-11T01:49:01.942376+00:00 app[web.1]: npm ERR! Tell the author that this fails on your system:
+2016-09-11T01:49:01.941313+00:00 app[web.1]: npm ERR! 
+2016-09-11T01:49:01.942474+00:00 app[web.1]: npm ERR!     tsc && concurrently "tsc -w" "lite-server" 
+2016-09-11T01:49:01.942687+00:00 app[web.1]: npm ERR!     npm bugs angular2-quickstart
+2016-09-11T01:49:01.942584+00:00 app[web.1]: npm ERR! You can get information on how to open an issue for this project with:
+2016-09-11T01:49:01.942790+00:00 app[web.1]: npm ERR! Or if that isn't available, you can get their info via:
+2016-09-11T01:49:01.943010+00:00 app[web.1]: npm ERR! There is likely additional logging output above.
+2016-09-11T01:49:01.942895+00:00 app[web.1]: npm ERR!     npm owner ls angular2-quickstart
+2016-09-11T01:49:01.946377+00:00 app[web.1]: npm ERR! Please include the following file with any support request:
+2016-09-11T01:49:01.946485+00:00 app[web.1]: npm ERR!     /app/npm-debug.log
+2016-09-11T01:49:02.033017+00:00 heroku[web.1]: State changed from starting to crashed
+2016-09-11T01:49:47.651741+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/" host=myra-the-ferryboat.herokuapp.com request_id=74c04f02-88b5-464b-a053-da73a395c221 fwd="115.69.35.53" dyno= connect= service= status=503 bytes=
+```
+
+Some advice from S.O.:Change the start field in package.json from
+```
+"start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" "
+```
+to
+```
+"start": "concurrently \"npm run tsc:w\" \"npm run lite\" "
+```
+
+Worth a try, although our current start script is this:
+```
+"start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
+```
+
 
 
 ## Setup
