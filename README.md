@@ -1,6 +1,6 @@
 # heroes2
 
-The official Angular2 Tour of Heros for rc-6 using TypeScript.
+The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
 The site will be available [on Heroku](https://myra-the-ferryboat.herokuapp.com/) as soon as the deployment errors are solved.
 
@@ -20,7 +20,7 @@ Having problems changing the favicon.ico (see below).
 Also changed the content using Myra the ferryboat as our hero.
 
 
-## Tour of Heros
+## Tour of Heroes
 
 For part two, the master detail pattern, creating an array of heroes causes this error:
 ```
