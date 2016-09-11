@@ -31,7 +31,7 @@ const HEROES: Hero[] = [
   <div><label>id: </label>{{selectedHero.id}}</div>
   <div>
     <label>name: </label>
-    <input [(ngModel)]="selectedHero.name" placeholder="name"/>
+    <input [(attr.ngModel)]="selectedHero.name" placeholder="name"/>
   </div>
 </div>
   <h2>My Heroes</h2>

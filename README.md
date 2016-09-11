@@ -4,23 +4,109 @@ The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
 The site will be available [on Heroku](https://myra-the-ferryboat.herokuapp.com/) as soon as the deployment errors are solved.
 
+Table of Contents
 
-## Current work
+1. [Development](#development)
+2. [Current Work](#current-work)
+2. [Tour of Heroes](#tour-of-heroes)
+3. [The favicon.ico](#the-favicon.ico)
+4. [Webpack](#webpack)
+5. [Deploying to Heroku](#deploying-to-heroku)
+5. [Setup](#setup)
+5. [Original Angular 2 QuickStart Source](#original-angular-2-quickstart-source)
+5. [Prerequisites](#prerequisites)
+5. [Install npm packages](#Iinstall-npm-packages)
+5. [npm scripts](#npm-scripts)
+5. [Testing](#testing)
+5. [Unit Tests](#unit-tests)
+5. [End-to-end (E2E) Tests](#end-to-end)
+
+## <a name="development">Development</a>
+This is a quick reference of command used to develop the app.
+
+* `$ npm start` - Start the lite server for development.
+* `$ node server.js` - Start the NodeJS server for production environment and serving the API.
+* `$ git push -u remote master` - Push to GitHub.
+* `$ git push heroku master` - Push to Heroku.
+* `$ npm test` - Unit tests. (test output will is saved in `./_test-output/tests.html`)
+* `$ npm run e2e` - End to end tests. (generates a file at `./_test-output/protractor-results.txt`)
+
+See the [npm scripts](#npm-scripts) for other commands.
+
+## <a name="current-work">Current work</a>
 
 Completed [part two](https://angular.io/docs/ts/latest/tutorial/toh-pt2.html) of the Angular2 Tour of Heros, titled Master/Detail.
-Added NodeJS server in preparation for push to Heroku.
-To run the server:
+
+Added NodeJS server to use for deployment on Heroku.  The app is now live!
+
+Looking at fixing the tests before the refactoring during the [next part: component templates](https://angular.io/docs/ts/latest/tutorial/toh-pt3.html).
+Currently, two out of three unit tests are failing.
 ```
-$ node server.js
+Failed	should instantiate component	AppComponent with TCB 
+Error: Template parse errors: Can't bind to 'ngModel' since it isn't a known property of 'input'. 
+(" <div> <label>name: </label> <input [ERROR ->][(ngModel)]="selectedHero.name" placeholder="name"/> </div> </div> "): 
+AppComponent@7:11
 ```
-There is also a smile route, /myra which will return the json object of app data.
+Some advice [from StackOverflow](http://stackoverflow.com/questions/39040011/cant-bind-to-ngmodel-since-it-isnt-a-known-property-of-input-despite-impor) on this:
+`You need to create a root NgModule in which you import the FormsModule`
+And example shows using this combo:
+```
+import { FORM_DIRECTIVES } from '@angular/forms';
+...
+, directives: [FORM_DIRECTIVES]
+```
+However, for us, the first one yeilds the following error:
+```
+[ts] Module '"/Users/tim/angular/ng2/heroes2/node_modules/@angular/forms/index"' has no exported member 'FORM_DIRECTIVES'.
+import FORM_DIRECTIVES
+```
+The answer did mention that this is RC5, and we are using RC6 here.
+The official docs point to using forms with two way binding with this import:
+```
+import { FormsModule }   from '@angular/forms';
+```
+That is what we already have in our app.modules.ts.
+In RC6, provideForms, disableDeprecatedForms are removed as deprecated.
+These were fixes for the problem mentioned.  So now is there no fix for testing forms with two way binding (pretty much the only place you would want it) in RC6?
+Just about to get frustred when a search prefixed with RC6 brought up [this answer](http://stackoverflow.com/questions/35229960/cant-bind-to-for-since-it-isnt-a-known-native-property-angular2):
+`Angular by default uses property binding but label doesn't have a property for. To tell Angular explicitly to use attribute binding, use instead.`
 
-Having problems changing the favicon.ico (see below).
+So using this works:
+```html
+<input [(attr.ngModel)]="selectedHero.name" placeholder="name"/>
+```
+Günter Zöchbauer had this comment explaining why:
+'With attr.for you have to explicitly opt in to attribute binding because attribute binding is expensive. Attributes are reflected in the DOM and changes require for example to check if CSS selectors are registered that match with this attribute set. Property binding is JS only and cheap, therefore the default.'
+I have some notes somewhere on property vs. attribute binding.  Not a simple subject.
 
-Also changed the content using Myra the ferryboat as our hero.
+
+The second error (yes, I said there were two!:
+```
+Failed	should have expected <h1> text	AppComponent with TCB 
+Error: Template parse errors: Can't bind to 'ngModel' since it isn't a known property of 'input'. (" <div> <label>name: </label> <input [ERROR ->][(ngModel)]="selectedHero.name" placeholder="name"/> </div> </div> "): AppComponent@7:11
+```
+That is easy to fix.  Since we changed the title, expecting the new title passes the test.
+
+Now for the end to end tests.
+Running them yeilds this error:
+```
+npm ERR! Failed at the angular2-quickstart@1.0.0 e2e script 
+'tsc && concurrently "http-server -s" "protractor protractor.config.js" 
+--kill-others --success first'.
+```
+(kill-others --success first?  Really?!)
+Anyhow, that is a similar error we when trying the Webpack introduction right at the end of the Developers Guide section of the Angular docs, and the Heroku deployment debacle.
+Actually, that error comes AFTER this message:
+```
+[1]     failed - should display: My First Angular 2 App
+[1]   Suite failed: QuickStart E2E Tests
+```
+So the test is failing for the same reason the last unit test was failing!
+That error may be because of the clean up config we removed to make the app deploy to Heroku.
+Change that and the test passes.
 
 
-## Tour of Heroes
+## <a name="current-work">Tour of Heroes</a>
 
 For part two, the master detail pattern, creating an array of heroes causes this error:
 ```
@@ -57,7 +143,7 @@ Completed [toh-pt1](https://angular.io/docs/ts/latest/tutorial/toh-pt1.html) ste
 Will jump ahead next and [add Webpack](https://angular.io/docs/ts/latest/guide/webpack.html) to replace SystemJS.
 
 
-## The favicon.ico
+## <a name="the-favicon.ico">The favicon.ico</a>
 
 The StackOverflow [#1 answer](http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh): 
 force browsers to download a new version using the link tag and a querystring on your 
@@ -83,7 +169,7 @@ However, this is not working.  There is either no icon, or the old Angular icon.
 When using Node, there is a Spring leaf icon.
 
 
-## Webpack
+## <a name="webpack">Webpack</a>
 This is an alternative to the SystemJS approach used throughout the tutorial.
 It has been chosen to replace SystemJS in the Angular CLI project, so getting used to it with Angular2 is the idea here.
 We will add a new config file for it.
@@ -248,33 +334,18 @@ npm install --save-dev @types/core-js
 This didn't help.  Giving up on Webpack for now until Angular provides an official demo that works.
 
 
-## Deploying to Heroku
+## <a name="deploying-to-heroku">Deploying to Heroku</a>
 
+For Heroku, we serve the app with NodeJS.  This will also provide an API to get and save data for the app later.
+Heroku is easy to set up.  You create an account, download the toolbelt, add the remote and push to the server.
+However, with Angular2, it was not so easy.  Had the following error when trying to deploy.
 ```
 remote:        sh: 1: typings: not found
 remote:        npm ERR! Linux 3.13.0-93-generic
 remote:        npm ERR! argv "/tmp/build_248acdd4c019d67d7106e34460406ddd/.heroku/node/bin/node" "/tmp/build_248acdd4c019d67d7106e34460406ddd/.heroku/node/bin/npm" "install" "--unsafe-perm" "--userconfig" "/tmp/build_248acdd4c019d67d7106e34460406ddd/.npmrc"
 remote:        npm ERR! node v5.11.1
 remote:        npm ERR! npm  v3.8.6
-remote:        npm ERR! file sh
-remote:        npm ERR! code ELIFECYCLE
-remote:        npm ERR! errno ENOENT
-remote:        npm ERR! syscall spawn
-remote:        npm ERR! angular2-quickstart@1.0.0 postinstall: `typings install
-remote:        npm ERR! spawn ENOENT
-remote:        npm ERR! Failed at the angular2-quickstart@1.0.0 postinstall script 'typings install'.
-remote:        npm ERR! Make sure you have the latest version of node.js and npm installed.
-remote:        npm ERR! If you do, this is most likely a problem with the angular2-quickstart package,
-remote:        npm ERR! not with npm itself.
-remote:        npm ERR! Tell the author that this fails on your system:
-remote:        npm ERR!     typings install
-remote:        npm ERR! You can get information on how to open an issue for this project with:
-remote:        npm ERR!     npm bugs angular2-quickstart
-remote:        npm ERR! Or if that isn't available, you can get their info via:
-remote:        npm ERR!     npm owner ls angular2-quickstart
-remote:        npm ERR! There is likely additional logging output above.
-remote:        npm ERR! Please include the following file with any support request:
-remote:        npm ERR!     /tmp/build_248acdd4c019d67d7106e34460406ddd/npm-debug.log
+...
 remote: -----> Build failed
 remote:        We're sorry this build is failing! You can troubleshoot common issues here:
 remote:        https://devcenter.heroku.com/articles/troubleshooting-node-deploys
@@ -358,11 +429,6 @@ Tried a basic version:
 This how we do it locally, however, the logs on Heroku say this:
 ```
 2016-09-11T06:09:59.426976+00:00 app[web.1]: Error: Cannot find module '/app/server.js'
-2016-09-11T06:09:59.426977+00:00 app[web.1]:     at Function.Module._resolveFilename (module.js:339:15)
-2016-09-11T06:09:59.426991+00:00 app[web.1]:     at Function.Module._load (module.js:290:25)
-2016-09-11T06:09:59.426992+00:00 app[web.1]:     at Function.Module.runMain (module.js:447:10)
-2016-09-11T06:09:59.426993+00:00 app[web.1]:     at startup (node.js:148:18)
-2016-09-11T06:09:59.426994+00:00 app[web.1]:     at node.js:405:3
 ```
 
 Why is it looking in the app directory?  This is how we have done it before.
@@ -440,6 +506,7 @@ app.listen(app.get('port'),function () {
 });
 ```
 Wasn't using the port in the listen function!
+So along with removing the postinstall in the package.json, creating the server.js file and configuring it correctly is the answer.
 
 
 ## Setup
@@ -509,24 +576,6 @@ rm -rf .git  # non-Windows
 rd .git /S/Q # windows
 ```
 
-### Create a new git repo
-You could [start writing code](#start-development) now and throw it all away when you're done.
-If you'd rather preserve your work under source control, consider taking the following steps.
-
-Initialize this project as a *local git repo* and make the first commit:
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-```
-
-Create a *remote repository* for this project on the service of your choice.
-
-Grab its address (e.g. *`https://github.com/<my-org>/my-proj.git`*) and push the *local repo* to the *remote*.
-```bash
-git remote add origin <repo-address>
-git push -u origin master
-```
 ## Install npm packages
 
 > See npm and nvm version notes above
@@ -552,7 +601,7 @@ Shut it down manually with Ctrl-C.
 
 You're ready to write your application.
 
-### npm scripts
+### <a name="npm-scripts">npm scripts</a>
 
 We've captured many of the most useful commands in npm scripts defined in the `package.json`:
 

@@ -23,7 +23,7 @@ describe('AppComponent with TCB', function () {
         fixture.detectChanges();
         var h1 = fixture.debugElement.query(function (el) { return el.name === 'h1'; }).nativeElement; // it works
         h1 = fixture.debugElement.query(platform_browser_1.By.css('h1')).nativeElement; // preferred
-        expect(h1.innerText).toMatch(/angular 2 app/i, '<h1> should say something about "Angular 2 App"');
+        expect(h1.innerText).toMatch('Myra the ferryboat');
     });
 });
 //# sourceMappingURL=app.component.spec.js.map
