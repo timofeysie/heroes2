@@ -106,7 +106,37 @@ That error may be because of the clean up config we removed to make the app depl
 Change that and the test passes.
 
 
-## <a name="current-work">Tour of Heroes</a>
+## <a name="tour-of-heroes-multiple-components">Tour of Heroes: Multiple Components</a>
+
+After getting through part 3: Multiple Components, I got this error:
+```
+zone.js:484 Unhandled Promise rejection: Template parse errors:
+Can't bind to 'hero' since it isn't a known property of 'my-hero-detail'.
+1. If 'my-hero-detail' is an Angular component and it has 'hero' input, 
+then verify that it is part of this module.
+2. If 'my-hero-detail' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message.
+ ("
+    </li>
+</ul>
+<my-hero-detail [ERROR ->][hero]="selectedHero"></my-hero-detail>
+"): AppComponent@19:16
+```
+This is definately case 1.
+We had forgotten to inport the new detail view in the app.module.ts file:
+```
+import { HeroDetailComponent } from './hero-detail.component';
+```
+But this did not solve the error.  We had to also declare it in the declarations section:
+```
+declarations: [
+    AppComponent,
+    HeroDetailComponent
+],
+```
+
+
+
+## <a name="tour-of-heroes-master-detail">Tour of Heroes: Master/Detail</a>
 
 For part two, the master detail pattern, creating an array of heroes causes this error:
 ```
@@ -372,7 +402,7 @@ Some fixes call for removing the postinstall in the package.json file:
     "postinstall": "typings install",
 ```
 
-However, this then deploys without an error, but the page is broken with similar errors in the heroku logs:
+This deploys without an error, but the page is broken with similar errors in the heroku logs:
 ```
 2016-09-11T01:49:01.928261+00:00 app[web.1]: sh: 1: tsc: not found
 2016-09-11T01:49:01.939402+00:00 app[web.1]: npm ERR! Linux 3.13.0-93-generic
@@ -390,7 +420,6 @@ However, this then deploys without an error, but the page is broken with similar
 2016-09-11T01:49:01.941802+00:00 app[web.1]: npm ERR! If you do, this is most likely a problem with the angular2-quickstart package,
 2016-09-11T01:49:01.941942+00:00 app[web.1]: npm ERR! not with npm itself.
 2016-09-11T01:49:01.942376+00:00 app[web.1]: npm ERR! Tell the author that this fails on your system:
-2016-09-11T01:49:01.941313+00:00 app[web.1]: npm ERR! 
 2016-09-11T01:49:01.942474+00:00 app[web.1]: npm ERR!     tsc && concurrently "tsc -w" "lite-server" 
 2016-09-11T01:49:01.942687+00:00 app[web.1]: npm ERR!     npm bugs angular2-quickstart
 2016-09-11T01:49:01.942584+00:00 app[web.1]: npm ERR! You can get information on how to open an issue for this project with:
@@ -426,7 +455,7 @@ Tried a basic version:
 ```
 "start": "node server.js"
 ```
-This how we do it locally, however, the logs on Heroku say this:
+This is how we do it locally, however, the logs on Heroku say this:
 ```
 2016-09-11T06:09:59.426976+00:00 app[web.1]: Error: Cannot find module '/app/server.js'
 ```
@@ -509,7 +538,7 @@ Wasn't using the port in the listen function!
 So along with removing the postinstall in the package.json, creating the server.js file and configuring it correctly is the answer.
 
 
-## Setup
+## <a name="setup">Setup</a>
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
 ```
 QuinquenniumF:heroes2 tim$ git remote add origin https://github.com/timofeysie/heroes2.git
@@ -533,8 +562,7 @@ $ git push heroku master
 ```
 
 
-
-# Original Angular 2 QuickStart Source
+## <a name="original-angular-2-quickstart-source">Original Angular 2 QuickStart Source</a>
 [![Build Status][travis-badge]][travis-badge-url]
 
 This repository holds the TypeScript source code of the [angular.io quickstart](https://angular.io/docs/ts/latest/quickstart.html),
@@ -548,7 +576,7 @@ It exists primarily to get you started quickly with learning and prototyping in 
 We are unlikely to accept suggestions about how to grow this QuickStart into something it is not.
 Please keep that in mind before posting issues and PRs.
 
-## Prerequisites
+## <a name="prerequisites">Prerequisites</a>
 
 Node.js and npm are essential to Angular 2 development. 
     
