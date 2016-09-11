@@ -365,6 +365,8 @@ This how we do it locally, however, the logs on Heroku say this:
 2016-09-11T06:09:59.426994+00:00 app[web.1]:     at node.js:405:3
 ```
 
+Why is it looking in the app directory?  This is how we have done it before.
+
 And this:
 ```
 node ../server.js
@@ -384,6 +386,11 @@ And this: Run both commands in 2 separate cmds:
 Gives the same error:
 ```
 sh: 1: tsc: not found
+```
+
+Trying a Procfile:
+```
+web: node server.js
 ```
 
 
