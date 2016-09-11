@@ -419,6 +419,27 @@ The logs you might ask?
 2016-09-11T06:51:19.752934+00:00 heroku[web.1]: Error R10 (Boot timeout) -> Web process failed to bind to $PORT within 60 seconds of launch
 ```
 Apparently we should'nt be using port 8080.  So try 3000...
+But same error:
+```
+2016-09-11T06:50:21.177537+00:00 app[web.1]: Node app is running on port 8080
+2016-09-11T06:50:36.125422+00:00 heroku[router]: at=error code=H20 desc="App boot timeout" method=GET path="/" host=myra-the-ferryboat.herokuapp.com request_id=d8eafe9a-f183-49da-a299-d6703f6edbb0 fwd="115.69.35.53" dyno= connect= service= status=503 bytes=
+2016-09-11T06:51:19.752934+00:00 heroku[web.1]: Error R10 (Boot timeout) -> Web process failed to bind to $PORT within 60 seconds of launch
+2016-09-11T06:51:19.752993+00:00 heroku[web.1]: Stopping process with SIGKILL
+```
+Why is it trying port 8080 when we changed it to 3000?
+Did the changes not get pushed?  Yer they did.
+```
+app.set('port', (process.env.PORT || 3000));
+```
+So the process environment port must be 8080.  Oh.  Doh!
+
+```
+app.set('port', (process.env.PORT || 3000));
+app.listen(app.get('port'),function () {
+	console.log('Node app is running on port 8080');
+});
+```
+Wasn't using the port in the listen function!
 
 
 ## Setup
