@@ -365,6 +365,21 @@ This how we do it locally, however, the logs on Heroku say this:
 2016-09-11T06:09:59.426994+00:00 app[web.1]:     at node.js:405:3
 ```
 
+And this:
+```
+node ../server.js
+```
+With the result:
+```
+Error: Cannot find module '/server.js'
+```
+
+And this: Run both commands in 2 separate cmds:
+-in the first one run npm run tsc:w
+-in the second one npm run lite
+```
+"start": "tsc && npm run tsc:w | npm run lite",
+```
 
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
