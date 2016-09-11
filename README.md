@@ -351,6 +351,20 @@ However, the error in the logs is still the same:
 npm ERR! Failed at the angular2-quickstart@1.0.0 start script 'concurrently "npm run tsc:w" "npm run lite" '.
 ```
 
+Tried a basic version:
+```
+"start": "node server.js"
+```
+This how we do it locally, however, the logs on Heroku say this:
+```
+2016-09-11T06:09:59.426976+00:00 app[web.1]: Error: Cannot find module '/app/server.js'
+2016-09-11T06:09:59.426977+00:00 app[web.1]:     at Function.Module._resolveFilename (module.js:339:15)
+2016-09-11T06:09:59.426991+00:00 app[web.1]:     at Function.Module._load (module.js:290:25)
+2016-09-11T06:09:59.426992+00:00 app[web.1]:     at Function.Module.runMain (module.js:447:10)
+2016-09-11T06:09:59.426993+00:00 app[web.1]:     at startup (node.js:148:18)
+2016-09-11T06:09:59.426994+00:00 app[web.1]:     at node.js:405:3
+```
+
 
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
