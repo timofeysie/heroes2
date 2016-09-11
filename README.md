@@ -411,6 +411,14 @@ Why was that there?  Anyhow, now there is a new error (thank godess for small mi
 ```
 Error: Cannot find module 'express'
 ```
+So move that from dev dependencies to just dependencies, and now the app appears to hang and then eventually crashes on Heroku.
+The logs you might ask?
+```
+2016-09-11T06:50:21.177537+00:00 app[web.1]: Node app is running on port 8080
+2016-09-11T06:50:36.125422+00:00 heroku[router]: at=error code=H20 desc="App boot timeout" method=GET path="/" host=myra-the-ferryboat.herokuapp.com request_id=d8eafe9a-f183-49da-a299-d6703f6edbb0 fwd="115.69.35.53" dyno= connect= service= status=503 bytes=
+2016-09-11T06:51:19.752934+00:00 heroku[web.1]: Error R10 (Boot timeout) -> Web process failed to bind to $PORT within 60 seconds of launch
+```
+Apparently we should'nt be using port 8080.  So try 3000...
 
 
 ## Setup
