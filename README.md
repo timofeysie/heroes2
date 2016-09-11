@@ -245,6 +245,56 @@ npm install --save-dev @types/core-js
 This didn't help.  Giving up on Webpack for now until Angular provides an official demo that works.
 
 
+## Deploying to Heroku
+
+```
+remote:        sh: 1: typings: not found
+remote:        npm ERR! Linux 3.13.0-93-generic
+remote:        npm ERR! argv "/tmp/build_248acdd4c019d67d7106e34460406ddd/.heroku/node/bin/node" "/tmp/build_248acdd4c019d67d7106e34460406ddd/.heroku/node/bin/npm" "install" "--unsafe-perm" "--userconfig" "/tmp/build_248acdd4c019d67d7106e34460406ddd/.npmrc"
+remote:        npm ERR! node v5.11.1
+remote:        npm ERR! npm  v3.8.6
+remote:        npm ERR! file sh
+remote:        npm ERR! code ELIFECYCLE
+remote:        npm ERR! errno ENOENT
+remote:        npm ERR! syscall spawn
+remote:        npm ERR! angular2-quickstart@1.0.0 postinstall: `typings install
+remote:        npm ERR! spawn ENOENT
+remote:        npm ERR! Failed at the angular2-quickstart@1.0.0 postinstall script 'typings install'.
+remote:        npm ERR! Make sure you have the latest version of node.js and npm installed.
+remote:        npm ERR! If you do, this is most likely a problem with the angular2-quickstart package,
+remote:        npm ERR! not with npm itself.
+remote:        npm ERR! Tell the author that this fails on your system:
+remote:        npm ERR!     typings install
+remote:        npm ERR! You can get information on how to open an issue for this project with:
+remote:        npm ERR!     npm bugs angular2-quickstart
+remote:        npm ERR! Or if that isn't available, you can get their info via:
+remote:        npm ERR!     npm owner ls angular2-quickstart
+remote:        npm ERR! There is likely additional logging output above.
+remote:        npm ERR! Please include the following file with any support request:
+remote:        npm ERR!     /tmp/build_248acdd4c019d67d7106e34460406ddd/npm-debug.log
+remote: -----> Build failed
+remote:        We're sorry this build is failing! You can troubleshoot common issues here:
+remote:        https://devcenter.heroku.com/articles/troubleshooting-node-deploys
+remote:        Some possible problems:
+remote:        - Node version not specified in package.json
+remote:        https://devcenter.heroku.com/articles/nodejs-support#specifying-a-node-js-version
+remote:        Love,
+remote:        Heroku
+remote:  !     Push rejected, failed to compile Node.js app.
+remote:  !     Push failed
+remote: Verifying deploy...
+remote: 
+remote: !	Push rejected to myra-the-ferryboat.
+remote: 
+To https://git.heroku.com/myra-the-ferryboat.git
+ ! [remote rejected] master -> master (pre-receive hook declined)
+error: failed to push some refs to 'https://git.heroku.com/myra-the-ferryboat.git'
+```
+
+This is the same error the the angular2-webpack-starter had.
+
+
+
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
 ```
@@ -261,6 +311,11 @@ $ npm run typings -- install
 Then, to push changes to GitHub:
 ```
 $ git push -u remote master
+```
+
+To Deploy to Heroku
+```
+$ git push heroku master
 ```
 
 
