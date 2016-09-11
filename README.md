@@ -381,6 +381,12 @@ And this: Run both commands in 2 separate cmds:
 "start": "tsc && npm run tsc:w | npm run lite",
 ```
 
+Gives the same error:
+```
+sh: 1: tsc: not found
+```
+
+
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
 ```
