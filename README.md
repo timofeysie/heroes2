@@ -397,7 +397,13 @@ So removed the post install again:
 ```
 "postinstall": "typings install",
 ```
-Then the deploy works.
+Then the deploy works but the server crashes and we get the now familiar message in the logs:
+```
+Error: Cannot find module '/app/server.js'
+```
+
+Try renaming the file index.js.  This is the default apparently on Heroku.
+
 
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
