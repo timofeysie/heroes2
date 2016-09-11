@@ -392,7 +392,12 @@ Trying a Procfile:
 ```
 web: node server.js
 ```
-
+However, this, along with the original script causes the deploy error.
+So removed the post install again:
+```
+"postinstall": "typings install",
+```
+Then the deploy works.
 
 ## Setup
 Following the section beolow in the original Angular 2 Quickstart, with the following exception:
