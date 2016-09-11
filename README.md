@@ -403,6 +403,14 @@ Error: Cannot find module '/app/server.js'
 ```
 
 Try renaming the file index.js.  This is the default apparently on Heroku.
+Then, realizing that git status was ignoring the server.js file becuase there was actually this like in the .gitignore file:
+```
+*.js
+```
+Why was that there?  Anyhow, now there is a new error (thank godess for small miracles):
+```
+Error: Cannot find module 'express'
+```
 
 
 ## Setup
