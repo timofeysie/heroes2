@@ -2,6 +2,9 @@
 
 The official Angular2 Tour of Heros for rc-6 using TypeScript.
 
+The site will be available [on Heroku](https://myra-the-ferryboat.herokuapp.com/) as soon as the deployment errors are solved.
+
+
 ## Current work
 
 Completed [part two](https://angular.io/docs/ts/latest/tutorial/toh-pt2.html) of the Angular2 Tour of Heros, titled Master/Detail.
@@ -343,6 +346,10 @@ Worth a try, although our current start script is this:
 "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
 ```
 
+However, the error in the logs is still the same:
+```
+npm ERR! Failed at the angular2-quickstart@1.0.0 start script 'concurrently "npm run tsc:w" "npm run lite" '.
+```
 
 
 ## Setup
