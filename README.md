@@ -1,14 +1,18 @@
-# heroes2
+# heroes 2
 
 The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
-The site will be available [on Heroku](https://myra-the-ferryboat.herokuapp.com/) as soon as the deployment errors are solved.
+The srunning app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
+Currently implementing routing for step 6 of the tour.
 
-Table of Contents
+
+## Table of Contents
 
 1. [Development](#development)
 2. [Current Work](#current-work)
-2. [Tour of Heroes](#tour-of-heroes)
+2. [Tour of Heroes: Services](#tour-of-heroes-services)
+2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components)
+2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail)
 3. [The favicon.ico](#the-favicon.ico)
 4. [Webpack](#webpack)
 5. [Deploying to Heroku](#deploying-to-heroku)
@@ -22,7 +26,7 @@ Table of Contents
 5. [End-to-end (E2E) Tests](#end-to-end)
 
 ## <a name="development">Development</a>
-This is a quick reference of command used to develop the app.
+This is a quick reference of commands used to develop the app.
 
 * `$ npm start` - Start the lite server for development.
 * `$ node server.js` - Start the NodeJS server for production environment and serving the API.
@@ -32,6 +36,7 @@ This is a quick reference of command used to develop the app.
 * `$ npm run e2e` - End to end tests. (generates a file at `./_test-output/protractor-results.txt`)
 
 See the [npm scripts](#npm-scripts) for other commands.
+
 
 ## <a name="current-work">Current work</a>
 
@@ -55,7 +60,7 @@ import { FORM_DIRECTIVES } from '@angular/forms';
 ...
 , directives: [FORM_DIRECTIVES]
 ```
-However, for us, the first one yeilds the following error:
+However, for us, the first one yields the following error:
 ```
 [ts] Module '"/Users/tim/angular/ng2/heroes2/node_modules/@angular/forms/index"' has no exported member 'FORM_DIRECTIVES'.
 import FORM_DIRECTIVES
@@ -68,7 +73,7 @@ import { FormsModule }   from '@angular/forms';
 That is what we already have in our app.modules.ts.
 In RC6, provideForms, disableDeprecatedForms are removed as deprecated.
 These were fixes for the problem mentioned.  So now is there no fix for testing forms with two way binding (pretty much the only place you would want it) in RC6?
-Just about to get frustred when a search prefixed with RC6 brought up [this answer](http://stackoverflow.com/questions/35229960/cant-bind-to-for-since-it-isnt-a-known-native-property-angular2):
+Just about to get frustrated when a search prefixed with RC6 brought up [this answer](http://stackoverflow.com/questions/35229960/cant-bind-to-for-since-it-isnt-a-known-native-property-angular2):
 `Angular by default uses property binding but label doesn't have a property for. To tell Angular explicitly to use attribute binding, use instead.`
 
 So using this works:
@@ -88,7 +93,7 @@ Error: Template parse errors: Can't bind to 'ngModel' since it isn't a known pro
 That is easy to fix.  Since we changed the title, expecting the new title passes the test.
 
 Now for the end to end tests.
-Running them yeilds this error:
+Running them yields this error:
 ```
 npm ERR! Failed at the angular2-quickstart@1.0.0 e2e script 
 'tsc && concurrently "http-server -s" "protractor protractor.config.js" 
@@ -104,6 +109,40 @@ Actually, that error comes AFTER this message:
 So the test is failing for the same reason the last unit test was failing!
 That error may be because of the clean up config we removed to make the app deploy to Heroku.
 Change that and the test passes.
+
+
+
+## <a name="tour-of-heroes-services">Tour of Heroes: Services</a>
+
+After a half implemented promise, the app breaks with the following (partial!) error:
+```
+zone.js:484 Unhandled Promise rejection: Error in app/app.template.html:11:8 caused by: 
+Cannot find a differ supporting object '[object Object]' of type 'object'. 
+NgFor only supports binding to Iterables such as Arrays. ; 
+Zone: <root> ; 
+Task: Promise.then ; 
+Value: ViewWrappedError {_nativeError: Error: Error in app/app.template.html:11:8 
+caused by: Cannot find a differ supporting object 
+'[objec…, originalError: Error: Cannot find a differ supporting object '[object Object]' of type 
+'object'. NgFor only support…, context: DebugContext} 
+Error: Cannot find a differ supporting object '[object Object]' of type 'object'. 
+NgFor only supports binding to Iterables such as Arrays.
+    at NgFor.ngOnChanges (http://localhost:3000/node_modules/@angular/common/bundles/common.umd.js:2309:31)
+    at DebugAppView._View_AppComponent0.detectChangesInternal (AppComponent.ngfactory.js:130:46)
+    at DebugAppView.AppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12061:18)
+    at DebugAppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12166:48)
+    at DebugAppView.AppView.detectViewChildrenChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12087:23)
+    at DebugAppView._View_AppComponent_Host0.detectChangesInternal (AppComponent_Host.ngfactory.js:37:8)
+    at DebugAppView.AppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12061:18)
+    at DebugAppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12166:48)
+    at ViewRef_.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:10159:69)
+    at eval (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:9623:88)consoleError @ zone.js:484_loop_1 @ zone.js:511drainMicroTaskQueue @ zone.js:515ZoneTask.invoke @ zone.js:437
+zone.js:486 Error: Uncaught (in promise): Error: Error in app/app.template.html:11:8 caused by: Cannot find a differ supporting object '[object Object]' of type 'object'. NgFor only supports binding to Iterables such as Arrays.(…)
+```
+
+Obviously no improvement from Angular 1 on the errors.
+But, yes, we need to use the promise now being returned by the service.
+Implemnt the .then function to use the promise, and the app is back up and running.
 
 
 ## <a name="tour-of-heroes-multiple-components">Tour of Heroes: Multiple Components</a>
@@ -122,7 +161,7 @@ then verify that it is part of this module.
 "): AppComponent@19:16
 ```
 This is definately case 1.
-We had forgotten to inport the new detail view in the app.module.ts file:
+We had forgotten to import the new detail view in the app.module.ts file:
 ```
 import { HeroDetailComponent } from './hero-detail.component';
 ```
@@ -166,7 +205,7 @@ const does not imply deep immutability so the following is valid:
 const foo:any = {};
 foo.bar = 123;  // Okay
 ```
-In that sense readonly makes better sense for class members and that is supported :
+In that sense read only makes better sense for class members and that is supported :
 
 
 Completed [toh-pt1](https://angular.io/docs/ts/latest/tutorial/toh-pt1.html) step.
@@ -176,7 +215,7 @@ Will jump ahead next and [add Webpack](https://angular.io/docs/ts/latest/guide/w
 ## <a name="the-favicon.ico">The favicon.ico</a>
 
 The StackOverflow [#1 answer](http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh): 
-force browsers to download a new version using the link tag and a querystring on your 
+force browsers to download a new version using the link tag and a query string on your 
 filename. This is especially helpful in production environments to make sure your users 
 get the update.
 ```
@@ -188,7 +227,7 @@ We're using this variation:
 ```
 
 Answer #2:
-he easy way to fix it is close to that of lineofbirds
+he easy way to fix it is close to that of line of birds
 
 1. type in www.yoursite.com/favicon.ico
 2. push enter
@@ -328,7 +367,7 @@ resolve file
   /Users/t
 ```
 
-Runnging git add . takes forever and this kind of message fills the console:
+Running git add . takes forever and this kind of message fills the console:
 ```
 warning: CRLF will be replaced by LF in node_modules/karma/node_modules/expand-braces/node_modules/braces/node_modules/expand-range/node_modules/repeat-string/.npmignore.
 The file will have its original line endings in your working directory.
@@ -350,11 +389,11 @@ There is no solution to the answer, only what is causing the problem.
 
 This is an old issue that went away and came back again.
 Here is the [Angular Github issue](https://github.com/angular/angular/issues/4902)
-It involes this script, which is already in our package.json.
+It involves this script, which is already in our package.json.
 "scripts": {
     "postinstall": "typings install"
 }
-So lookging at another [SO Q/A(http://stackoverflow.com/questions/35660498/angular-2-cant-find-promise-map-set-and-iterator)]:
+So looking at another [SO Q/A(http://stackoverflow.com/questions/35660498/angular-2-cant-find-promise-map-set-and-iterator)]:
 UPDATE: USING ANGULAR RC4 or RC5 WITH TYPESCRIPT 2.0.0
 To get this to work with typescript 2.0.0, I did the following.
 ```
@@ -367,7 +406,7 @@ This didn't help.  Giving up on Webpack for now until Angular provides an offici
 ## <a name="deploying-to-heroku">Deploying to Heroku</a>
 
 For Heroku, we serve the app with NodeJS.  This will also provide an API to get and save data for the app later.
-Heroku is easy to set up.  You create an account, download the toolbelt, add the remote and push to the server.
+Heroku is easy to set up.  You create an account, download the tool belt, add the remote and push to the server.
 However, with Angular2, it was not so easy.  Had the following error when trying to deploy.
 ```
 remote:        sh: 1: typings: not found
@@ -395,7 +434,7 @@ To https://git.heroku.com/myra-the-ferryboat.git
 error: failed to push some refs to 'https://git.heroku.com/myra-the-ferryboat.git'
 ```
 
-This is the same error the the angular2-webpack-starter had.
+This is the same error the angular2-webpack-starter had.
 
 Some fixes call for removing the postinstall in the package.json file:
 ```
@@ -498,11 +537,11 @@ Error: Cannot find module '/app/server.js'
 ```
 
 Try renaming the file index.js.  This is the default apparently on Heroku.
-Then, realizing that git status was ignoring the server.js file becuase there was actually this like in the .gitignore file:
+Then, realizing that git status was ignoring the server.js file because there was actually this like in the .gitignore file:
 ```
 *.js
 ```
-Why was that there?  Anyhow, now there is a new error (thank godess for small miracles):
+Why was that there?  Anyhow, now there is a new error (thank goddess for small miracles):
 ```
 Error: Cannot find module 'express'
 ```
@@ -513,7 +552,7 @@ The logs you might ask?
 2016-09-11T06:50:36.125422+00:00 heroku[router]: at=error code=H20 desc="App boot timeout" method=GET path="/" host=myra-the-ferryboat.herokuapp.com request_id=d8eafe9a-f183-49da-a299-d6703f6edbb0 fwd="115.69.35.53" dyno= connect= service= status=503 bytes=
 2016-09-11T06:51:19.752934+00:00 heroku[web.1]: Error R10 (Boot timeout) -> Web process failed to bind to $PORT within 60 seconds of launch
 ```
-Apparently we should'nt be using port 8080.  So try 3000...
+Apparently we shouldn't be using port 8080.  So try 3000...
 But same error:
 ```
 2016-09-11T06:50:21.177537+00:00 app[web.1]: Node app is running on port 8080
@@ -539,7 +578,7 @@ So along with removing the postinstall in the package.json, creating the server.
 
 
 ## <a name="setup">Setup</a>
-Following the section beolow in the original Angular 2 Quickstart, with the following exception:
+Following the section below in the original Angular 2 Quickstart, with the following exception:
 ```
 QuinquenniumF:heroes2 tim$ git remote add origin https://github.com/timofeysie/heroes2.git
 fatal: remote origin already exists.

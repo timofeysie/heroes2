@@ -9,37 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var HEROES = [
-    { id: 11, name: 'Myra' },
-    { id: 12, name: 'Stingray' },
-    { id: 13, name: 'Hakea Blossom' },
-    { id: 14, name: 'Bonnie Doon' },
-    { id: 15, name: 'Palm Beach Wharf' },
-    { id: 16, name: 'Pittwater' },
-    { id: 17, name: 'Serrata' },
-    { id: 18, name: 'Coasters Retreat' },
-    { id: 19, name: 'The Basin' },
-    { id: 20, name: 'Lion Island' },
-    { id: 21, name: 'Broken Bay' },
-    { id: 22, name: 'Refuge Bay' },
-    { id: 23, name: 'Hakea seed' },
-    { id: 24, name: 'Wallaby' }
-];
+var hero_service_1 = require('./hero.service');
 var AppComponent = (function () {
-    function AppComponent() {
+    function AppComponent(heroService) {
+        this.heroService = heroService;
         this.title = 'Myra the ferryboat';
-        this.heroes = HEROES;
     }
+    AppComponent.prototype.ngOnInit = function () {
+        this.getHeroes();
+    };
     AppComponent.prototype.onSelect = function (hero) {
         this.selectedHero = hero;
+    };
+    AppComponent.prototype.getHeroes = function () {
+        var _this = this;
+        this.heroService.getHeroes()
+            .then(function (heroes) {
+            return _this.heroes = heroes;
+        });
     };
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
             styleUrls: ['./app/hero-styles.css'],
-            templateUrl: './app/app.template.html'
+            templateUrl: './app/app.template.html',
+            providers: [hero_service_1.HeroService]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [hero_service_1.HeroService])
     ], AppComponent);
     return AppComponent;
 }());
