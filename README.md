@@ -2,18 +2,17 @@
 
 The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
-The srunning app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
+For a discussion regarding the Unhandled Promise rejection, see the end of the [fixiing the tests](#fixing-the-tests) section below.
+
+The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 Currently implementing routing for step 6 of the tour.
 
-Updating VisualStudio code to v1.5.2:
-A version mismatch between the globally installed tsc compiler (1.5.3) and VS Code's language service (1.8.10) has been detected. This might result in inconsistent compile errors.
-The editor [opens this page](https://code.visualstudio.com/docs/languages/typescript#_using-newer-typescript-versions) for details.
-Might need to look at this later if there are any problems with the typings.
 
 ## Table of Contents
 
 1. [Development](#development)
 2. [Current Work](#current-work)
+2. [Fixing the tests](fixing-the-tests)
 2. [Tour of Heroes: Services](#tour-of-heroes-services)
 2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components)
 2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail)
@@ -47,10 +46,15 @@ See the [npm scripts](#npm-scripts) for other commands.
 Completed [part two](https://angular.io/docs/ts/latest/tutorial/toh-pt2.html) of the Angular2 Tour of Heros, titled Master/Detail.
 Working on refactoring for the [routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html).
 Since the tests don't work for compiled templates yet, the templates are going back in-line for the time being.
+See [fixing the tests](#fixing-the-tests) for more details.
 Added NodeJS server to use for deployment on Heroku.  The app is now live!
 
+## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</an>
 
-## fixing the tests
+[routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html)
+
+
+## <a name="fixing-the-tests">Fixing the tests</a>
 
 Looking at fixing the tests before the refactoring during the [next part: component templates](https://angular.io/docs/ts/latest/tutorial/toh-pt3.html).
 Currently, two out of three unit tests are failing.
@@ -267,6 +271,47 @@ The commit referenced in #212 simply removes all the test base stuff in karma.co
 Created my own gist to add a comment on the issue.
 <script src="https://gist.github.com/timofeysie/3cf46e2fffea24e6887ade811f14ad16.js"></script>
 
+Then, to get back to the tour, the templates were put back in-line to get the tests to pass.
+```
+$ npm test
+open the tests file:///Users/tim/angular/ng2/heroes2/_test-output/tests.html
+```
+The result:
+```
+Timestamp: 9/14/2016, 2:57:15 PM
+0 tests / 1 errors / 0 failures / 0 skipped / runtime: 0s
+Status	Spec	Suite / Results
+System output:
+Chrome 52.0.2743 (Mac OS X 10.10.5) ERROR: 'Unhandled Promise rejection:', 'Error: XHR error (404 Not Found) loading http://localhost:9877/systemjs.config.js Error loading http://localhost:9877/systemjs.config.js', '; Zone:', '', '; Task:', 'Promise.then', '; Value:', Error{originalErr: Error{}}, null 
+Chrome 52.0.2743 (Mac OS X 10.10.5) 
+ERROR: Error{rejection: 
+Error{originalErr: 
+Error{}}, promise: ZoneAwarePromise{ _zone_symbol__state: 0, __zone_symbol__value: Error{originalErr: ...}}, zone: Zone{_properties: Object{}, _parent: null, _name: '', _zoneDelegate: ZoneDelegate{_taskCounts: ..., zone: ..., _parentDelegate: ..., _forkZS: ..., _forkDlgt: ..., _interceptZS: ..., _interceptDlgt: ..., _invokeZS: ..., _invokeDlgt: ..., _handleErrorZS: ..., _handleErrorDlgt: ..., _scheduleTaskZS: ..., _scheduleTaskDlgt: ..., _invokeTaskZS: ..., _invokeTaskDlgt: ..., _cancelTaskZS: ..., _cancelTaskDlgt: ..., _hasTaskZS: ..., _hasTaskDlgt: ...}}, task: ZoneTask{runCount: 1, type: 'microTask', zone: Zone{_properties: ..., _parent: ..., _name: ..., _zoneDelegate: ...}, source: 'Promise.then', data: undefined, scheduleFn: undefined, cancelFn: null, callback: function () { ... }, invoke: function () { ... }}} 
+Chrome 52.0.2743 (Mac OS X 10.10.5) ERROR Disconnected, because no message in 10000 ms.
+
+Changed the paths again from this:
+```
+      {pattern: 'systemjs.config.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/systemjs.config.extras.js', included: false, watched: false},
+      'karma-test-shim.js',
+```
+To match files that actually exist:
+```
+      {pattern: 'node_modules/systemjs/dist/system.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false},
+      'karma-test-shim.js',
+```
+That fixed these warnings
+```
+[1] 13 09 2016 11:43:53.203:WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/systemjs.config.extras.js" does not match any file.
+```
+But for some reason this warning is still happening:
+```
+[1]] 13 09 2016 12:04:30.678:WARN [web-server]: 404: /systemjs.config.js
+```
+
+Found [this](http://stackoverflow.com/questions/39468417/angular2-testing-a-component-with-templateurl-resulting-in-unhandled-promise) on StackOverflow which seems to be a similar issue.
+Will add a comment there.  It was asked today so hopefully will get some attention.ß
 
 
 ## <a name="tour-of-heroes-services">Tour of Heroes: Services</a>
@@ -757,6 +802,14 @@ To Deploy to Heroku
 ```
 $ git push heroku master
 ```
+
+## Using VSCode
+The editor of choice for working with TypeScript on this project.
+Updated VisualStudio code to v1.5.2:
+A version mismatch between the globally installed tsc compiler (1.5.3) and VS Code's language service (1.8.10) has been detected. This might result in inconsistent compile errors.
+The editor [opens this page](https://code.visualstudio.com/docs/languages/typescript#_using-newer-typescript-versions) for details.
+Might need to look at this later if there are any problems with the typings.
+
 
 
 ## <a name="original-angular-2-quickstart-source">Original Angular 2 QuickStart Source</a>

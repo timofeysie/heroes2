@@ -32,7 +32,8 @@ var AppComponent = (function () {
         core_1.Component({
             selector: 'my-app',
             styleUrls: ['./app/hero-styles.css'],
-            templateUrl: './app/app.template.html',
+            /* templateUrl: './app/app.template.html',*/
+            template: "\n<h1>{{title}}</h1>\n<div *ngIf=\"selectedHero\">\n    <h2>{{selectedHero.name}} details:</h2>\n    <div><label>id: </label>{{selectedHero.id}}</div>\n    <div>\n        <label>name: </label>\n        <input [(attr.ngModel)]=\"selectedHero.name\" placeholder=\"name\"/>\n    </div>\n</div>\n<h2>My Heroes</h2>\n<ul class=\"heroes\">\n    <li *ngFor=\"let hero of heroes\" \n        (click)=\"onSelect(hero)\"\n        [class.selected]=\"hero === selectedHero\">\n        <span class=\"badge\">\n            {{hero.id}}\n        </span> {{hero.name}}\n    </li>\n</ul>\n<my-hero-detail [hero]=\"selectedHero\"></my-hero-detail>",
             providers: [hero_service_1.HeroService]
         }), 
         __metadata('design:paramtypes', [hero_service_1.HeroService])

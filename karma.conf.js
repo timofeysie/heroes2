@@ -3,10 +3,10 @@ module.exports = function(config) {
 
   var appBase    = 'app/';       // transpiled app JS and map files
   var appSrcBase = 'app/';       // app source TS files
-  var appAssets  = 'app/'; // component assets fetched by Angular's compiler
+  var appAssets  = '/base/app/'; // component assets fetched by Angular's compiler
 
-  // var testBase    = 'app/';       // transpiled test JS and map files
-  // var testSrcBase = 'app/';       // test source TS files
+  var testBase    = 'app/';       // transpiled test JS and map files
+  var testSrcBase = 'app/';       // test source TS files
 
   config.set({
     basePath: '',
@@ -52,13 +52,13 @@ module.exports = function(config) {
       {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
       {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
 
-      {pattern: 'systemjs.config.js', included: false, watched: false},
-      {pattern: 'node_modules/systemjs/dist/systemjs.config.extras.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false},
       'karma-test-shim.js',
 
       // transpiled application & spec code paths loaded via module imports
       {pattern: appBase + '**/*.js', included: false, watched: true},
-      // {pattern: testBase + '**/*.js', included: false, watched: true},
+      {pattern: testBase + '**/*.js', included: false, watched: true},
 
 
       // Asset (HTML & CSS) paths loaded via Angular's component compiler
@@ -69,8 +69,8 @@ module.exports = function(config) {
       // Paths for debugging with source maps in dev tools
       {pattern: appSrcBase + '**/*.ts', included: false, watched: false},
       {pattern: appBase + '**/*.js.map', included: false, watched: false},
-      // {pattern: testSrcBase + '**/*.ts', included: false, watched: false},
-      // {pattern: testBase + '**/*.js.map', included: false, watched: false}
+      {pattern: testSrcBase + '**/*.ts', included: false, watched: false},
+      {pattern: testBase + '**/*.js.map', included: false, watched: false}
     ],
 
     // Proxied base paths for loading assets

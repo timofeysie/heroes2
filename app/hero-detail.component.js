@@ -21,7 +21,8 @@ var HeroDetailComponent = (function () {
         core_1.Component({
             selector: 'my-hero-detail',
             styleUrls: ['./app/hero-styles.css'],
-            templateUrl: './app/hero-detail.template.html'
+            // templateUrl: './app/hero-detail.template.html'
+            template: "\n<div *ngIf=\"hero\">\n    <h2>{{hero.name}} details!</h2>\n    <div><label>id: </label>{{hero.id}}</div>\n    <div>\n        <label>name: </label>\n        <input [(ngModel)]=\"hero.name\" placeholder=\"name\"/>\n    </div>\n</div>"
         }), 
         __metadata('design:paramtypes', [])
     ], HeroDetailComponent);
