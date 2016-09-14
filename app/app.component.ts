@@ -2,32 +2,33 @@ import { Component } from '@angular/core';
 import { Hero } from './hero';
 import { HeroService } from './hero.service';
 import { OnInit } from '@angular/core';
-
+/** This component uses moduleId to set Component-Relative Path. */
 @Component({
+    moduleId: module.id,
     selector: 'my-app',
-    styleUrls: ['./app/hero-styles.css'],
-    /* templateUrl: './app/app.template.html',*/
-    template: `
-<h1>{{title}}</h1>
-<div *ngIf="selectedHero">
-    <h2>{{selectedHero.name}} details:</h2>
-    <div><label>id: </label>{{selectedHero.id}}</div>
-    <div>
-        <label>name: </label>
-        <input [(attr.ngModel)]="selectedHero.name" placeholder="name"/>
-    </div>
-</div>
-<h2>My Heroes</h2>
-<ul class="heroes">
-    <li *ngFor="let hero of heroes" 
-        (click)="onSelect(hero)"
-        [class.selected]="hero === selectedHero">
-        <span class="badge">
-            {{hero.id}}
-        </span> {{hero.name}}
-    </li>
-</ul>
-<my-hero-detail [hero]="selectedHero"></my-hero-detail>`,
+    styleUrls: ['hero-styles.css'],
+    templateUrl: 'app.component.html',
+//     template: `
+// <h1>{{title}}</h1>
+// <div *ngIf="selectedHero">
+//     <h2>{{selectedHero.name}} details:</h2>
+//     <div><label>id: </label>{{selectedHero.id}}</div>
+//     <div>
+//         <label>name: </label>
+//         <input [(attr.ngModel)]="selectedHero.name" placeholder="name"/>
+//     </div>
+// </div>
+// <h2>My Heroes</h2>
+// <ul class="heroes">
+//     <li *ngFor="let hero of heroes" 
+//         (click)="onSelect(hero)"
+//         [class.selected]="hero === selectedHero">
+//         <span class="badge">
+//             {{hero.id}}
+//         </span> {{hero.name}}
+//     </li>
+// </ul>
+// <my-hero-detail [hero]="selectedHero"></my-hero-detail>`,
     providers: [HeroService]
 })
 export class AppComponent implements OnInit {

@@ -77,7 +77,8 @@
     "quickstart",
     "PRs",
     "nvm",
-    "ul"
+    "ul",
+    "templateUrl"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",

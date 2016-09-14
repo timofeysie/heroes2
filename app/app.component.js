@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var hero_service_1 = require('./hero.service');
+/** This component uses moduleId to set Component-Relative Path. */
 var AppComponent = (function () {
     function AppComponent(heroService) {
         this.heroService = heroService;
@@ -30,10 +31,31 @@ var AppComponent = (function () {
     };
     AppComponent = __decorate([
         core_1.Component({
+            moduleId: module.id,
             selector: 'my-app',
-            styleUrls: ['./app/hero-styles.css'],
-            /* templateUrl: './app/app.template.html',*/
-            template: "\n<h1>{{title}}</h1>\n<div *ngIf=\"selectedHero\">\n    <h2>{{selectedHero.name}} details:</h2>\n    <div><label>id: </label>{{selectedHero.id}}</div>\n    <div>\n        <label>name: </label>\n        <input [(attr.ngModel)]=\"selectedHero.name\" placeholder=\"name\"/>\n    </div>\n</div>\n<h2>My Heroes</h2>\n<ul class=\"heroes\">\n    <li *ngFor=\"let hero of heroes\" \n        (click)=\"onSelect(hero)\"\n        [class.selected]=\"hero === selectedHero\">\n        <span class=\"badge\">\n            {{hero.id}}\n        </span> {{hero.name}}\n    </li>\n</ul>\n<my-hero-detail [hero]=\"selectedHero\"></my-hero-detail>",
+            styleUrls: ['hero-styles.css'],
+            templateUrl: 'app.component.html',
+            //     template: `
+            // <h1>{{title}}</h1>
+            // <div *ngIf="selectedHero">
+            //     <h2>{{selectedHero.name}} details:</h2>
+            //     <div><label>id: </label>{{selectedHero.id}}</div>
+            //     <div>
+            //         <label>name: </label>
+            //         <input [(attr.ngModel)]="selectedHero.name" placeholder="name"/>
+            //     </div>
+            // </div>
+            // <h2>My Heroes</h2>
+            // <ul class="heroes">
+            //     <li *ngFor="let hero of heroes" 
+            //         (click)="onSelect(hero)"
+            //         [class.selected]="hero === selectedHero">
+            //         <span class="badge">
+            //             {{hero.id}}
+            //         </span> {{hero.name}}
+            //     </li>
+            // </ul>
+            // <my-hero-detail [hero]="selectedHero"></my-hero-detail>`,
             providers: [hero_service_1.HeroService]
         }), 
         __metadata('design:paramtypes', [hero_service_1.HeroService])

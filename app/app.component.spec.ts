@@ -14,7 +14,7 @@ describe('AppComponent with TCB', function () {
   beforeEach(() => {
     TestBed.configureTestingModule({declarations: [AppComponent]});
   });
-  TestBed.compileComponents().catch(error => console.error('compile components err',error));
+  //TestBed.compileComponents().catch(error => console.error('compile components err',error));
 
   it('should instantiate component', () => {
     let fixture = TestBed.createComponent(AppComponent);

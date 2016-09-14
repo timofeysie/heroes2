@@ -2,7 +2,9 @@
 
 The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
-For a discussion regarding the Unhandled Promise rejection, see the end of the [fixiing the tests](#fixing-the-tests) section below.
+For a discussion regarding the Unhandled Promise rejection, see the end of the 
+[Tests broken](#tests-broken-after-separate-components-step) section below.
+
 
 The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 Currently implementing routing for step 6 of the tour.
@@ -13,6 +15,7 @@ Currently implementing routing for step 6 of the tour.
 1. [Development](#development)
 2. [Current Work](#current-work)
 2. [Fixing the tests](fixing-the-tests)
+2. [Tests broken after separate components step](#tests-broken-after-separate-components-step)
 2. [Tour of Heroes: Services](#tour-of-heroes-services)
 2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components)
 2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail)
@@ -122,6 +125,8 @@ So the test is failing for the same reason the last unit test was failing!
 That error may be because of the clean up config we removed to make the app deploy to Heroku.
 Change that and the test passes.
 
+
+## <a name="tests-broken-after-separate-components-step">Tests broken after separate components step</a>
 This was good, but a few days later, re-running the tests after the services step show two fails:
 Timestamp: 9/13/2016, 7:46:59 AM
 3 tests / 0 errors / 2 failures / 0 skipped / runtime: 0.065s
@@ -134,13 +139,13 @@ Error: This test module uses the component AppComponent which is using a "templa
 
 So it seems the re-factoring done in the separate components step of the tour has broken the tests.
 Where was it that said you can not run the development tools and the two test types at the same time?
-It would be nice to have the tests running in the backbround.
+It would be nice to have the tests running in the background.
 
-Comiling templates is done with the karma-ng-html2js-preprocessor on GitHub:
+Compiling templates is done with the karma-ng-html2js-preprocessor on GitHub:
 $ npm install karma-ng-html2js-preprocessor --save-dev
 
 Install and configure this in the karma.conf.js file.  
-Then, following the recepie for compiling templates in the testing book, `beforeEach(inject('AppComponent', 'app.template.html'))`, causes this error:
+Then, following the recipe for compiling templates in the testing book, `beforeEach(inject('AppComponent', 'app.template.html'))`, causes this error:
 ```
 [ts] Cannot find name 'inject'. any
 ```
@@ -153,7 +158,7 @@ describe('AppComponent with TCB', function () {
   beforeEach(inject('AppComponent', 'app.template.html'))
   ...
 ```
-Going to [the testing page from the Feveloper Guide])(https://angular.io/docs/ts/latest/guide/testing.html) has this alert:
+Going to [the testing page from the Developer Guide])(https://angular.io/docs/ts/latest/guide/testing.html) has this alert:
 ```
 We are still preparing the testing guide with all the new testing features introduced in RC5 and will update it very soon.
 ```
@@ -257,7 +262,7 @@ That gist appears [here](https://github.com/angular/quickstart/issues/208)
 Foxandxss commented 5 days ago
 Yes, we are syncing the testing chapter with the quickstart so this will be fixed for next week.
 filipesilva referenced this issue 3 days ago
-chore(test): remove refences to missing folder #212
+chore(test): remove references to missing folder #212
 filipesilva commented 3 days ago
 Tests seem to be running correctly with the latest quickstart, are you using the new SystemJS and karma config?
 
@@ -267,6 +272,9 @@ The commit referenced in #212 simply removes all the test base stuff in karma.co
 -  var testBase    = 'testing/';       // transpiled test JS and map files
 -  var testSrcBase = 'testing/';       // test source TS files
 ``` 
+
+The [GitHub repo](https://github.com/angular/quickstart/blob/master/karma.conf.js) still has the testBase there, so I suppose that pull request hasn't been merge yet?
+Or maybe it's not the correct fix.
 
 Created my own gist to add a comment on the issue.
 <script src="https://gist.github.com/timofeysie/3cf46e2fffea24e6887ade811f14ad16.js"></script>
@@ -311,7 +319,85 @@ But for some reason this warning is still happening:
 ```
 
 Found [this](http://stackoverflow.com/questions/39468417/angular2-testing-a-component-with-templateurl-resulting-in-unhandled-promise) on StackOverflow which seems to be a similar issue.
-Will add a comment there.  It was asked today so hopefully will get some attention.ß
+Will add a comment there.  It was asked today so hopefully will get some attention.
+
+Actually, you need 50 experience points to add a comment to a question.  Currently we have 27.  Damn.
+There are two comments on the question:
+
+You are using relative paths for the template and styles. 
+Can you try adding the moduleId: module.id property to the component decorator? 
+The Angular site has a write up on it [here](https://angular.io/docs/ts/latest/cookbook/component-relative-paths.html) – Dave V 16 hours ago 
+  	
+ 		
+If you do setup for commonjs and use relative paths as Dave V suggests make sure you are 
+using the ts transpiler rather than the default typescript one (which ignores commonjs packaging). 
+Otherwise, you need to define the absolute paths (from the location of index.html) 
+which would be app/app.component.html – Steven Luke 15 hours ago
+
+
+After reading the link above, I made the switch to Component-Relative Paths in the component class to use relative paths.
+It takes the addition of the modul.Id.
+We went from this:
+```
+@Component({
+    selector: 'my-app',
+    styleUrls: ['./app/hero-styles.css'],
+     templateUrl: './app/app.template.html',
+```
+TO this:
+```
+@Component({
+    moduleId: module.id,
+    selector: 'my-app',
+    styleUrls: ['hero-styles.css'],
+    templateUrl: 'app.component.html',
+```
+Noticed I also changed the name of the template file.  Looks like the
+When commenting out the inline template, this error showed up in the test page in Chrome:
+```
+[1] 14 09 2016 19:26:15.393:ERROR [karma]: [TypeError: Cannot read property 'manual-9633' of null]
+[1] TypeError: Cannot read property 'manual-9633' of null
+[1]     at onBrowserComplete (/Users/tim/angular/ng2/heroes2/node_modules/karma-htmlfile-reporter/index.js:95:23)
+[1]     at null.<anonymous> (/Users/tim/angular/ng2/heroes2/node_modules/karma/lib/events.js:13:22)
+[1]     at emitOne (events.js:82:20)
+[1]     at emit (events.js:169:7)
+[1]     at null._onTimeout (/Users/tim/angular/ng2/heroes2/node_modules/karma/lib/browser.js:51:15)
+[1]     at Timer.listOnTimeout (timers.js:92:15)
+```
+
+Tried the complete same of conf from the quickstart, but just went back to the same errors, so something in our code has broken the tests.
+Still wondering if `systemjs.config.extras.js` is loaded into the node_modules, or if this is a mistake in the current quickstart code.
+
+Took out the test bed compile line, and got the same error:
+```
+TestBed.compileComponents().catch(error => console.error('compile components err',error));
+```
+
+TOgether with the original karma.conf.js and still no joy.  Remember the old errors?
+```
+WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/systemjs.config.extras.js" does not match any file.
+WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/testing/**/*.js" does not match any file.
+WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/testing/**/*.ts" does not match any file.
+WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/testing/**/*.js.map" does not match any file.
+```
+
+Also not sure if changing the paths for the patterns in the karma.conf.js is a replacement for what was in the quick start.
+```
+      {pattern: 'node_modules/systemjs/dist/system.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false},
+      'karma-test-shim.js',
+```
+Anyhow, if the warnings go away, isn't that a good thing?
+
+At what point did the tests start failing and these start appearing?  
+Were those warnings there all along, and something done in another section cause the tests to start failing?
+It should be easier to find out where things went wrong with all these notes, but somehow it's not.
+
+Searching for `Unhandled Promise rejection` shows that it first appeared in the "Tour of Heroes: Multiple Components" section.
+That was when running the app.  It was fixed by finishing the code.  Not sure if that's related.
+
+Giving up on tests for a while to get back to learning Angular2.
+
 
 
 ## <a name="tour-of-heroes-services">Tour of Heroes: Services</a>
