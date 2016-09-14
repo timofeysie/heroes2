@@ -3,10 +3,10 @@ module.exports = function(config) {
 
   var appBase    = 'app/';       // transpiled app JS and map files
   var appSrcBase = 'app/';       // app source TS files
-  var appAssets  = '/base/app/'; // component assets fetched by Angular's compiler
+  var appAssets  = 'app/'; // component assets fetched by Angular's compiler
 
-  var testBase    = 'testing/';       // transpiled test JS and map files
-  var testSrcBase = 'testing/';       // test source TS files
+  // var testBase    = 'app/';       // transpiled test JS and map files
+  // var testSrcBase = 'app/';       // test source TS files
 
   config.set({
     basePath: '',
@@ -14,7 +14,8 @@ module.exports = function(config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      require('karma-htmlfile-reporter')
+      require('karma-htmlfile-reporter'),
+      require('karma-ng-html2js-preprocessor')
     ],
 
     customLaunchers: {
@@ -52,12 +53,12 @@ module.exports = function(config) {
       {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
 
       {pattern: 'systemjs.config.js', included: false, watched: false},
-      {pattern: 'systemjs.config.extras.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/systemjs.config.extras.js', included: false, watched: false},
       'karma-test-shim.js',
 
       // transpiled application & spec code paths loaded via module imports
       {pattern: appBase + '**/*.js', included: false, watched: true},
-      {pattern: testBase + '**/*.js', included: false, watched: true},
+      // {pattern: testBase + '**/*.js', included: false, watched: true},
 
 
       // Asset (HTML & CSS) paths loaded via Angular's component compiler
@@ -68,8 +69,8 @@ module.exports = function(config) {
       // Paths for debugging with source maps in dev tools
       {pattern: appSrcBase + '**/*.ts', included: false, watched: false},
       {pattern: appBase + '**/*.js.map', included: false, watched: false},
-      {pattern: testSrcBase + '**/*.ts', included: false, watched: false},
-      {pattern: testBase + '**/*.js.map', included: false, watched: false}
+      // {pattern: testSrcBase + '**/*.ts', included: false, watched: false},
+      // {pattern: testBase + '**/*.js.map', included: false, watched: false}
     ],
 
     // Proxied base paths for loading assets
@@ -79,7 +80,37 @@ module.exports = function(config) {
     },
 
     exclude: [],
-    preprocessors: {},
+    // to compile the template urls.
+    preprocessors: {
+      '**/*.html': ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      stripPrefix: 'public/',
+      stripSuffix: '.ext',
+      // prepend this to the
+      prependPrefix: 'served/',
+
+      // or define a custom transform function
+      // - cacheId returned is used to load template
+      //   module(cacheId) will return template at filepath
+      cacheIdFromPath: function(filepath) {
+        // example strips 'public/' from anywhere in the path
+        // module(app/templates/template.html) => app/public/templates/template.html
+        var cacheId = filepath.replace('public/', '');
+        return cacheId;
+      },
+
+      // - setting this option will create only a single module that contains templates
+      //   from all the files, so you can load them all with module('foo')
+      // - you may provide a function(htmlPath, originalPath) instead of a string
+      //   if you'd like to generate modules dynamically
+      //   htmlPath is a originalPath stripped and/or prepended
+      //   with all provided suffixes and prefixes
+      moduleName: 'foo'
+    },
+
     reporters: ['progress', 'html'],
 
     // HtmlReporter configuration

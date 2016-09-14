@@ -6,11 +6,6 @@ import { AppComponent }  from './app.component';
 import { HeroDetailComponent } from './hero-detail.component';
 
 @NgModule({
-  imports: [ BrowserModule, FormsModule ],
-  declarations: [ AppComponent ],
-  bootstrap: [ AppComponent ]
-})
-@NgModule({
   imports: [
     BrowserModule,
     FormsModule

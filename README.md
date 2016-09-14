@@ -5,6 +5,10 @@ The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 The srunning app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 Currently implementing routing for step 6 of the tour.
 
+Updating VisualStudio code to v1.5.2:
+A version mismatch between the globally installed tsc compiler (1.5.3) and VS Code's language service (1.8.10) has been detected. This might result in inconsistent compile errors.
+The editor [opens this page](https://code.visualstudio.com/docs/languages/typescript#_using-newer-typescript-versions) for details.
+Might need to look at this later if there are any problems with the typings.
 
 ## Table of Contents
 
@@ -41,8 +45,12 @@ See the [npm scripts](#npm-scripts) for other commands.
 ## <a name="current-work">Current work</a>
 
 Completed [part two](https://angular.io/docs/ts/latest/tutorial/toh-pt2.html) of the Angular2 Tour of Heros, titled Master/Detail.
-
+Working on refactoring for the [routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html).
+Since the tests don't work for compiled templates yet, the templates are going back in-line for the time being.
 Added NodeJS server to use for deployment on Heroku.  The app is now live!
+
+
+## fixing the tests
 
 Looking at fixing the tests before the refactoring during the [next part: component templates](https://angular.io/docs/ts/latest/tutorial/toh-pt3.html).
 Currently, two out of three unit tests are failing.
@@ -110,10 +118,160 @@ So the test is failing for the same reason the last unit test was failing!
 That error may be because of the clean up config we removed to make the app deploy to Heroku.
 Change that and the test passes.
 
+This was good, but a few days later, re-running the tests after the services step show two fails:
+Timestamp: 9/13/2016, 7:46:59 AM
+3 tests / 0 errors / 2 failures / 0 skipped / runtime: 0.065s
+Status	Spec	Suite / Results
+Passed in 0.003s	should run a passing test	Smoke test
+Failed	should instantiate component	AppComponent with TCB 
+Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
+Failed	should have expected <h1> text	AppComponent with TCB 
+Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
+
+So it seems the re-factoring done in the separate components step of the tour has broken the tests.
+Where was it that said you can not run the development tools and the two test types at the same time?
+It would be nice to have the tests running in the backbround.
+
+Comiling templates is done with the karma-ng-html2js-preprocessor on GitHub:
+$ npm install karma-ng-html2js-preprocessor --save-dev
+
+Install and configure this in the karma.conf.js file.  
+Then, following the recepie for compiling templates in the testing book, `beforeEach(inject('AppComponent', 'app.template.html'))`, causes this error:
+```
+[ts] Cannot find name 'inject'. any
+```
+Might have to skip ahead to the testing section to figure out how to use this format:
+```
+describe('AppComponent with TCB', function () {
+  beforeEach(() => {
+    TestBed.configureTestingModule({declarations: [AppComponent]});
+  });
+  beforeEach(inject('AppComponent', 'app.template.html'))
+  ...
+```
+Going to [the testing page from the Feveloper Guide])(https://angular.io/docs/ts/latest/guide/testing.html) has this alert:
+```
+We are still preparing the testing guide with all the new testing features introduced in RC5 and will update it very soon.
+```
+Does it talk about TestBed from '@angular/core/testing'?
+Nope.
+The [API References]() says this about that:
+`TestBed Class Stability: Experimental`
+It does mention this function:
+compileComponents() : Promise<any>
+Compile components with a templateUrl for the test's NgModule. 
+It is necessary to call this function as fetching urls is asynchronous.
+It says you have to do this after the configuration statement:
+TestBed.compileComponents();
+
+13 09 2016 11:29:34.741:ERROR [preprocess]: Can not load "ng-html2js", it is not registered!
+Following [the advice here](http://stackoverflow.com/questions/19069183/karma-throws-error-can-not-load-ng-html2js-it-is-not-registered),
+had to do this in the karma.conf.js file:
+```
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-htmlfile-reporter'),
+      require('karma-ng-html2js-preprocessor')
+    ],
+``` 
+Then, we are getting these errors:
+```
+[1] 13 09 2016 11:35:19.709:ERROR [karma]: [TypeError: filepath.strip is not a function]
+[1] TypeError: filepath.strip is not a function
+```   
+
+Looking for [for this error](http://stackoverflow.com/questions/36478554/karma-cannot-load-imported-files)
+In the karma-test-shim.js file, it seems like the dist directory is wrong:
+```
+var builtPath = '/base/app/';
+...
+System.config({
+  baseURL: '/base',
+```
+Get rid of the base part, since all our compiled files are next to their ts files in the app directory.
+However, the karma.conf.js file also had the js path set wrong, it appears:
+```
+  var testBase    = 'testing/';       // transpiled test JS and map files
+  var testSrcBase = 'testing/';       // test source TS files
+```
+Changed that also to 'app/'.
+This was the output when running the tests:
+[1] 13 09 2016 11:35:07.900:WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/systemjs.config.extras.js" does not match any file.
+[1] 13 09 2016 11:35:07.907:WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/testing/**/*.js" does not match any file.
+[1] 13 09 2016 11:35:07.917:WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/testing/**/*.ts" does not match any file.
+[1] 13 09 2016 11:35:07.918:WARN [watcher]: Pattern "/Users/tim/angular/ng2/heroes2/testing/**/*.js.map" does not match any file.
+```
+After that change, the systemjs.config.extras.js line is still showing, and the `TypeError: filepath.strip is not a function` errors are still there.
+
+```
+    files: [
+      // System.js for module loading
+      'node_modules/systemjs/dist/system.src.js',
+```
+If the pattern in the log is:
+"/Users/tim/angular/ng2/heroes2/systemjs.config.extras.js"
+THen how is the file pattern not being used?
+Changed the karma.conf.js:
+```
+ {pattern: 'systemjs.config.extras.js', included: false, watched: false},
+```
+Now it includes the path above.  Actually there is not extras file in that directory.
+`system.src.js` exists but no idea why systemjs.config.extras.js is missing.
+
+Anyhow, back to this:
+var cacheId = filepath.strip('public/', '');
+Change that via [this commit](https://github.com/karma-runner/karma-ng-html2js-preprocessor/pull/94/files)
+from 'strip' to 'replace'.
+Then, the errors change:
+```
+System output:
+Chrome 52.0.2743 (Mac OS X 10.10.5) ERROR: 'Unhandled Promise rejection:', 'Error: XHR error (404 Not Found) loading http://localhost:9876/systemjs.config.js Error loading http://localhost:9876/systemjs.config.js', '; Zone:', '', '; Task:', 'Promise.then', '; Value:', Error{originalErr: Error{}}, null 
+Chrome 52.0.2743 (Mac OS X 10.10.5) ERROR: Error{rejection: Error{originalErr: Error{}}, promise: ZoneAwarePromise{ zone_symbol__state: 0, __zone_symbol__value: Error{originalErr: ...}}, zone: Zone{_properties: Object{}, _parent: null, _name: '', _zoneDelegate: ZoneDelegate{_taskCounts: ..., zone: ..., _parentDelegate: ..., _forkZS: ..., _forkDlgt: ..., _interceptZS: ..., _interceptDlgt: ..., _invokeZS: ..., _invokeDlgt: ..., _handleErrorZS: ..., _handleErrorDlgt: ..., _scheduleTaskZS: ..., _scheduleTaskDlgt: ..., _invokeTaskZS: ..., _invokeTaskDlgt: ..., _cancelTaskZS: ..., _cancelTaskDlgt: ..., _hasTaskZS: ..., _hasTaskDlgt: ...}}, task: ZoneTask{runCount: 1, type: 'microTask', zone: Zone{_properties: ..., _parent: ..., _name: ..., _zoneDelegate: ...}, source: 'Promise.then', data: undefined, scheduleFn: undefined, cancelFn: null, callback: function () { ... }, invoke: function () { ... }}} 
+Chrome 52.0.2743 (Mac OS X 10.10.5) ERROR: 'Unhandled Promise rejection:', 'Error: XHR error (404 Not Found) loading http://localhost:9876/systemjs.config.js Error loading http://localhost:9876/systemjs.config.js', '; Zone:', '', '; Task:', 'Promise.then', '; Value:', Error{originalErr: Error{}}, null 
+```
+
+The un-handled promise would be the one we saw in the API reference:
+```
+compileComponents() : Promise<any>
+```
+Compile components with a templateUrl for the test's NgModule. 
+It is necessary to call this function as fetching urls is asynchronous.
+It says you have to do this after the configuration statement:
+TestBed.compileComponents();
+
+One example [here]() uses this line:
+```
+TestBed.compileComponents().catch(error => console.error(error));
+```
+Same error.  It still looks like systemjs.config.extras.js is missing, but there is not much on Google regarding this.
+
+"systemjs.config.extras.js" does not match any file.
+This google search only appears in one place:
+<script src="https://gist.github.com/Cayan/3e684dbe40b14cb3acdce00122bcf043.js"></script>
+That gist appears [here](https://github.com/angular/quickstart/issues/208)
+Foxandxss commented 5 days ago
+Yes, we are syncing the testing chapter with the quickstart so this will be fixed for next week.
+filipesilva referenced this issue 3 days ago
+chore(test): remove refences to missing folder #212
+filipesilva commented 3 days ago
+Tests seem to be running correctly with the latest quickstart, are you using the new SystemJS and karma config?
+
+When did we download and start this? Only two days ago...
+The commit referenced in #212 simply removes all the test base stuff in karma.conf.js
+```
+-  var testBase    = 'testing/';       // transpiled test JS and map files
+-  var testSrcBase = 'testing/';       // test source TS files
+``` 
+
+Created my own gist to add a comment on the issue.
+<script src="https://gist.github.com/timofeysie/3cf46e2fffea24e6887ade811f14ad16.js"></script>
+
 
 
 ## <a name="tour-of-heroes-services">Tour of Heroes: Services</a>
 
+The services part was pretty straight forward.  This just records an error that will happen halfway through the step.
 After a half implemented promise, the app breaks with the following (partial!) error:
 ```
 zone.js:484 Unhandled Promise rejection: Error in app/app.template.html:11:8 caused by: 

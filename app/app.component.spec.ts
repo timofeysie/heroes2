@@ -1,12 +1,8 @@
 /* tslint:disable:no-unused-variable */
 import { AppComponent } from './app.component';
-
 import { TestBed } from '@angular/core/testing';
-
 import { By }             from '@angular/platform-browser';
-
 ////////  SPECS  /////////////
-
 /// Delete this
 describe('Smoke test', () => {
   it('should run a passing test', () => {
@@ -18,6 +14,7 @@ describe('AppComponent with TCB', function () {
   beforeEach(() => {
     TestBed.configureTestingModule({declarations: [AppComponent]});
   });
+  TestBed.compileComponents().catch(error => console.error('compile components err',error));
 
   it('should instantiate component', () => {
     let fixture = TestBed.createComponent(AppComponent);
