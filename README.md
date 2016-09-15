@@ -14,6 +14,7 @@ Currently implementing routing for step 6 of the tour.
 
 1. [Development](#development)
 2. [Current Work](#current-work)
+2. [Tour of Heroes: Routing](#tour-of-heroes-routing)
 2. [Fixing the tests](fixing-the-tests)
 2. [Tests broken after separate components step](#tests-broken-after-separate-components-step)
 2. [Tour of Heroes: Services](#tour-of-heroes-services)
@@ -52,9 +53,112 @@ Since the tests don't work for compiled templates yet, the templates are going b
 See [fixing the tests](#fixing-the-tests) for more details.
 Added NodeJS server to use for deployment on Heroku.  The app is now live!
 
+
 ## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</an>
 
 [routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html)
+This calls for some refactoring:
+1. Change app.component.ts file to heroes.component.ts
+2. Change AppComponent class to HeroesComponent
+2. Change the Selector my-app to my-heroes
+2. Create a new app.component.ts
+2. Define an exported AppComponent class.
+2. Add an @Component decorator above the class with a my-app selector.
+2. Move the following from HeroesComponent to AppComponent:
+title class property
+@Component template <h1> element, which contains a binding to title
+2. Add a <my-heroes> element to the app template just below the heading so we still see the heroes.
+2. Add HeroesComponent to the declarations array of AppModule so Angular recognizes the <my-heroes> tags.
+2. Add HeroService to the providers array of AppModule because we'll need it in every other view.
+2. Remove HeroService from the HeroesComponent providers array since it has been promoted.
+2. Add the supporting import statements for AppComponent.
+
+That's quite a bit to take in.
+
+During all those changes, of course the app breaks, but this is a great message that shows up:
+```
+core.umd.js:5995 EXCEPTION: Error in http://localhost:3000/app/app.component.html:1:0 caused by: Maximum call stack size exceededErrorHandler.handleError @ core.umd.js:5995(anonymous function) @ core.umd.js:9394ZoneDelegate.invoke @ zone.js:332onInvoke @ core.umd.js:8772ZoneDelegate.invoke @ zone.js:331Zone.run @ zone.js:225(anonymous function) @ zone.js:591ZoneDelegate.invokeTask @ zone.js:365onInvokeTask @ core.umd.js:8763ZoneDelegate.invokeTask @ zone.js:364Zone.runTask @ zone.js:265drainMicroTaskQueue @ zone.js:497ZoneTask.invoke @ zone.js:437
+core.umd.js:5997 ORIGINAL EXCEPTION: Maximum call stack size exceededErrorHandler.handleError @ core.umd.js:5997(anonymous function) @ core.umd.js:9394ZoneDelegate.invoke @ zone.js:332onInvoke @ core.umd.js:8772ZoneDelegate.invoke @ zone.js:331Zone.run @ zone.js:225(anonymous function) @ zone.js:591ZoneDelegate.invokeTask @ zone.js:365onInvokeTask @ core.umd.js:8763ZoneDelegate.invokeTask @ zone.js:364Zone.runTask @ zone.js:265drainMicroTaskQueue @ zone.js:497ZoneTask.invoke @ zone.js:437
+core.umd.js:6000 ORIGINAL STACKTRACE:ErrorHandler.handleError @ core.umd.js:6000(anonymous function) @ core.umd.js:9394ZoneDelegate.invoke @ zone.js:332onInvoke @ core.umd.js:8772ZoneDelegate.invoke @ zone.js:331Zone.run @ zone.js:225(anonymous function) @ zone.js:591ZoneDelegate.invokeTask @ zone.js:365onInvokeTask @ core.umd.js:8763ZoneDelegate.invokeTask @ zone.js:364Zone.runTask @ zone.js:265drainMicroTaskQueue @ zone.js:497ZoneTask.invoke @ zone.js:437
+core.umd.js:6001 RangeError: Maximum call stack size exceeded
+    at new ViewWrappedError (core.umd.js:8092)
+    at DebugAppView._rethrowWithContext (core.umd.js:12183)
+    at DebugAppView.create (core.umd.js:12129)
+    at DebugAppView._View_HeroesComponent0.createInternal (HeroesComponent.ngfactory.js:33)
+    at DebugAppView.AppView.create (core.umd.js:11914)
+```
+The browser appeared dead until that showed up.  The fan is going overtime and the notebook bottom is super hot.
+Seems like an infinate loop.  Unable to kill the page.  Open the page in a new tab trying to get the updated changes to show.
+Sometimes having everything running could cause problems like this.
+Then, after completing the changes, in a new tab, there is a new error:
+```
+core.umd.js:5995 EXCEPTION: 
+Error in ./AppComponent class AppComponent_Host
+ - inline template:0:0 caused by: 
+ The selector "my-app" did not match any elementsErrorHandler.handleError @ core.umd.js:5995
+core.umd.js:5997 ORIGINAL EXCEPTION: The selector "my-app" did not match any elements
+```
+Then, the grey screen of death.
+my-app is configured in the AppComponent class.
+So what is causing the dance of death?
+
+I confirmed that that class and the app.component.ts class are as expected in the doc.
+It even says this:
+```
+Our refactoring of AppComponent into a new AppComponent and a HeroesComponent worked! 
+We have done no harm.
+```
+I would say a crashing browser and crashing computer means harm was done.
+But it was due to the old template being used as the selector.
+Changed app.component to heroes.component for the templateUrl.
+Since it's the hero-detail.component, it should use the 'heroes.component.html'!
+
+There is one more small issue.  The name input is not being filled with the hero.
+That's becuase the selected hero functionality is still in the heroes.component.
+This will change because the router now will take the responsibility of passing the selected hero to the heroes page.
+
+Now we can get on with using the router.
+
+add <base href="/"> at the top of the <head> section of index.
+Tyring to find out why this is needed, found out the internet is down.
+Then, add the router, without the ability to install it, the running app showed this error in the console:
+```
+core.umd.js:5995 EXCEPTION: Uncaught (in promise): 
+Error: Cannot match any routes: ''ErrorHandler.handleError @ ...
+Error: Uncaught (in promise): 
+Error: Cannot match any routes: ''
+    at resolvePromise (zone.js:558)
+...
+    zone.js:484 Unhandled Promise rejection: 
+Cannot match any routes: '' ; 
+Zone: angular ; 
+Task: Promise.then ; 
+Value: Error: Cannot match any routes: ''(…) 
+Error: Cannot match any routes: ''
+```
+Just curious that it mentions promise there.
+
+Anyhow, the reason for the base tag?
+
+### history.pushState
+```
+The Router uses the browser's history.pushState for navigation. 
+in-app URLs can be indistinguishable from server URLs.
+HTML 5 browsers support pushState which is why many people say "HTML 5 style" URLs.
+```
+
+the app.component template changes from this:
+```
+<my-heroes></my-heroes>
+```
+
+to this:
+```
+<a routerLink="/heroes">Heroes</a>
+<router-outlet></router-outlet>
+```
+
+Not as cool as my-heroes for a tag, but whatever.
 
 
 ## <a name="fixing-the-tests">Fixing the tests</a>
@@ -397,6 +501,7 @@ Searching for `Unhandled Promise rejection` shows that it first appeared in the 
 That was when running the app.  It was fixed by finishing the code.  Not sure if that's related.
 
 Giving up on tests for a while to get back to learning Angular2.
+At least the e2e tests are still passing...
 
 
 

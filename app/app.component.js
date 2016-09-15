@@ -9,56 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var hero_service_1 = require('./hero.service');
-/** This component uses moduleId to set Component-Relative Path. */
 var AppComponent = (function () {
-    function AppComponent(heroService) {
-        this.heroService = heroService;
+    function AppComponent() {
         this.title = 'Myra the ferryboat';
     }
-    AppComponent.prototype.ngOnInit = function () {
-        this.getHeroes();
-    };
-    AppComponent.prototype.onSelect = function (hero) {
-        this.selectedHero = hero;
-    };
-    AppComponent.prototype.getHeroes = function () {
-        var _this = this;
-        this.heroService.getHeroes()
-            .then(function (heroes) {
-            return _this.heroes = heroes;
-        });
-    };
     AppComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
             selector: 'my-app',
-            styleUrls: ['hero-styles.css'],
-            templateUrl: 'app.component.html',
-            //     template: `
-            // <h1>{{title}}</h1>
-            // <div *ngIf="selectedHero">
-            //     <h2>{{selectedHero.name}} details:</h2>
-            //     <div><label>id: </label>{{selectedHero.id}}</div>
-            //     <div>
-            //         <label>name: </label>
-            //         <input [(attr.ngModel)]="selectedHero.name" placeholder="name"/>
-            //     </div>
-            // </div>
-            // <h2>My Heroes</h2>
-            // <ul class="heroes">
-            //     <li *ngFor="let hero of heroes" 
-            //         (click)="onSelect(hero)"
-            //         [class.selected]="hero === selectedHero">
-            //         <span class="badge">
-            //             {{hero.id}}
-            //         </span> {{hero.name}}
-            //     </li>
-            // </ul>
-            // <my-hero-detail [hero]="selectedHero"></my-hero-detail>`,
-            providers: [hero_service_1.HeroService]
+            templateUrl: '/app/app.component.html'
         }), 
-        __metadata('design:paramtypes', [hero_service_1.HeroService])
+        __metadata('design:paramtypes', [])
     ], AppComponent);
     return AppComponent;
 }());

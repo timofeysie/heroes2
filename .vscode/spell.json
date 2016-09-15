@@ -14,7 +14,7 @@
     "e2e",
     "heroku",
     "Angular2",
-    "AppComponent",
+    "HeroesComponent",
     "ngModel",
     "StackOverflow",
     "NgModule",
@@ -78,7 +78,10 @@
     "PRs",
     "nvm",
     "ul",
-    "templateUrl"
+    "templateUrl",
+    "HeroService",
+    "AppComponent",
+    "AppModule"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",
