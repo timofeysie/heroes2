@@ -5,15 +5,16 @@ The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 For a discussion regarding the Unhandled Promise rejection, see the end of the 
 [Tests broken](#tests-broken-after-separate-components-step) section below.
 
-
 The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
-Currently implementing routing for step 6 of the tour.
+
+Currently implementing http for [step 6](https://angular.io/docs/ts/latest/tutorial/toh-pt6.html) of the tour.
 
 
 ## Table of Contents
 
 1. [Development](#development)
 2. [Current Work](#current-work)
+2. [Tour of Heroes: HTTP](#tour-of-heroes-http)
 2. [Tour of Heroes: Routing](#tour-of-heroes-routing)
 2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official)
 2. [Fixing the tests](fixing-the-tests)
@@ -55,7 +56,10 @@ See [fixing the tests](#fixing-the-tests) for more details.
 Added NodeJS server to use for deployment on Heroku.  The app is now live!
 
 
-## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</an>
+## <a name="tour-of-heroes-http">Tour of Heroes: HTTP</a>
+
+
+## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</a>
 
 [routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html)
 This calls for some refactoring:
@@ -159,7 +163,9 @@ to this:
 ```
 
 Not as cool as my-heroes for a tag, but whatever.
+The routerLink="/heroes" is cool however.
 
+The component router seems pretty straight forward.  Now it's on toe http.
 
 
 ## <a name="upgrade-to-angular-2-official">Upgrade to Angular 2 Official</a>

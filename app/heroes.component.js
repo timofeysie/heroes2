@@ -9,14 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
 var hero_service_1 = require('./hero.service');
 /** This component uses moduleId to set Component-Relative Path. */
 var HeroesComponent = (function () {
-    function HeroesComponent(heroService) {
+    function HeroesComponent(heroService, router) {
         this.heroService = heroService;
+        this.router = router;
+        console.log('hero.component constructed');
     }
     HeroesComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.getHeroes();
+        this.heroService.getHero(11)
+            .then(function (hero) {
+            return _this.selectedHero = hero;
+        });
     };
     HeroesComponent.prototype.onSelect = function (hero) {
         console.log('hero', hero);
@@ -29,6 +37,9 @@ var HeroesComponent = (function () {
             return _this.heroes = heroes;
         });
     };
+    HeroesComponent.prototype.gotoDetail = function () {
+        this.router.navigate(['/detail', this.selectedHero.id]);
+    };
     HeroesComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
@@ -37,7 +48,7 @@ var HeroesComponent = (function () {
             templateUrl: 'heroes.component.html',
             providers: []
         }), 
-        __metadata('design:paramtypes', [hero_service_1.HeroService])
+        __metadata('design:paramtypes', [hero_service_1.HeroService, router_1.Router])
     ], HeroesComponent);
     return HeroesComponent;
 }());
