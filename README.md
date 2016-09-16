@@ -59,15 +59,14 @@ Added NodeJS server to use for deployment on Heroku.  The app is now live!
 
 [routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html)
 This calls for some refactoring:
+
 1. Change app.component.ts file to heroes.component.ts
 2. Change AppComponent class to HeroesComponent
 2. Change the Selector my-app to my-heroes
 2. Create a new app.component.ts
 2. Define an exported AppComponent class.
 2. Add an @Component decorator above the class with a my-app selector.
-2. Move the following from HeroesComponent to AppComponent:
-title class property
-@Component template <h1> element, which contains a binding to title
+2. Move the following from HeroesComponent to AppComponent: title class property, @Component template h1 element, which contains a binding to title
 2. Add a <my-heroes> element to the app template just below the heading so we still see the heroes.
 2. Add HeroesComponent to the declarations array of AppModule so Angular recognizes the <my-heroes> tags.
 2. Add HeroService to the providers array of AppModule because we'll need it in every other view.
