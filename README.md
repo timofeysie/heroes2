@@ -15,6 +15,7 @@ Currently implementing routing for step 6 of the tour.
 1. [Development](#development)
 2. [Current Work](#current-work)
 2. [Tour of Heroes: Routing](#tour-of-heroes-routing)
+2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official)
 2. [Fixing the tests](fixing-the-tests)
 2. [Tests broken after separate components step](#tests-broken-after-separate-components-step)
 2. [Tour of Heroes: Services](#tour-of-heroes-services)
@@ -161,6 +162,105 @@ to this:
 Not as cool as my-heroes for a tag, but whatever.
 
 
+
+## <a name="upgrade-to-angular-2-official">Upgrade to Angular 2 Official</a>
+Yesterday avo the officual announcemnt came out amidst a shower of red balloons.
+I checked the [API References](https://angular.io/docs/ts/latest/api/core/testing/index/TestBed-class.html) says this about that:
+`TestBed Class Stability: Experimental` has now been changed to just the work `experimental`.
+
+Following the Julie Ralph commit for her [upgrade commit](https://github.com/juliemr/ng2-test-seed/commit/84d591bc9b8dee172c4fc4ac816b72da8aa5503f).
+```
+ -    "@angular/common": "2.0.0-rc.7",
+ -    "@angular/compiler": "2.0.0-rc.7",
+ -    "@angular/core": "2.0.0-rc.7",
+ -    "@angular/platform-browser": "2.0.0-rc.7",
+ -    "@angular/platform-browser-dynamic": "2.0.0-rc.7",
+```
+becomes
+```
+ +    "@angular/common": "2.0.0",
+ +    "@angular/compiler": "2.0.0",
+ +    "@angular/core": "2.0.0",
+ +    "@angular/platform-browser": "2.0.0",
+ +    "@angular/platform-browser-dynamic": "2.0.0",
+```
+Then, the errors:
+```
+$ npm i
+npm WARN peerDependencies The peer dependency rxjs@5.0.0-beta.12 included from @angular/router will no
+npm WARN peerDependencies longer be automatically installed to fulfill the peerDependency 
+npm WARN peerDependencies in npm 3+. Your application will need to depend on it explicitly.
+npm ERR! Darwin 14.5.0
+npm ERR! argv "/Users/tim/.nvm/versions/node/v4.4.3/bin/node" "/Users/tim/.nvm/versions/node/v4.4.3/bin/npm" "i"
+npm ERR! node v4.4.3
+npm ERR! npm  v2.15.1
+npm ERR! code EPEERINVALID
+
+npm ERR! peerinvalid The package @angular/core@2.0.0 does not satisfy its siblings' peerDependencies requirements!
+npm ERR! peerinvalid Peer @angular/common@2.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer @angular/compiler@2.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer @angular/forms@2.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer @angular/http@2.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer @angular/platform-browser@2.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer @angular/platform-browser-dynamic@2.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer @angular/router@3.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer @angular/upgrade@2.0.0 wants @angular/core@^2.0.0
+npm ERR! peerinvalid Peer angular2-in-memory-web-api@0.0.18 wants @angular/core@2.0.0-rc.6
+
+npm ERR! Please include the following file with any support request:
+npm ERR!     /Users/tim/angular/ng2/heroes2/npm-debug.log
+```
+I left a comment on the commit page since there was no issues tab on the repo.
+Felt like I am a little bit out of line with that, but anyhow, it's done.  
+See if she notices and responds.
+Tried this: `$ npm install npm -g`
+Then, after starting the app again:
+```
+zone.js:484 Unhandled Promise rejection: Zone.assertZonePatched is not a function ; 
+Zone: <root> ; Task: Promise.then ; 
+Value: TypeError: Zone.assertZonePatched is not a function(…) 
+TypeError: Zone.assertZonePatched is not a function
+    at new NgZoneImpl 
+```
+Again with the Promise.
+SO: You need to update zone.js pakage by zone.js@0.6.21 for RC7
+```
+<script src="https://unpkg.com/zone.js@0.6.21/dist/zone.js"></script>
+```
+(SO stands for StackOverflow b.t.w.)
+
+Looked at the current quickstart package.json.
+Changed this: `"rxjs": "5.0.0-beta.11",` from beta.11 to 12.
+Then got these problems with $ npm i
+```
+symbol-observable@1.0.2 node_modules/rxjs/node_modules/symbol-observable -> node_modules/symbol-observable
+angular2-quickstart@1.0.0 /Users/tim/angular/ng2/heroes2
+├── UNMET PEER DEPENDENCY @angular/core@2.0.0
+├── UNMET PEER DEPENDENCY @angular/http@2.0.0
+├── UNMET PEER DEPENDENCY rxjs@5.0.0-beta.12
+└── UNMET PEER DEPENDENCY zone.js@0.6.17
+npm WARN @angular/core@2.0.0 requires a peer of zone.js@^0.6.21 but none was installed.
+npm WARN angular2-in-memory-web-api@0.0.18 requires a peer of @angular/core@2.0.0-rc.6 but none was installed.
+npm WARN angular2-in-memory-web-api@0.0.18 requires a peer of @angular/http@2.0.0-rc.6 but none was installed.
+npm WARN angular2-in-memory-web-api@0.0.18 requires a peer of rxjs@5.0.0-beta.11 but none was installed.
+npm ERR! code 1
+```
+
+Besides this change, here are some other mods in the quickstarter:
+```
+ -    "zone.js": "^0.6.21",
+ +    "zone.js": "^0.6.23", 
+ -    "angular2-in-memory-web-api": "0.0.19",
+ +    "angular2-in-memory-web-api": "0.0.20",
+```
+After doing the npm i, then npm start, the app runs again.
+Then we're back to implementing routes!
+
+
+
+
+
+
 ## <a name="fixing-the-tests">Fixing the tests</a>
 
 Looking at fixing the tests before the refactoring during the [next part: component templates](https://angular.io/docs/ts/latest/tutorial/toh-pt3.html).
@@ -268,7 +368,7 @@ We are still preparing the testing guide with all the new testing features intro
 ```
 Does it talk about TestBed from '@angular/core/testing'?
 Nope.
-The [API References]() says this about that:
+The [API References](https://angular.io/docs/ts/latest/api/core/testing/index/TestBed-class.html) says this about that:
 `TestBed Class Stability: Experimental`
 It does mention this function:
 compileComponents() : Promise<any>
@@ -276,6 +376,21 @@ Compile components with a templateUrl for the test's NgModule.
 It is necessary to call this function as fetching urls is asynchronous.
 It says you have to do this after the configuration statement:
 TestBed.compileComponents();
+
+On a side note, a few days later, following a tweet by Julie Ralph who I believe is on the Angular testing team.
+She [has a test that uses test bed here](https://github.com/juliemr/ng2-test-seed/blob/master/src/test/greeting-component_test.ts)
+describe('greeting component', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [GreetingComponent],
+      providers: [
+        {provide: LoginService, useClass: MockLoginService },
+        UserService
+      ]
+    });
+  });
+Looks like we need to add the providers.  But that's for another chapter.
+
 
 13 09 2016 11:29:34.741:ERROR [preprocess]: Can not load "ng-html2js", it is not registered!
 Following [the advice here](http://stackoverflow.com/questions/19069183/karma-throws-error-can-not-load-ng-html2js-it-is-not-registered),
