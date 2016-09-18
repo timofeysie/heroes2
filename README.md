@@ -9,6 +9,9 @@ The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.co
 
 Currently implementing http for [step 6](https://angular.io/docs/ts/latest/tutorial/toh-pt6.html) of the tour.
 
+Also struggling with the [detail view pagination](#detail-view-pagination) (not part of the tour).
+The next button changes the view momentarily, but then jumps back to the previous view.
+
 
 ## Table of Contents
 
@@ -21,6 +24,7 @@ Currently implementing http for [step 6](https://angular.io/docs/ts/latest/tutor
 2. [Tests broken after separate components step](#tests-broken-after-separate-components-step)
 2. [Tour of Heroes: Services](#tour-of-heroes-services)
 2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components)
+2. [Detail view pagination](#detail-view-pagination)
 2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail)
 3. [The favicon.ico](#the-favicon.ico)
 4. [Webpack](#webpack)
@@ -253,6 +257,8 @@ npm ERR! code 1
 
 Besides this change, here are some other mods in the quickstarter:
 ```
+ -    "rxjs": "5.0.0-beta.11"
+ +    "rxjs": "5.0.0-beta.12"
  -    "zone.js": "^0.6.21",
  +    "zone.js": "^0.6.23", 
  -    "angular2-in-memory-web-api": "0.0.19",
@@ -687,6 +693,54 @@ declarations: [
 ],
 ```
 
+
+## <a name="detail-view-pagination">Detail view pagination</a>
+Not sure how to use the router to programmatically go to a specific route.
+This code goes to the next image, but then jumps back to the previous one.
+This code it from the hero-detail.component:
+```
+<button (click)="goForward()"
+    style="margin-top: 3px;transform: scaleX(-1);">
+    <img src="/app/images/buttons/back-button.png"
+        height="30px">
+</button>
+...
+    goForward(): void {
+        let newId = this.hero.id++;
+        this.heroService.getHero(newId)
+                .then(hero => 
+                    this.hero = hero);
+                    //console.log('hero param', id);
+        this.router.navigate(['/detail',newId]);
+        //window.history.pushState('detail','/detail','/detail/'+newId);
+        console.log('goForward');
+    }
+```
+These version will do the same:
+```
+this.router.navigate(['/detail/'+newId]);
+this.router.navigateByUrl('/detail/'+newId);
+this.router.navigate(['/detail', { id: newId }]);
+```
+Also note that the url does not change unless you click a few times quickly.
+The router docs say:
+```
+The link parameters array has two items: the path of the destination route and a route parameter that specifies the id of the selected hero.
+```
+Why use an array?  Why not a function with two arguments?
+Anyhow this is how the heroes.component does it:
+```
+this.router.navigate(['/detail', this.selectedHero.id]);
+```
+So that is the correct way to do it.  
+What may be happening is that the selectedHero in the HeroesComponent class is not being changed.
+Tried importing that class in to the HeroDetailComponent class, 
+We could expose that class in the detail view and do this:
+```
+HeroesComponent.onSelect(this.hero);
+```
+But, then that would have to be a static function.  Not sure, in the JS world, since using the 'new' keyword is frowned upon and Angular has it's own way of creating these classes...
+What to do?
 
 
 ## <a name="tour-of-heroes-master-detail">Tour of Heroes: Master/Detail</a>

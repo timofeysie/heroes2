@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { HeroService } from './hero.service';
+import { HeroesComponent } from './heroes.component';
 import { Hero } from './hero';
 
 @Component({
@@ -15,6 +16,7 @@ export class HeroDetailComponent implements OnInit {
 
     constructor(
         private heroService: HeroService,
+        private router: Router,
         private route: ActivatedRoute) {
             console.log('HeroDetailComponent constructor called');
     }
@@ -31,8 +33,17 @@ export class HeroDetailComponent implements OnInit {
 
     goBack(): void {
         window.history.back();
+        console.log('goBack');
     }
 
-
+    goForward(): void {
+        let newId = this.hero.id++;
+        this.heroService.getHero(newId)
+            .then(hero => {
+                this.hero = hero;
+                this.router.navigate(['/detail', newId]);
+                console.log('goForward');
+            });
+    }
 
 }

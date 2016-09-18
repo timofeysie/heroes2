@@ -13,8 +13,9 @@ var router_1 = require('@angular/router');
 var hero_service_1 = require('./hero.service');
 var hero_1 = require('./hero');
 var HeroDetailComponent = (function () {
-    function HeroDetailComponent(heroService, route) {
+    function HeroDetailComponent(heroService, router, route) {
         this.heroService = heroService;
+        this.router = router;
         this.route = route;
         console.log('HeroDetailComponent constructor called');
     }
@@ -31,6 +32,17 @@ var HeroDetailComponent = (function () {
     };
     HeroDetailComponent.prototype.goBack = function () {
         window.history.back();
+        console.log('goBack');
+    };
+    HeroDetailComponent.prototype.goForward = function () {
+        var _this = this;
+        var newId = this.hero.id++;
+        this.heroService.getHero(newId)
+            .then(function (hero) {
+            _this.hero = hero;
+            _this.router.navigate(['/detail', newId]);
+            console.log('goForward');
+        });
     };
     __decorate([
         core_1.Input(), 
@@ -42,7 +54,7 @@ var HeroDetailComponent = (function () {
             styleUrls: ['./app/hero-styles.css', 'app/hero-detail.component.css'],
             templateUrl: './app/hero-detail.component.html'
         }), 
-        __metadata('design:paramtypes', [hero_service_1.HeroService, router_1.ActivatedRoute])
+        __metadata('design:paramtypes', [hero_service_1.HeroService, router_1.Router, router_1.ActivatedRoute])
     ], HeroDetailComponent);
     return HeroDetailComponent;
 }());

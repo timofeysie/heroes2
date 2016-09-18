@@ -1,8 +1,12 @@
+<button (click)="gotoDetail()"
+  class="details__button--position">
+  <img src="/app/images/buttons/details-button.png"
+    height="30px">
+</button>
 <div *ngIf="selectedHero">
   <h2>
     {{selectedHero.name | uppercase}}.
   </h2>
-  <button (click)="gotoDetail()">View Details</button>
 </div>
 <ul class="heroes">
     <li *ngFor="let hero of heroes"
