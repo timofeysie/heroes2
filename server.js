@@ -12,10 +12,10 @@ app.get('/', function(req, res) {
 });
 
 app.listen(app.get('port'),function () {
-	console.log('Node app is running on port 8080');
+	console.log('Node app is running on port 3000');
 });
 
-app.get('/myra', function (req, res) {
+app.get('/app/heroes', function (req, res) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	res.setHeader('Content-Type', 'application/json');

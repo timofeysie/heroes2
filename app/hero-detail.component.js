@@ -22,7 +22,8 @@ var HeroDetailComponent = (function () {
     HeroDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.route.params.forEach(function (params) {
-            var id = +params['id']; //convert the route parameter value to a number
+            //let id = +params['id']; //convert the route parameter value to a number
+            var id = +_this.route.snapshot.params['id'];
             _this.heroService.getHero(id)
                 .then(function (hero) {
                 return _this.hero = hero;
@@ -43,6 +44,16 @@ var HeroDetailComponent = (function () {
             _this.router.navigate(['/detail', newId]);
             console.log('goForward');
         });
+    };
+    HeroDetailComponent.prototype.gotoHeroes = function () {
+        var heroId = this.hero ? this.hero.id : null;
+        // Pass along the hero id if available
+        // so that the HeroList component can select that hero.
+        this.router.navigate(['/heroes', { id: heroId, foo: 'foo' }]);
+    };
+    HeroDetailComponent.prototype.save = function () {
+        this.heroService.update(this.hero)
+            .then(this.goBack);
     };
     __decorate([
         core_1.Input(), 

@@ -21,7 +21,7 @@ var HeroesComponent = (function () {
     HeroesComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.getHeroes();
-        this.heroService.getHero(11)
+        this.heroService.getHero(1)
             .then(function (hero) {
             return _this.selectedHero = hero;
         });
@@ -37,8 +37,33 @@ var HeroesComponent = (function () {
             return _this.heroes = heroes;
         });
     };
+    /** Currently this navigation method does not work.
+     * it jumps back to the provious route. */
     HeroesComponent.prototype.gotoDetail = function () {
         this.router.navigate(['/detail', this.selectedHero.id]);
+    };
+    HeroesComponent.prototype.add = function (name) {
+        var _this = this;
+        name = name.trim();
+        if (!name) {
+            return;
+        }
+        this.heroService.create(name)
+            .then(function (hero) {
+            _this.heroes.push(hero);
+            _this.selectedHero = null;
+        });
+    };
+    HeroesComponent.prototype.delete = function (hero) {
+        var _this = this;
+        this.heroService
+            .delete(hero.id)
+            .then(function () {
+            _this.heroes = _this.heroes.filter(function (h) { return h !== hero; });
+            if (_this.selectedHero === hero) {
+                _this.selectedHero = null;
+            }
+        });
     };
     HeroesComponent = __decorate([
         core_1.Component({

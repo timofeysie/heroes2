@@ -3,6 +3,10 @@
     margin-top: 3px;
 }
 
+button {
+    outline: none;
+}
+
 /* Orignal tour of heroes styles*/
 .selected {
     background-color: #CFD8DC !important;
@@ -50,4 +54,12 @@
     height: 1.8em;
     margin-right: .8em;
     border-radius: 4px 0 0 4px;
+}
+/* Added in the http section */
+button.delete {
+  float:right;
+  margin-top: 2px;
+  margin-right: .8em;
+  background-color: gray !important;
+  color:white;
 }

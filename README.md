@@ -12,6 +12,61 @@ Currently implementing http for [step 6](https://angular.io/docs/ts/latest/tutor
 Also struggling with the [detail view pagination](#detail-view-pagination) (not part of the tour).
 The next button changes the view momentarily, but then jumps back to the previous view.
 
+There is actually a description of what is wanted in the [advanced documentation for the router](https://angular.io/docs/ts/latest/guide/router.html) 
+title 'OBSERVABLE PARAMS AND COMPONENT RE-USE'.
+This talks about a sample, but has no code to show.
+The next section is title 'SNAPSHOT: THE NO-OBSERVABLE ALTERNATIVE' which uses the route.snapshot to get params:
+```
+let id = +this.route.snapshot.params['id'];
+```
+
+Just this alone does not fix the jump back to previous page problem.
+There is then a discussion regarding optional parameters.  The id is a required parameter.
+Optional parameters are defined in an object after defining required route parameters.
+
+That page, or epic documentation for the router has it's own funky code sample application with stuff like this:
+```
+const appRoutes: Routes = [
+  ...loginRoutes,
+  ...adminRoutes
+];
+```
+Is that using the spread operator or what?
+The top of the page says: `Discover the basics of screen navigation with the Angular 2 Router.`
+And, it seems to be the longest web page I've ever seen without infinite scroll.
+So if that's the basics, but it's in the advanced section, then there's more to it.
+All we want is pagination here, but looks like we're in for a week of reating...
+
+Or we could continue to jump around.  For example, when looking at the transition between the tour tutorial and the 'advanced' docuemtnation, there is none.
+There is however a new app, slightly different from the router sample application.
+It has a contacts list that has what we want:
+```html
+<button type="button" class="btn" (click)="next()" [disabled]="!contactForm.form.valid">Next Contact</button>
+```Javascript
+  next() {
+    let ix = 1 + this.contacts.indexOf(this.contact);
+    if (ix >= this.contacts.length) { ix = 0; }
+    this.contact = this.contacts[ix];
+  }
+``` 
+That's it?  No router involved?  Is the model using two way binding to update?
+
+
+## Random
+```
+app/hero.service.ts(17,28): error TS2339: Property 'handleError' does not exist on type 'HeroService'.
+```
+Is this what we're supposed to do?
+```
+    private handleError(error: any) {
+        console.log(error);
+    }
+```
+Since this deosn't exist:
+```
+import 'rxjs/add/operator/handleError';
+```
+
 
 ## Table of Contents
 
@@ -24,6 +79,7 @@ The next button changes the view momentarily, but then jumps back to the previou
 2. [Tests broken after separate components step](#tests-broken-after-separate-components-step)
 2. [Tour of Heroes: Services](#tour-of-heroes-services)
 2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components)
+2. [The ngOnInit Lifecycle Hook](lThe-ngOnInit-Lifecycle-Hook)
 2. [Detail view pagination](#detail-view-pagination)
 2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail)
 3. [The favicon.ico](#the-favicon.ico)
@@ -317,7 +373,7 @@ I have some notes somewhere on property vs. attribute binding.  Not a simple sub
 
 The second error (yes, I said there were two!:
 ```
-Failed	should have expected <h1> text	AppComponent with TCB 
+Failed	should have expected h1 text	AppComponent with TCB 
 Error: Template parse errors: Can't bind to 'ngModel' since it isn't a known property of 'input'. (" <div> <label>name: </label> <input [ERROR ->][(ngModel)]="selectedHero.name" placeholder="name"/> </div> </div> "): AppComponent@7:11
 ```
 That is easy to fix.  Since we changed the title, expecting the new title passes the test.
@@ -343,15 +399,16 @@ Change that and the test passes.
 
 ## <a name="tests-broken-after-separate-components-step">Tests broken after separate components step</a>
 This was good, but a few days later, re-running the tests after the services step show two fails:
+```
 Timestamp: 9/13/2016, 7:46:59 AM
 3 tests / 0 errors / 2 failures / 0 skipped / runtime: 0.065s
 Status	Spec	Suite / Results
 Passed in 0.003s	should run a passing test	Smoke test
 Failed	should instantiate component	AppComponent with TCB 
 Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
-Failed	should have expected <h1> text	AppComponent with TCB 
+Failed	should have expected h1 text	AppComponent with TCB 
 Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
-
+```
 So it seems the re-factoring done in the separate components step of the tour has broken the tests.
 Where was it that said you can not run the development tools and the two test types at the same time?
 It would be nice to have the tests running in the background.
@@ -663,6 +720,91 @@ zone.js:486 Error: Uncaught (in promise): Error: Error in app/app.template.html:
 Obviously no improvement from Angular 1 on the errors.
 But, yes, we need to use the promise now being returned by the service.
 Implemnt the .then function to use the promise, and the app is back up and running.
+
+## <a name="The-ngOnInit-Lifecycle-Hook">The ngOnInit Lifecycle Hook</a>
+In the Tour of Heroes Services chapter, there is a discussion regarding a constructor vs. ngInit.
+This comes directly from the tutorial:
+```
+AppComponent should fetch and display heroes without a fuss. 
+Where do we call the getHeroes method? In a constructor? We do not!
+
+Years of experience and bitter tears have taught us to keep complex logic out of the constructor, 
+especially anything that might call a server as a data access method is sure to do.
+
+The constructor is for simple initializations like wiring constructor parameters to properties. 
+It's not for heavy lifting. 
+We should be able to create a component in a test and not worry that it might do real work 
+— like calling a server! — before we tell it to do so.
+
+If not the constructor, something has to call getHeroes.
+Angular will call it if we implement the Angular ngOnInit Lifecycle Hook. 
+Angular offers a number of interfaces for tapping into critical moments in the component lifecycle: 
+at creation, after each change, and at its eventual destruction.
+```
+
+## Errata
+In the Hero service, there is a lot going on which is glossed over in the tutorial.  Keeping it simple do doubt.
+Here are some of the things I am talking about.
+```
+  getHeroes(): Promise<Hero[]> {
+    return this.http.get(this.heroesUrl)
+               .toPromise()
+               .then(response => response.json().data as Hero[])
+               .catch(this.handleError);
+  }
+```
+That's a pretty nifty bit of code there.  
+Mapping an Ajax json file to a TypeScript object.
+But say I wanted to add some logging in there:
+```
+.then(response => {
+    console.log('response',response);
+    response.json().data as Hero[];
+})
+```
+XCode doesn't like that.  I has the whole and surrounding block in red squigglies, and a mouseover hint says this:
+```
+[ts] Type 'Promise<void>' is not assignable to type 'Promise<Hero[]>'.
+  Type 'void' is not assignable to type 'Hero[]'.
+(parameter) response: Response
+```
+I think it a combination of the fat arrow and, what, destructuring?  I'm not even clear on the 'as' format used there.
+I remeber learning this about the fat arrow and restructuring, and this was a note I took at the time:
+```
+.then({data} => data.item; do not use the fat arrow function with desctructuring (DI function)
+```
+But that's not a destructuring syntax, I know I've seen it before but never used it myself.
+It's not easy searching for a simple word like 'as' and getting useful responses.
+Searching with the phrase 'response.json().data as ' yeilded [this answer](http://stackoverflow.com/questions/38708703/whats-the-best-way-to-cast-json-to-generic-object-in-angular-2-typescript) on stack overflow.
+The question asked is 'Whats the best way to cast JSON to generic Object[] in angular 2 typescript?'
+The answer, by @r3m0t sates: The correct way is as any[]:
+```
+return this.http.get(URL)
+    .toPromise()
+    .then(response => response.json().data as any[]) 
+    .catch(this.handleError);
+```
+This will let you access everything that was in the JSON response 
+(as well as everything that wasn't in the JSON response. You'll get an error at runtime).
+It would be better to cast the result to a specific type, see [How do I cast a JSON object to a typescript class](http://stackoverflow.com/questions/22875636/how-do-i-cast-a-json-object-to-a-typescript-class)
+
+So it's a TypeScript thing.  And the link above looks like a good read.
+There are two camps on this:
+1. a number of techniques for doing it that generally involve copying data.
+2. cast to an interface (as it's purely a compile time structure), this would require that you use a TypeScript class which uses the data instance and performs operations with that data.
+
+
+```
+delete(hero: Hero): void {
+  this.heroService
+      .delete(hero.id)
+      .then(() => {
+        this.heroes = this.heroes.filter(h => h !== hero);
+        if (this.selectedHero === hero) { this.selectedHero = null; }
+      });
+}
+``` 
+
 
 
 ## <a name="tour-of-heroes-multiple-components">Tour of Heroes: Multiple Components</a>

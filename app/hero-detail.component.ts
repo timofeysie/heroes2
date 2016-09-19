@@ -23,7 +23,8 @@ export class HeroDetailComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.forEach((params: Params) => {
-            let id = +params['id']; //convert the route parameter value to a number
+            //let id = +params['id']; //convert the route parameter value to a number
+            let id = +this.route.snapshot.params['id'];
             this.heroService.getHero(id)
                 .then(hero => 
                     this.hero = hero);
@@ -46,4 +47,17 @@ export class HeroDetailComponent implements OnInit {
             });
     }
 
+    gotoHeroes() {
+        let heroId = this.hero ? this.hero.id : null;
+        // Pass along the hero id if available
+        // so that the HeroList component can select that hero.
+        this.router.navigate(['/heroes', { id: heroId, foo: 'foo' }]);
+    }
+
+    save(): void {
+        this.heroService.update(this.hero)
+            .then(this.goBack);
+    }
+
 }
+

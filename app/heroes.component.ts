@@ -18,7 +18,7 @@ export class HeroesComponent implements OnInit {
 
     ngOnInit(): void {
         this.getHeroes();
-        this.heroService.getHero(11)
+        this.heroService.getHero(1)
                 .then(hero => 
                     this.selectedHero = hero);
     }
@@ -40,8 +40,30 @@ export class HeroesComponent implements OnInit {
                 this.heroes = heroes);
     }
 
+    /** Currently this navigation method does not work.  
+     * it jumps back to the provious route. */
     gotoDetail(): void {
         this.router.navigate(['/detail', this.selectedHero.id]);
     }
+
+    add(name: string): void {
+        name = name.trim();
+        if (!name) { return; }
+        this.heroService.create(name)
+            .then(hero => {
+            this.heroes.push(hero);
+            this.selectedHero = null;
+            });
+    }
+
+    delete(hero: Hero): void {
+        this.heroService
+            .delete(hero.id)
+            .then(() => {
+                this.heroes = this.heroes.filter(h => h !== hero);
+                if (this.selectedHero === hero) { this.selectedHero = null; }
+            });
+    }
+
 
 }
