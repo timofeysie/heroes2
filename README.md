@@ -793,7 +793,75 @@ There are two camps on this:
 1. a number of techniques for doing it that generally involve copying data.
 2. cast to an interface (as it's purely a compile time structure), this would require that you use a TypeScript class which uses the data instance and performs operations with that data.
 
+Anyhow, it does not actually include a sample with the obj as somthing[] syntax.
+There is the accepted answer:
+```
+var d = new MyRichObject();
+d.copyInto(jsonResult);
+```
+or this:
+```
+MapUtils.deserialize(Person, example);
+```
+or this:
+```
+var json = Utilities.JSONLoader.loadFromFile("../docs/location_map.json");
+var locations: Array<ILocationMap> = JSON.parse(json).location;
+```
+from the second link.
 
+There is [another question](http://stackoverflow.com/questions/39326976/get-data-from-json-with-angular2-promise) which deals with the exact same bit of code from the tutorial above.
+There is debate about where to put the console.log in the notes.
+However, there is no answer to the question.  Tha asker answers the question in the comments.
+The method is wrapped in a return statement, so the result of that line is what will be returned.
+
+Anyhow, the main question here, besides how to structore the statement with a console log, [is discussed here](http://acdcjunior.github.io/typescript-cast-object-to-other-type-or-instanceof.html).
+It's a casting feature:
+```
+Use <> or the as keyword for casting:
+var myObject: TypeA;
+var otherObject: any;
+// values are assigned to them, and...
+myObject = <TypeA> otherObject;     // using <>
+myObject = otherObject as TypeA;    // using as keyword
+```
+For those who don't know, the <> is known as the 'Elvis' operatro, probably because Elvis like jewels.
+
+The 'as' syntax is detailed here:
+[TypeScript 1.6: JSX support](https://www.typescriptlang.org/docs/release-notes/typescript-1.6.html)
+the new as operator
+```
+var x = <any> foo;
+// is equivalent to:
+var x = foo as any;
+```
+There is also [this question]() which deals with the same operator:
+Is there any difference between what the TypeScript spec calls a type assertion:
+```
+var circle = <Circle> createShape("circle");
+```
+And the newer as operator:
+```
+var circle = createShape("circle") as Circle;
+```
+Both of which are typically used for compile-time casting?
+
+The Answer: The difference is that as Circle works in TSX files, but <Circle> conflicts with JSX syntax. 
+as was introduced for this reason.  For example, the following code in a .tsx file:
+```
+var circle = <Circle> createShape("circle");
+```
+Will result in the following error:
+```
+error TS17002: Expected corresponding JSX closing tag for 'Circle'.
+```
+However, as Circle will work just fine.
+Use as Circle from now on. It's the recommended syntax.
+
+I can see why they glossed over that syntax.
+
+
+The other piece of code I had a question about was this:
 ```
 delete(hero: Hero): void {
   this.heroService
@@ -804,6 +872,9 @@ delete(hero: Hero): void {
       });
 }
 ``` 
+What is the filter doing here?  It's a search and match function, but using the filter method with a fat arrow.
+That's an interesting why to perform a loop.
+
 
 
 

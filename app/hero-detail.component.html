@@ -10,8 +10,8 @@
 </button>
 <button (click)="save()">Save</button>
 <div *ngIf="hero">
-    <img src="/app/images/pages/page-{{hero.id}}.png"
-            style="width: 50%">
+    <img class="detail-image" 
+        src="/app/images/pages/page-{{hero.id}}.png">
     <h2>{{hero.name}}</h2>
     <!--<div><label>id: </label>{{hero.id}}</div>-->
     <!--<div>

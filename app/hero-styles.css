@@ -63,3 +63,8 @@ button.delete {
   background-color: gray !important;
   color:white;
 }
+/* Added by us */
+.detail-image {
+    height: 200px;
+    width: auto;
+}

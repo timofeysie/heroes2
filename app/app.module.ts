@@ -2,6 +2,7 @@ import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 import { HttpModule }    from '@angular/http';
+import './rxjs-extensions'; // all of the extensions needed are done there
 
 // Imports for loading & configuring the in-memory web api
 import { InMemoryWebApiModule } from 'angular2-in-memory-web-api';
@@ -13,6 +14,7 @@ import { HeroesComponent }     from './heroes.component';
 import { HeroDetailComponent } from './hero-detail.component';
 import { DashboardComponent }  from './dashboard.component';
 import { routing }             from './app.routing';
+import { HeroSearchComponent } from './hero-search.component';
 
 @NgModule({
   imports: [
@@ -26,7 +28,8 @@ import { routing }             from './app.routing';
     AppComponent,
     HeroDetailComponent,
     HeroesComponent,
-    DashboardComponent
+    DashboardComponent,
+    HeroSearchComponent
   ],
   providers: [HeroService],
   bootstrap: [ AppComponent ]
