@@ -37,13 +37,12 @@ export class HeroDetailComponent implements OnInit {
         console.log('goBack');
     }
 
-    goForward(): void {
-        let newId = this.hero.id++;
+    goForward(oldId: number): void {
+        let newId = oldId+1;
         this.heroService.getHero(newId)
             .then(hero => {
                 this.hero = hero;
-                this.router.navigate(['/detail', newId]);
-                console.log('goForward');
+                history.pushState({}, this.hero.name, '/detail/'+newId);
             });
     }
 

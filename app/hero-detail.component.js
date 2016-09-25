@@ -35,14 +35,13 @@ var HeroDetailComponent = (function () {
         window.history.back();
         console.log('goBack');
     };
-    HeroDetailComponent.prototype.goForward = function () {
+    HeroDetailComponent.prototype.goForward = function (oldId) {
         var _this = this;
-        var newId = this.hero.id++;
+        var newId = oldId + 1;
         this.heroService.getHero(newId)
             .then(function (hero) {
             _this.hero = hero;
-            _this.router.navigate(['/detail', newId]);
-            console.log('goForward');
+            history.pushState({}, _this.hero.name, '/detail/' + newId);
         });
     };
     HeroDetailComponent.prototype.gotoHeroes = function () {

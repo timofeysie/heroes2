@@ -2,54 +2,46 @@
 
 The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
-For a discussion regarding the Unhandled Promise rejection, see the end of the 
-[Tests broken](#tests-broken-after-separate-components-step) section below.
-
 The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 
-Currently implementing http for [step 6](https://angular.io/docs/ts/latest/tutorial/toh-pt6.html) of the tour.
+Currently getting ready to create feature folders for the routing section.
 
-Also struggling with the [detail view pagination](#detail-view-pagination) (not part of the tour).
-The next button changes the view momentarily, but then jumps back to the previous view.
+For a discussion regarding the unit tests and an Unhandled Promise rejection, see the end of the 
+[Tests broken](#tests-broken-after-separate-components-step) section below.
 
-There is actually a description of what is wanted in the [advanced documentation for the router](https://angular.io/docs/ts/latest/guide/router.html) 
-title 'OBSERVABLE PARAMS AND COMPONENT RE-USE'.
-This talks about a sample, but has no code to show.
-The next section is title 'SNAPSHOT: THE NO-OBSERVABLE ALTERNATIVE' which uses the route.snapshot to get params:
+
+## <a name="advanced-routing-and-navigation>Advanced: Routing & Navigation</a>
+Following [the router documentation tutorial](https://angular.io/docs/ts/latest/guide/router.html).
+
+They say `We recommend giving each feature area its own route configuration file`.
+This means separate folders and using `forRoot` method to register the routes 
+and application level service providers whereas in a feature module the static `forChild` method is used.
+Use RouterModule.forRoot to provide routes for the AppModule. 
+Use RouterModule.forChild method to register additional routes.
+
+It does this with the heroes routes:
 ```
-let id = +this.route.snapshot.params['id'];
-```
-
-Just this alone does not fix the jump back to previous page problem.
-There is then a discussion regarding optional parameters.  The id is a required parameter.
-Optional parameters are defined in an object after defining required route parameters.
-
-That page, or epic documentation for the router has it's own funky code sample application with stuff like this:
-```
-const appRoutes: Routes = [
-  ...loginRoutes,
-  ...adminRoutes
+const heroesRoutes: Routes = [
+  { path: 'heroes',  component: HeroListComponent },
+  { path: 'hero/:id', component: HeroDetailComponent }
 ];
-```
-Is that using the spread operator or what?
-The top of the page says: `Discover the basics of screen navigation with the Angular 2 Router.`
-And, it seems to be the longest web page I've ever seen without infinite scroll.
-So if that's the basics, but it's in the advanced section, then there's more to it.
-All we want is pagination here, but looks like we're in for a week of reating...
 
-Or we could continue to jump around.  For example, when looking at the transition between the tour tutorial and the 'advanced' docuemtnation, there is none.
-There is however a new app, slightly different from the router sample application.
-It has a contacts list that has what we want:
-```html
-<button type="button" class="btn" (click)="next()" [disabled]="!contactForm.form.valid">Next Contact</button>
-```Javascript
-  next() {
-    let ix = 1 + this.contacts.indexOf(this.contact);
-    if (ix >= this.contacts.length) { ix = 0; }
-    this.contact = this.contacts[ix];
-  }
-``` 
-That's it?  No router involved?  Is the model using two way binding to update?
+export const heroesRouting: ModuleWithProviders = RouterModule.forChild(heroesRoutes);
+```
+Question: Why is the const keyword reuqired twice?
+
+
+
+The routing chapter may be long, but I understand why.
+Other people can write tl;dr; pieces, but this document aims to provide a solid addition to the documents as a diamond in the very smooth.
+Angular is opinionated about the way it recommends solving all the various problems presented to the SPA.
+I understand how people would rather focus on jus Javascript, but having an opinionated way to do things allows developers with no contact over time to understand quickly what each is doing with lines of code.
+And most product owners would like to iterate their products quickly, so in my view, a short onboarding time is essential for future developers.
+That's just my opinion of course as a developer with about three years experiAnguylar.
+Actually, if it wasn't for Angular, I may not have even become a front end developer.
+I might have stayed an Android/full stack Java devloper.
+I like the Angular solution to solving the problems of the web, and there are a lot of perks to more people thinking the same way.
+
 
 
 ## Random
@@ -72,6 +64,7 @@ import 'rxjs/add/operator/handleError';
 
 1. [Development](#development)
 2. [Current Work](#current-work)
+2. [Advanced: Routing & Navigation](#advanced-routing-and-navigation">)
 2. [Tour of Heroes: HTTP](#tour-of-heroes-http)
 2. [Tour of Heroes: Routing](#tour-of-heroes-routing)
 2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official)
@@ -118,6 +111,7 @@ Added NodeJS server to use for deployment on Heroku.  The app is now live!
 
 ## <a name="tour-of-heroes-http">Tour of Heroes: HTTP</a>
 
+This section was pretty straight forward.  
 
 ## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</a>
 
@@ -227,9 +221,11 @@ The routerLink="/heroes" is cool however.
 
 The component router seems pretty straight forward.  Now it's on toe http.
 
+Curratnly at: Setting the route parameters in the list view
+
 
 ## <a name="upgrade-to-angular-2-official">Upgrade to Angular 2 Official</a>
-Yesterday avo the officual announcemnt came out amidst a shower of red balloons.
+Yesterday avo the officual announcemnt came out amidst a shower of red balloons that the Angular2 release is now official.
 I checked the [API References](https://angular.io/docs/ts/latest/api/core/testing/index/TestBed-class.html) says this about that:
 `TestBed Class Stability: Experimental` has now been changed to just the work `experimental`.
 
@@ -874,6 +870,7 @@ delete(hero: Hero): void {
 ``` 
 What is the filter doing here?  It's a search and match function, but using the filter method with a fat arrow.
 That's an interesting why to perform a loop.
+That's a functional programming style from the rxjs observables library.
 
 
 
@@ -935,6 +932,7 @@ this.router.navigate(['/detail/'+newId]);
 this.router.navigateByUrl('/detail/'+newId);
 this.router.navigate(['/detail', { id: newId }]);
 ```
+
 Also note that the url does not change unless you click a few times quickly.
 The router docs say:
 ```
@@ -954,6 +952,24 @@ HeroesComponent.onSelect(this.hero);
 ```
 But, then that would have to be a static function.  Not sure, in the JS world, since using the 'new' keyword is frowned upon and Angular has it's own way of creating these classes...
 What to do?
+
+The answer was not to call router.navigate at all, just change the hero object.
+Then, to update the history of the browser, we use the history pushState functiuon.
+Here is the API for that call:
+```
+(method) History.pushState(statedata: any, title?: string, url?: string): void
+```
+And an example use case:
+```
+var stateObj = { foo: "bar" };
+history.pushState(stateObj, "page 2", "bar.html");
+```
+Which in our case is just this:
+```
+history.pushState({}, this.hero.name, '/detail/'+newId);
+```
+And viola, we have pagination.  
+It's lacking validation at this point, but we'll deal with that once we know that this particulary implentation is going to stick around.
 
 
 ## <a name="tour-of-heroes-master-detail">Tour of Heroes: Master/Detail</a>
