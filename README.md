@@ -4,62 +4,6 @@ The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
 The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 
-Currently getting ready to create feature folders for the routing section.
-
-For a discussion regarding the unit tests and an Unhandled Promise rejection, see the end of the 
-[Tests broken](#tests-broken-after-separate-components-step) section below.
-
-
-## <a name="advanced-routing-and-navigation>Advanced: Routing & Navigation</a>
-Following [the router documentation tutorial](https://angular.io/docs/ts/latest/guide/router.html).
-
-They say `We recommend giving each feature area its own route configuration file`.
-This means separate folders and using `forRoot` method to register the routes 
-and application level service providers whereas in a feature module the static `forChild` method is used.
-Use RouterModule.forRoot to provide routes for the AppModule. 
-Use RouterModule.forChild method to register additional routes.
-
-It does this with the heroes routes:
-```
-const heroesRoutes: Routes = [
-  { path: 'heroes',  component: HeroListComponent },
-  { path: 'hero/:id', component: HeroDetailComponent }
-];
-
-export const heroesRouting: ModuleWithProviders = RouterModule.forChild(heroesRoutes);
-```
-Question: Why is the const keyword reuqired twice?
-
-
-
-The routing chapter may be long, but I understand why.
-Other people can write tl;dr; pieces, but this document aims to provide a solid addition to the documents as a diamond in the very smooth.
-Angular is opinionated about the way it recommends solving all the various problems presented to the SPA.
-I understand how people would rather focus on jus Javascript, but having an opinionated way to do things allows developers with no contact over time to understand quickly what each is doing with lines of code.
-And most product owners would like to iterate their products quickly, so in my view, a short onboarding time is essential for future developers.
-That's just my opinion of course as a developer with about three years experiAnguylar.
-Actually, if it wasn't for Angular, I may not have even become a front end developer.
-I might have stayed an Android/full stack Java devloper.
-I like the Angular solution to solving the problems of the web, and there are a lot of perks to more people thinking the same way.
-
-
-
-## Random
-```
-app/hero.service.ts(17,28): error TS2339: Property 'handleError' does not exist on type 'HeroService'.
-```
-Is this what we're supposed to do?
-```
-    private handleError(error: any) {
-        console.log(error);
-    }
-```
-Since this deosn't exist:
-```
-import 'rxjs/add/operator/handleError';
-```
-
-
 ## Table of Contents
 
 1. [Development](#development)
@@ -102,11 +46,98 @@ See the [npm scripts](#npm-scripts) for other commands.
 
 ## <a name="current-work">Current work</a>
 
-Completed [part two](https://angular.io/docs/ts/latest/tutorial/toh-pt2.html) of the Angular2 Tour of Heros, titled Master/Detail.
-Working on refactoring for the [routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html).
+Completed the Angular2 Tour of Heros.
+Working on refactoring for the [routing and navigation](https://angular.io/docs/ts/latest/guide/router.html).
+Getting ready to create feature folders for the routing section.
 Since the tests don't work for compiled templates yet, the templates are going back in-line for the time being.
 See [fixing the tests](#fixing-the-tests) for more details.
-Added NodeJS server to use for deployment on Heroku.  The app is now live!
+For a discussion regarding the unit tests and an Unhandled Promise rejection, see the end of the 
+[Tests broken](#tests-broken-after-separate-components-step) section below.
+Added NodeJS server to use for deployment on Heroku.
+
+
+## <a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>
+Following [the router documentation tutorial](https://angular.io/docs/ts/latest/guide/router.html).
+
+They say `We recommend giving each feature area its own route configuration file`.
+This means separate folders and using `forRoot` method to register the routes 
+and application level service providers whereas in a feature module the static `forChild` method is used.
+Use RouterModule.forRoot to provide routes for the AppModule. 
+Use RouterModule.forChild method to register additional routes.
+
+It does this with the heroes routes:
+```
+const heroesRoutes: Routes = [
+  { path: 'heroes',  component: HeroListComponent },
+  { path: 'hero/:id', component: HeroDetailComponent }
+];
+
+export const heroesRouting: ModuleWithProviders = RouterModule.forChild(heroesRoutes);
+```
+Question: Why is the const keyword reuqired twice?
+
+Next question.  This is in the sample:
+```
+export const appRoutingProviders: any[] = [];
+```
+This is to "simplify registration of router dependencies later in app.module.ts".
+Apparently later it will be filled in.  In the Tour of Heroes, this was not addressed.
+
+### Milestone #2: The Heroes Feature
+
+Now it's time to organize the app and routes into feature areas using modules.
+This is Milestone #2: The Heroes Feature in the epic Advanced Router & Navigation section.
+In the previous Heroes tutorial from the Tour of Heroes beta release 1, the app folder had the following structure:
+```
+app  
+|- assets  
+|  |- main.css  
+|  |- img  
+|- bootstrap.ts  
+|- components  
+|  |- about  
+|  |  |- about_spec.ts  
+|  |  |- about.html  
+|  |  |- about.ts  
+|  |- app  
+|  |  |- app_spec.ts  
+|  |  |- app.css  
+|  |  |- app.html  
+|  |  |- app.ts  
+|  |- heroes  
+|  |  |- crisis-center.component.ts  
+|  |  |- hero-detail.component.ts  
+|  |  |- hero-detail.template.html  
+|  |  |- hero-form.component.html  
+|  |  |- hero-form.component.ts  
+|  |  |- hero-master.component.ts  
+|  |  |- hero-master.template.html  
+|  |  |- hero-styles.css  
+|  |  |- Hero.ts  
+|  |- home  
+|- index.html  
+|- services  
+```
+
+It was still under construction when there were breaking changes in the next release after the team had promised no breaking changes now that they were in beta.
+These breaking changes continued so I decided to wait until the official release to go any further.
+Anyhow, not that breaking changes have died down for a while, it's time to get some of this structure into this app.
+
+
+## Random
+```
+app/hero.service.ts(17,28): error TS2339: Property 'handleError' does not exist on type 'HeroService'.
+```
+Is this what we're supposed to do?
+```
+    private handleError(error: any) {
+        console.log(error);
+    }
+```
+Since this deosn't exist:
+```
+import 'rxjs/add/operator/handleError';
+```
 
 
 ## <a name="tour-of-heroes-http">Tour of Heroes: HTTP</a>
@@ -318,9 +349,6 @@ Besides this change, here are some other mods in the quickstarter:
 ```
 After doing the npm i, then npm start, the app runs again.
 Then we're back to implementing routes!
-
-
-
 
 
 
