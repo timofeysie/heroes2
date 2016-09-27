@@ -9,7 +9,6 @@ The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.co
 1. [Development](#development)
 2. [Current Work](#current-work)
 2. [Advanced: Routing & Navigation](#advanced-routing-and-navigation">)
-2. [Tour of Heroes: HTTP](#tour-of-heroes-http)
 2. [Tour of Heroes: Routing](#tour-of-heroes-routing)
 2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official)
 2. [Fixing the tests](fixing-the-tests)
@@ -47,12 +46,15 @@ See the [npm scripts](#npm-scripts) for other commands.
 ## <a name="current-work">Current work</a>
 
 Completed the Angular2 Tour of Heros.
+
 Working on refactoring for the [routing and navigation](https://angular.io/docs/ts/latest/guide/router.html).
 Getting ready to create feature folders for the routing section.
+
 Since the tests don't work for compiled templates yet, the templates are going back in-line for the time being.
 See [fixing the tests](#fixing-the-tests) for more details.
 For a discussion regarding the unit tests and an Unhandled Promise rejection, see the end of the 
 [Tests broken](#tests-broken-after-separate-components-step) section below.
+
 Added NodeJS server to use for deployment on Heroku.
 
 
@@ -62,7 +64,9 @@ Following [the router documentation tutorial](https://angular.io/docs/ts/latest/
 They say `We recommend giving each feature area its own route configuration file`.
 This means separate folders and using `forRoot` method to register the routes 
 and application level service providers whereas in a feature module the static `forChild` method is used.
+
 Use RouterModule.forRoot to provide routes for the AppModule. 
+
 Use RouterModule.forChild method to register additional routes.
 
 It does this with the heroes routes:
@@ -87,6 +91,7 @@ Apparently later it will be filled in.  In the Tour of Heroes, this was not addr
 
 Now it's time to organize the app and routes into feature areas using modules.
 This is Milestone #2: The Heroes Feature in the epic Advanced Router & Navigation section.
+
 In the previous Heroes tutorial from the Tour of Heroes beta release 1, the app folder had the following structure:
 ```
 app  
@@ -123,26 +128,6 @@ It was still under construction when there were breaking changes in the next rel
 These breaking changes continued so I decided to wait until the official release to go any further.
 Anyhow, not that breaking changes have died down for a while, it's time to get some of this structure into this app.
 
-
-## Random
-```
-app/hero.service.ts(17,28): error TS2339: Property 'handleError' does not exist on type 'HeroService'.
-```
-Is this what we're supposed to do?
-```
-    private handleError(error: any) {
-        console.log(error);
-    }
-```
-Since this deosn't exist:
-```
-import 'rxjs/add/operator/handleError';
-```
-
-
-## <a name="tour-of-heroes-http">Tour of Heroes: HTTP</a>
-
-This section was pretty straight forward.  
 
 ## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</a>
 
