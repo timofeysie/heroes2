@@ -1,28 +1,33 @@
 /* tslint:disable:no-unused-variable */
-import { HeroesComponent } from './heroes.component';
+import { AppComponent } from './app.component';
 import { TestBed } from '@angular/core/testing';
+import { async }      from '@angular/core/testing';
 import { By }             from '@angular/platform-browser';
-////////  SPECS  /////////////
-/// Delete this
+
 describe('Smoke test', () => {
   it('should run a passing test', () => {
     expect(true).toEqual(true, 'should pass');
   });
 });
 
-describe('HeroesComponent with TCB', function () {
-  beforeEach(() => {
-    TestBed.configureTestingModule({declarations: [HeroesComponent]});
-  });
-  //TestBed.compileComponents().catch(error => console.error('compile components err',error));
+describe('AppComponent with TCB', function () {
+  beforeEach( async(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+    })
+    //.compileComponents(); // compile template and css
+    beforeEach(async(() => {
+      TestBed.compileComponents();
+    }));
+  }));
 
   it('should instantiate component', () => {
-    let fixture = TestBed.createComponent(HeroesComponent);
-    expect(fixture.componentInstance instanceof HeroesComponent).toBe(true, 'should create HeroesComponent');
+    let fixture = TestBed.createComponent(AppComponent);
+    expect(fixture.componentInstance instanceof AppComponent).toBe(true, 'should create AppComponent');
   });
 
   it('should have expected <h1> text', () => {
-    let fixture = TestBed.createComponent(HeroesComponent);
+    let fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
     let h1 = fixture.debugElement.query(el => el.name === 'h1').nativeElement;  // it works

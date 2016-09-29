@@ -128,6 +128,60 @@ It was still under construction when there were breaking changes in the next rel
 These breaking changes continued so I decided to wait until the official release to go any further.
 Anyhow, not that breaking changes have died down for a while, it's time to get some of this structure into this app.
 
+It does seem strange to have an app/app folder structure.  
+The root app folder in other frameworks historically has been things like 'public', 'www', 'root', 'src', etc.
+This would have been a better choice if you want to then have an app module.  I think 'src' is the most descriptive.
+So it could be this: 'src/app'
+
+But then we would have things like this: 'src/app/app.module.ts'
+That is also ambiguous.
+It should just be like this: 'src/app/module.ts'.
+This makes the most sense to me.  I don't like repeating the directory name for each file inside.
+Redundancy might be good for high availability, but it's not good for directory naming conventions in my view.
+
+
+The current app does not have the crisis center feature.  
+That must have been created in another section.
+There isn't a clear path after the tour, so we will have to wing it here a little bit, functionality-wise.
+
+We have quite a mess going on in the app directory after finishing the tour.
+Files consist of groups like this:
+```
+app.component.css
+app.component.html
+app.component.js
+app.component.ts
+app.component.js.map
+app.component.spec.js
+app.component.spec.ts
+app.component.spec.js.map
+```
+
+This pattern is continued for all these features.
+```
+app.component
+app.module
+dashboard.component
+hero (.ts & .js only)
+hero-detail
+hero-search
+hero.service
+heroes.component
+in-memory-data.service
+main
+rxjs-extension
+```
+
+Even without the 8 files for each and every component, this is getting out of hand quickly.
+The beta 1 quick start compiled the .js files to a dist directory, functionality which they have since removed.
+I heard there is a way for VSCode to ignore .js files for TypeSript projects.
+I don't mind them right now.  It's still interesting to take a look at what the transpiler is creating for us.
+
+It's still a little strange to have app.module.ts, app.component.ts, and main.ts.
+Why not just bootstrap the application's root module in the root module?  
+There must be a reason.  Something to look forward to learning about. 
+
+
 
 ## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</a>
 
@@ -545,7 +599,7 @@ It is necessary to call this function as fetching urls is asynchronous.
 It says you have to do this after the configuration statement:
 TestBed.compileComponents();
 
-One example [here]() uses this line:
+One example uses this line:
 ```
 TestBed.compileComponents().catch(error => console.error(error));
 ```
@@ -695,6 +749,237 @@ That was when running the app.  It was fixed by finishing the code.  Not sure if
 Giving up on tests for a while to get back to learning Angular2.
 At least the e2e tests are still passing...
 
+### Compare with Quickstart
+
+In an attempt to fix this issue, I've started a new quickstart project to run the tests and compare.
+System info Chrome 53.0.2785 (Mac OS X 10.10.5) removed from the output.
+
+The Heroes2 npm test output:
+```
+INFO: Connected on socket /#7aWgYHExaelgcNwGAAAA with id 99466865
+WARN [web-server]: 404: /systemjs.config.js
+ERROR: 'Unhandled Promise rejection:', 'Error: XHR error (404 Not Found) loading http://localhost:9876/systemjs.config.js
+Error loading http://localhost:9876/systemjs.config.js', '; Zone:', '<root>', '; Task:', 'Promise.then', '; Value:', Error{originalErr: Error{}}, null
+```
+
+A fresh quickstart npm test output:
+```
+INFO Connected on socket /#a78MlUEDcK86XhiRAAAA with id 75238691
+WARN [web-server]: 404: /base/systemjs.config.extras.js
+LOG: 'Warning: System.import could not load the optional "systemjs.config.extras.js". Did you omit it by accident? Continuing without it.'
+LOG: 'Warning: System.import could not load the optional "systemjs.config.extras.js". Did you omit it by accident? Continuing without it.'
+LOG: Error{originalErr: Error{}}
+LOG: Error{originalErr: Error{}}
+Executed 3 of 3 SUCCESS (0.819 secs / 0.491 secs)
+```
+
+In the karma-test-shim.js file of the new quickstart:
+```
+  baseURL: '/base',
+```
+
+However, just making this change for our Heroes2 project changes nothing.
+
+The only other diff in that file is:
+```
+var builtPath = '/base/app/'; // we use only /app/
+```
+
+What's next?  Make the quickstart use external templates and see if the tests still pass.
+SO, just changing the app.component.ts to use a template causes this output:
+```
+INFO Connected on socket /#PDR-eoB9CARiud_SAAAA with id 85453384
+WARN [web-server]: 404: /base/systemjs.config.extras.js
+LOG: 'Warning: System.import could not load the optional "systemjs.config.extras.js". Did you omit it by accident? Continuing without it.'
+LOG: 'Warning: System.import could not load the optional "systemjs.config.extras.js". Did you omit it by accident? Continuing without it.'
+LOG: Error{originalErr: Error{}}
+LOG: Error{originalErr: Error{}}
+AppComponent with TCB should instantiate component FAILED
+AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
+Executed 2 of 3 (1 FAILED) (0 secs / 0.06 secs)
+AppComponent with TCB should instantiate component FAILED
+Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents    Chrome 53.0.2785 (Mac OS X 10.10.5) AppComponent with TCB should have expected <h1> text FAILED
+Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
+Executed 3 of 3 (2 FAILED) (0 secs / 0.113 secs)
+AppComponent with TCB should have expected <h1> text FAILED
+Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents    Chrome 53.0.2785 (Mac OS X 10.10.5): Executed 3 of 3 (2 FAILED) (0.356 secs / 0.113 secs)
+```
+
+Despite the warnings, the tests are running.  
+Lets try to compile the templates in the spec and see if we can make the failing test pass.
+It goes something like this:
+1. $ npm install karma-ng-html2js-preprocessor --save-dev
+2. in the karma.conf.js file:
+```
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-htmlfile-reporter'),
+      require('karma-ng-html2js-preprocessor')
+    ],
+```
+3. TestBed.compileComponents().catch(error => console.error('compile components err',error));
+
+After those steps, there is this error:
+```
+Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
+```
+Put the line outside the before each function
+[1] Chrome 53.0.2785 (Mac OS X 10.10.5) LOG: Error{originalErr: Error{}}
+[1]
+[1] Chrome 53.0.2785 (Mac OS X 10.10.5) LOG: Error{originalErr: Error{}}
+    Chrome 53.0.2785 (Mac OS X 10.10.5) AppComponent with TCB encountered a declaration exception FAILED
+[1]     Error: Cannot call Promise.then from within a sync test.
+
+The testing chapter has this example:
+```
+// asynch beforeEach
+beforeEach( async(() => {
+  TestBed.configureTestingModule({
+    declarations: [ DashboardHeroComponent ],
+  })
+  .compileComponents(); // compile template and css
+}));
+```
+
+So it is chaining the compile call.
+And notice it’s an async function now.
+There are some important notes regarding compileComponents throughout the tutorial.
+1. WebPack developers need not call compileComponents because it inlines templates and css as part of the automated build process that precedes running the test.
+2. Do not configure the TestBed after calling compileComponents. Make compileComponents the last step before calling TestBed.createComponent to instantiate the component-under-test.
+
+No comment.  Anyhow, after using the async test bed setup, there is this error:
+AppComponent with TCB encountered a declaration exception FAILED
+[1] ReferenceError: async is not defined
+
+Searching for that error message on Google was a huge waste of time.
+In frustration I tried this:
+import { async }      from '@angular/core/testing';
+And then all the tests passed!
+Lets see if we can use what we learned from the clean quickstart tests to apply it here to Heroes2.
+Nope.  That error is still a show stopper, so we never even get to the tests.
+
+Looking at the karma.conf and test-shim files again.
+The quick start has these in the config.set section:
+```
+     require('karma-jasmine-html-reporter'), // click "Debug" in browser to see it
+      require('karma-htmlfile-reporter'), // crashing w/ strange socket error
+```
+That's an odd comment for a final release.
+In the our Heroes2 project, we have this:
+```
+      require('karma-chrome-launcher'),
+      require('karma-htmlfile-reporter'),
+```
+
+Trying that out of the box causes this showstopper:
+```
+[1] 29 09 2016 09:06:53.442:ERROR [config]: Error in config file!
+[1]  { [Error: Cannot find module 'karma-jasmine-html-reporter'] code: 'MODULE_NOT_FOUND' }
+```
+
+Another difference is in the ```files: [``` section.
+We use this:
+```
+      {pattern: 'node_modules/systemjs/dist/system.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false},
+```
+The quickstart uses this:
+```
+      {pattern: 'systemjs.config.js', included: false, watched: false},
+      {pattern: 'systemjs.config.extras.js', included: false, watched: false},
+```
+So changing the patern to load the sysmtejs.config.js from the root directory gives us a new output from the test run:
+```
+INFO [Chrome 53.0.2785 (Mac OS X 10.10.5)]: Connected on socket /#zCaOvt_4u1slTj0UAAAA with id 21569874
+[web-server]: 404: /base/systemjs.config.extras.js
+LOG: 'WARNING: System.import could not load "systemjs.config.extras.js"; continuing without it.'
+LOG: Error{originalErr: Error{}}
+Executed 0 of 0 ERROR (0.027 secs / 0 secs)
+```
+
+Do we really need systemjs.config.extras.js?  It doesn't seem to be included even in the quickstarter.
+Also, why is -karma-test-shim.js not included in a {pattern: ''} object?
+Trying this:
+```
+      {pattern: 'systemjs.config.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false},
+      {pattern: 'karma-test-shim.js', included: false, watched: false},
+```
+Causes only this output:
+```
+Chrome 53.0.2785 (Mac OS X 10.10.5): Executed 0 of 0 ERROR (0.007 secs / 0 secs)
+```
+Not much to go on there.
+
+So looked at all the config files again.
+karma-test-shim.js
+```
+var builtPath = '/base/app/';
+...
+baseURL: '/base',
+```
+IN karma.conf.js:
+```
+      {pattern: 'systemjs.config.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system.js', included: false, watched: false},
+      {pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false},
+      'karma-test-shim.js',
+```
+
+The output now is more promising:
+```
+WARN [web-server]: 404: /base/systemjs.config.extras.js
+LOG: 'WARNING: System.import could not load "systemjs.config.extras.js"; continuing without it.'
+LOG: Error{originalErr: Error{}}
+Executed 0 of 2 SUCCESS (0 secs / 0 secs)
+    HeroesComponent with TCB encountered a declaration exception FAILED
+Failed: Uncaught (in promise): Failed to load app/heroes.component.html
+Error: Uncaught (in promise): Failed to load app/heroes.component.html
+Error: Cannot call Promise.then from within a sync test.
+Executed 2 of 2 (1 FAILED) (0.083 secs / 0.073 secs)
+```
+
+I thought there were three tests?
+There are three tests.  Not sure what was up with that.
+Anyhow, the single spec file for the project so far was based on the heroes.component.ts file.
+Since refactoring that file in the [Tour of Heroes: Routing](#tour-of-heroes-routing) section into an app.component.ts file, this test has not been updated.
+Changed the HeroesComponent to AppComponent in all occurances and now we have another strange error:
+```
+LOG: Error{originalErr: Error{}}
+Executed 0 of 3 SUCCESS (0 secs / 0 secs)
+Missing error handler on `socket`.
+TypeError: Cannot set property '33504108' of null
+     at createHtmlResults (/Users/tim/angular/ng2/heroes2/node_modules/karma-htmlfile-reporter/index.js:57:32)
+     ...
+```
+Doing a Google search for ```Missing error handler on socket``` reveals [this discussion](https://github.com/karma-runner/karma/issues/1969):
+```
+traceur-runtime.js, or rather, the lack of it. 
+For some bizarre reason, without the traceur-runtime.js in the mix PhantomJS blows up badly while trying to run Angular2 unit tests.
+...
+Make sure all the sources that are needed for your application (in my case Angular2) are in that array. 
+Just as you would add them to index.html```
+
+It seems like loading the sources for tests is handled by this:
+```
+      // transpiled application & spec code paths loaded via module imports
+      {pattern: appBase + '**/*.js', included: false, watched: true},
+      {pattern: testBase + '**/*.js', included: false, watched: true},
+```
+
+Currently, the errors are:
+```
+Executed 1 of 3 SUCCESS (0 secs / 0.004 secs)
+[web-server]: 404: /base/app/app.component.html
+AppComponent with TCB should instantiate component FAILED
+Failed: Uncaught (in promise): Failed to load /app/app.component.html
+Error: Uncaught (in promise): Failed to load /app/app.component.html
+    at resolvePromise (node_modules/zone.js/dist/zone.js:418:31)
+```
+
+
 
 
 ## <a name="tour-of-heroes-services">Tour of Heroes: Services</a>
@@ -729,6 +1014,7 @@ zone.js:486 Error: Uncaught (in promise): Error: Error in app/app.template.html:
 Obviously no improvement from Angular 1 on the errors.
 But, yes, we need to use the promise now being returned by the service.
 Implemnt the .then function to use the promise, and the app is back up and running.
+
 
 ## <a name="The-ngOnInit-Lifecycle-Hook">The ngOnInit Lifecycle Hook</a>
 In the Tour of Heroes Services chapter, there is a discussion regarding a constructor vs. ngInit.

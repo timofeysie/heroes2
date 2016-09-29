@@ -8,11 +8,12 @@
     <img src="/app/images/buttons/back-button.png"
         height="30px">
 </button>
-<button (click)="save()">Save</button>
+<!--<button (click)="save()">Save</button>-->
 <div *ngIf="hero">
     <img class="detail-image" 
         src="/app/images/pages/page-{{hero.id}}.png">
     <h2>{{hero.name}}</h2>
+    <h4>{{hero.text}}</h4>
     <!--<div><label>id: </label>{{hero.id}}</div>-->
     <!--<div>
         <label>name: </label>
