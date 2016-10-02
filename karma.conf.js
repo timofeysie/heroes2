@@ -14,6 +14,7 @@ module.exports = function(config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'), // click "Debug" in browser to see it
       require('karma-htmlfile-reporter'),
       require('karma-ng-html2js-preprocessor')
     ],
@@ -99,7 +100,7 @@ module.exports = function(config) {
       cacheIdFromPath: function(filepath) {
         // example strips 'public/' from anywhere in the path
         // module(app/templates/template.html) => app/public/templates/template.html
-        var cacheId = filepath.replace('public/', '');
+        var cacheId = filepath.replace('public/', ''); // in the docs it says filepath.strip, which is not a fn.
         return cacheId;
       },
 

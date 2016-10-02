@@ -1,3 +1,26 @@
+/*
+Ornate border 
+Based on the example by Mike Riethmuller @MadeByMike.
+Media queries in referenced SVG will be bound to the width of the image 
+they are used on. 
+Look at the app/images/svgs/adaptive-borders.svg styles.
+The ornate border resizes and even removes the corner flourishes 
+in response to the available width.
+*/
+.js-resizable {
+  position: relative;
+  width: 95%;
+  width: calc(100% - 30px);
+  padding-right: 10px;
+}
+.js-resizable-image {
+  width: 100%;
+  background: #FFF;
+}
+
+/* --------------- *\
+   Original Styles
+\* --------------- */
 [class*='col-'] {
   float: left;
 }

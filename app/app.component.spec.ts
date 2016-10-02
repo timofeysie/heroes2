@@ -4,8 +4,6 @@ import { TestBed } from '@angular/core/testing';
 import { async }      from '@angular/core/testing';
 import { By }             from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RouterLinkActive } from '@angular/router';
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
 describe('Smoke test', () => {
   it('should run a passing test', () => {

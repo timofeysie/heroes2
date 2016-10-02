@@ -656,7 +656,7 @@ The error, before the usual error, was this:
 [1] 	Error: Cannot set base providers because it has already been called
 [1] 	Error: This test module uses the component AppComponent which is using a "templateUrl", but they were never compiled. Please call "TestBed.compileComponents" before your test.
 ```
-Remeber the warnings about the order the test bed was used in the testing chapter?
+Remember the warnings about the order the test bed was used in the testing chapter?
 But this issue is to "Provide a mock service using TestBed", so is not the appropriate place to complain about this problem.
 
 Removing the extras that the script is always complaining about I see this:
@@ -670,3 +670,15 @@ function initTestBed(){
 Maybe that's the init method talked about above?
 Not the same thing, but maybe that's where we could try and import the router testing functionality.
 Or we could just move that router out into another component for testing purposes?
+
+### Ken Dale's Page
+
+[This page](http://kendaleiv.com/angular-2-component-testing-template-using-testbed/) has a good description of how to override a template during testing.
+Not sure why you would want to, but it shows a good way to set up tests.
+There is a good discussion in the comments about the problem we are having.
+It is either 
+A. cannot compile the template, or
+B. 'router-outlet' is not a known element
+Still, the advice there does not solve our problem.
+
+

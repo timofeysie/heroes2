@@ -13,7 +13,7 @@ nav a {
   text-decoration: none;
   margin-top: 10px;
   display: inline-block;
-  background-color: #eee;
+  background-color: white;
   border-radius: 4px;
 }
 nav a:visited, a:link {
