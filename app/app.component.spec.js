@@ -2,7 +2,6 @@
 /* tslint:disable:no-unused-variable */
 var app_component_1 = require('./app.component');
 var testing_1 = require('@angular/core/testing');
-var testing_2 = require('@angular/core/testing');
 var platform_browser_1 = require('@angular/platform-browser');
 describe('Smoke test', function () {
     it('should run a passing test', function () {
@@ -10,16 +9,12 @@ describe('Smoke test', function () {
     });
 });
 describe('AppComponent with TCB', function () {
-    beforeEach(testing_2.async(function () {
+    beforeEach(function () {
         testing_1.TestBed.configureTestingModule({
             declarations: [app_component_1.AppComponent],
-        });
-        //.compileComponents(); // compile template and css
-        beforeEach(testing_2.async(function () {
-            testing_1.TestBed.compileComponents();
-        }));
-    }));
-    it('should instantiate component', function () {
+        }).compileComponents(); // compile template and css
+    });
+    it('should instantiate component', function (myarg) {
         var fixture = testing_1.TestBed.createComponent(app_component_1.AppComponent);
         expect(fixture.componentInstance instanceof app_component_1.AppComponent).toBe(true, 'should create AppComponent');
     });

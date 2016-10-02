@@ -50,6 +50,7 @@
     "karma-cli": "^0.1.2",
     "karma-htmlfile-reporter": "^0.2.2",
     "karma-jasmine": "^0.3.8",
+    "karma-jasmine-html-reporter": "^0.2.2",
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "lite-server": "^2.2.0",
     "lodash": "^4.11.1",

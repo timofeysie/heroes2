@@ -1,5 +1,16 @@
+.detail-image {
+    width: 100%;
+    max-width: 75%;
+    max-height: 75%;
+    height: inherit !important;
+    height: auto;
+    margin-top: -100px;
+}
+.page-text {
+  margin: 5vw;
+}
 [class*='col-'] {
-  float: left;
+    float: left;
 }
 *, *:after, *:before {
     -webkit-box-sizing: border-box;

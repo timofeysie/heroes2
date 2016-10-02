@@ -3,7 +3,7 @@
 Error.stackTraceLimit = 0; // "No stacktrace"" is usually best for app testing.
 
 // Uncomment to get full stacktrace output. Sometimes helpful, usually not.
-Error.stackTraceLimit = Infinity; 
+// Error.stackTraceLimit = Infinity; //
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
@@ -47,25 +47,25 @@ System.config({
 });
 
 System.import('systemjs.config.js')
-  .then(importSystemJsExtras)
   .then(initTestBed)
   .then(initTesting);
 
 /** Optional SystemJS configuration extras. Keep going w/o it */
-function importSystemJsExtras(){
-  return System.import('systemjs.config.extras.js')
-  .catch(function(reason) {
-    console.log(
-      'WARNING: System.import could not load "systemjs.config.extras.js"; continuing without it.'
-    );
-    console.log(reason);
-  });
-}
+// function importSystemJsExtras(){
+//   return System.import('systemjs.config.extras.js')
+//   .catch(function(reason) {
+//     console.log(
+//       'Warning: System.import could not load the optional "systemjs.config.extras.js". Did you omit it by accident? Continuing without it.'
+//     );
+//     console.log(reason);
+//   });
+// }
 
 function initTestBed(){
   return Promise.all([
     System.import('@angular/core/testing'),
-    System.import('@angular/platform-browser-dynamic/testing')
+    System.import('@angular/platform-browser-dynamic/testing'),
+    System.import('@angular/router/testing')
   ])
 
   .then(function (providers) {
