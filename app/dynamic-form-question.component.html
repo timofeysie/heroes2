@@ -1,0 +1,25 @@
+<!-- 
+  This component can present any type of question model. 
+  The ngSwitch determines which type of question to display.
+  Relies on formGroup to connect the template HTML to the underlying control objects, 
+  populated from the question model with display and validation rules.
+  formControlName and formGroup are directives defined in ReactiveFormsModule. 
+-->
+<div [formGroup]="form">
+  <label [attr.for]="question.key">{{question.label}}</label>
+  <div [ngSwitch]="question.controlType">
+    <input 
+      *ngSwitchCase="'textbox'" 
+        [formControlName]="question.key"
+        [id]="question.key" 
+        [type]="question.type">
+    <select [id]="question.key" 
+      *ngSwitchCase="'dropdown'" 
+        [formControlName]="question.key">
+      <option *ngFor="let opt of question.options" 
+        [value]="opt.key">{{opt.value}}</option>
+    </select>
+  </div> 
+  <div class="errorMessage" 
+    *ngIf="!isValid">{{question.label}} is required</div>
+</div>

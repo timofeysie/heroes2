@@ -12,11 +12,15 @@ var core_1 = require('@angular/core');
 var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var http_1 = require('@angular/http');
+var forms_2 = require('@angular/forms');
 require('./rxjs-extensions'); // all of the extensions needed are done there
 // Imports for loading & configuring the in-memory web api
 var angular2_in_memory_web_api_1 = require('angular2-in-memory-web-api');
 var in_memory_data_service_1 = require('./in-memory-data.service');
 var app_component_1 = require('./app.component');
+// Imported for the model driven forms
+var dynamic_form_component_1 = require('./dynamic-form.component');
+var dynamic_form_question_component_1 = require('./dynamic-form-question.component');
 var hero_service_1 = require('./hero.service');
 var heroes_component_1 = require('./heroes.component');
 var hero_detail_component_1 = require('./hero-detail.component');
@@ -30,6 +34,7 @@ var AppModule = (function () {
         core_1.NgModule({
             imports: [
                 platform_browser_1.BrowserModule,
+                forms_2.ReactiveFormsModule,
                 forms_1.FormsModule,
                 http_1.HttpModule,
                 angular2_in_memory_web_api_1.InMemoryWebApiModule.forRoot(in_memory_data_service_1.InMemoryDataService),
@@ -40,7 +45,9 @@ var AppModule = (function () {
                 hero_detail_component_1.HeroDetailComponent,
                 heroes_component_1.HeroesComponent,
                 dashboard_component_1.DashboardComponent,
-                hero_search_component_1.HeroSearchComponent
+                hero_search_component_1.HeroSearchComponent,
+                dynamic_form_component_1.DynamicFormComponent,
+                dynamic_form_question_component_1.DynamicFormQuestionComponent
             ],
             providers: [hero_service_1.HeroService],
             bootstrap: [app_component_1.AppComponent]

@@ -9,9 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var question_service_1 = require('./question.service');
 var AppComponent = (function () {
-    function AppComponent() {
+    function AppComponent(service) {
         this.title = 'Myra the ferryboat';
+        this.questions = service.getQuestions();
     }
     AppComponent = __decorate([
         core_1.Component({
@@ -19,7 +21,7 @@ var AppComponent = (function () {
             templateUrl: 'app/app.component.html',
             styleUrls: ['app/app.component.css'],
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [question_service_1.QuestionService])
     ], AppComponent);
     return AppComponent;
 }());

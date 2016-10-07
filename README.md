@@ -4,10 +4,25 @@ The official Angular2 Tour of Heroes for rc-6 using TypeScript.
 
 The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 
+Trying to get the samples [model driven forms](#model-drive-forms) from the Angular 2 Cookbook.
+BrowserSync is causing errors like this:
+```
+The FetchEvent for "http://localhost:3000/app/main.js" resulted in a network error response: 
+    an object that was not a Response was passed to respondWith().
+http://localhost:3000/app/main.js Failed to load resource: net::ERR_FAILED
+localhost/:20 Error: Error: XHR error loading http://localhost:3000/app/main.js(…)
+The FetchEvent for "http://localhost:3000/browser-sync/socket.io/?EIO=3&transport=polling&t=LUOhlU4"
+...
+```
+All the code added for this feature seems to match the working plunker app from the page.
+
+Any help would be much appreciated.
+
 ## Table of Contents
 
 1. [Development](#development)
 2. [Current Work](#current-work)
+2. [Model driven forms](#model-drive-forms)
 2. [Advanced: Routing & Navigation](#advanced-routing-and-navigation">)
 2. [Tour of Heroes: Routing](#tour-of-heroes-routing)
 2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official)
@@ -49,6 +64,76 @@ Getting ready to create feature folders for the routing section.
 For a discussion regarding the unit tests and the compiling templates problem, se the separate document docs/BROKEN_TESTS.md.
 If a document is too long, the spelling checker in VSCode will not work.
 
+## <a name="model-drive-forms">Model driven forms</a>
+
+Giving the testing and router refactoring a break to try out the [model driven forms](https://angular.io/docs/ts/latest/cookbook/dynamic-form.html) 
+in the Angular 2 docs Cookbook section.
+What a great example of OOP in the front end!
+Dynamic data binding of metadata used to render the form without making any hardcoded assumptions about specific questions.
+In addition to control metadata, we are also adding validation dynamically.
+
+
+Out of the box though, the app is broken with these errors in the console:
+```
+http://localhost:3000/styles.css Failed to load resource: net::ERR_FAILED
+http://localhost:3000/node_modules/core-js/client/shim.min.js Failed to load resource: net::ERR_FAILED
+http://localhost:3000/node_modules/zone.js/dist/zone.js Failed to load resource: net::ERR_FAILED
+http://localhost:3000/node_modules/reflect-metadata/Reflect.js Failed to load resource: net::ERR_FAILED
+http://localhost:3000/node_modules/systemjs/dist/system.src.js Failed to load resource: net::ERR_FAILED
+http://localhost:3000/systemjs.config.js Failed to load resource: net::ERR_FAILED
+localhost/:20 Uncaught ReferenceError: System is not defined
+http://localhost:3000/browser-sync/browser-sync-client.2.15.0.js Failed to load resource: net::ERR_FAILED
+service-worker.js:1 A bad HTTP response code (404) was received when fetching the script.
+service-worker.js:1 GET http://localhost:3000/service-worker.js net::ERR_INVALID_RESPONSE
+```
+
+Since new modules were added, wasn't sure if running npm install is necessary.
+After doing npm i, the errors are different:
+```
+The FetchEvent for "http://localhost:3000/app/main.js" resulted in a network error response: 
+    an object that was not a Response was passed to respondWith().
+http://localhost:3000/app/main.js Failed to load resource: net::ERR_FAILED
+localhost/:20 Error: Error: XHR error loading http://localhost:3000/app/main.js(…)
+The FetchEvent for "http://localhost:3000/browser-sync/socket.io/?EIO=3&transport=polling&t=LUOhlU4"
+...
+```
+Googling
+```FetchEvent for browser-sync/socket.io resulted in a network error response: an object that was not a Response was passed to respondWith()```
+resulted in this gem:
+```
+tl;dr
+socket: {
+    domain: "localhost:3000"
+}
+```
+
+Actually, I can't even find that message again.
+No other relevant results come up with that search.
+Anyhow, it's a browser sync problem, not something I did with the forms?
+But how to try and modify that socket?  That was for a different framework, that gem.
+And a search for browser-sync reveals nothing else in the project.
+Mabe we did break main.ts?
+
+No, it's not main.ts.
+How about AppModule?
+
+We are including all the proper inports:
+```
+import { BrowserModule }                from '@angular/platform-browser';
+import { ReactiveFormsModule }          from '@angular/forms';
+import { NgModule }                     from '@angular/core';
+import { AppComponent }                 from './app.component';
+import { DynamicFormComponent }         from './dynamic-form.component';
+import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
+
+@NgModule({
+  imports: [ BrowserModule, ReactiveFormsModule ],
+  declarations: [ AppComponent, DynamicFormComponent, DynamicFormQuestionComponent ],
+  bootstrap: [ AppComponent ]
+})
+```
+Not in the correct order.  So moved AppComponent above the form imports.
+Same errors.
 
 ## <a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>
 Following [the router documentation tutorial](https://angular.io/docs/ts/latest/guide/router.html).
