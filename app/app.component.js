@@ -20,6 +20,7 @@ var AppComponent = (function () {
             selector: 'my-app',
             templateUrl: 'app/app.component.html',
             styleUrls: ['app/app.component.css'],
+            providers: [question_service_1.QuestionService]
         }), 
         __metadata('design:paramtypes', [question_service_1.QuestionService])
     ], AppComponent);

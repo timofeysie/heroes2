@@ -35,7 +35,7 @@ var DynamicFormQuestionComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'df-question',
-            templateUrl: 'dynamic-form-question.component.html'
+            templateUrl: 'dynamic-form-question.component.html',
         }), 
         __metadata('design:paramtypes', [])
     ], DynamicFormQuestionComponent);

@@ -1,22 +1,26 @@
 # heroes 2
 
-The official Angular2 Tour of Heroes for rc-6 using TypeScript.
+Based on the official Angular 2 Tour of Heroes tutorial with samples from various parts of the documentation.
 
 The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 
-Trying to get the samples [model driven forms](#model-drive-forms) from the Angular 2 Cookbook.
-BrowserSync is causing errors like this:
+Currently the app is broken. 
+We're trying to get the sample from [dynamic forms](https://angular.io/docs/ts/latest/cookbook/dynamic-form.html) from the Angular 2 Cookbook to work,
+but can't get past this error:
 ```
-The FetchEvent for "http://localhost:3000/app/main.js" resulted in a network error response: 
-    an object that was not a Response was passed to respondWith().
-http://localhost:3000/app/main.js Failed to load resource: net::ERR_FAILED
-localhost/:20 Error: Error: XHR error loading http://localhost:3000/app/main.js(…)
-The FetchEvent for "http://localhost:3000/browser-sync/socket.io/?EIO=3&transport=polling&t=LUOhlU4"
-...
+zone.js:344 Unhandled Promise rejection: Template parse errors:
+Can't bind to 'formGroup' since it isn't a known property of 'form'.
 ```
+From other answers on StackOverflow, it seems like a pre-rc.5 problem.
+The ReactiveFormsModule is imported in app.component.ts, which is the fix for app migrating from rc.4 to rc.5.
 All the code added for this feature seems to match the working plunker app from the page.
 
+What is missing?
+
 Any help would be much appreciated.
+
+You can see what I've tried so far in the [model driven forms](#model-drive-forms) section below.
+
 
 ## Table of Contents
 
@@ -56,7 +60,7 @@ See the [npm scripts](#npm-scripts) for other commands.
 
 ## <a name="current-work">Current work</a>
 
-Completed the Angular2 Tour of Heros.
+Completed the Angular2 Tour of Heroes.
 
 Working on refactoring for the [routing and navigation](https://angular.io/docs/ts/latest/guide/router.html).
 Getting ready to create feature folders for the routing section.
@@ -112,7 +116,7 @@ No other relevant results come up with that search.
 Anyhow, it's a browser sync problem, not something I did with the forms?
 But how to try and modify that socket?  That was for a different framework, that gem.
 And a search for browser-sync reveals nothing else in the project.
-Mabe we did break main.ts?
+Maybe we did break main.ts?
 
 No, it's not main.ts.
 How about AppModule?
@@ -134,6 +138,174 @@ import { DynamicFormQuestionComponent } from './dynamic-form-question.component'
 ```
 Not in the correct order.  So moved AppComponent above the form imports.
 Same errors.
+
+Preparing to ask for help, commited and pushed to Heroku to see if the same error happens live.
+It doesn't.
+Here are some of the errors from the live site:
+```
+core.umd.js:3462 EXCEPTION: Error in ./AppComponent class AppComponent_Host - 
+inline template:0:0 caused by: No provider for QuestionService!
+core.umd.js:3464 ORIGINAL EXCEPTION: No provider for QuestionService!
+core.umd.js:3467 ORIGINAL STACKTRACE:
+core.umd.js:3468 Error: No provider for QuestionService!
+    at NoProviderError.Error (native)
+    at NoProviderError.BaseError [as constructor] 
+```
+
+Looks like we forgot this:
+```
+@Component({
+  providers: [QuestionService]
+```
+
+ But including the question provider causes this error:
+ ```
+ zone.js:344 Unhandled Promise rejection: Failed to load 
+ app/app.component.html ; Zone: <root> ; Task: 
+ Promise.then ; Value: 
+ Failed to load app/app.component.html undefined
+ ```
+
+Removing the form selector reveals another more telling error:
+```
+Can't bind to 'formGroup' since it isn't a known property of 'form'.
+```
+That's easier to find answers for.
+But [this answer](http://stackoverflow.com/questions/39152071/cant-bind-to-formgroup-since-it-isnt-a-known-property-of-form) just says import the reactive forms module, which we are already doing.
+Ah, we also need to export those?
+```
+exports: [
+        FormsModule,
+        ReactiveFormsModule
+]
+```
+
+But we're not out of the woods yet.
+May I present to you Angular's next top error:
+```
+zone.js:344 Unhandled Promise rejection: 
+Template parse errors:
+Can't bind to 'formGroup' since it isn't a known property of 'form'. ("<div>
+  <form (ngSubmit)="onSubmit()" [ERROR ->][formGroup]="form">
+```
+Actually that's the same error as before.
+
+[This answer](http://stackoverflow.com/questions/35939950/angular-2-cant-bind-to-x-since-it-isnt-a-known-native-property)
+recommends using:
+```
+try using [(ngModel)] rather than *NgModel and *ngIf instead of *NgIf
+```
+But our case is formGroup, not one of those.
+An simply wrapping the formGroup in () does nothing to fix the situation.
+
+[This answer](http://stackoverflow.com/questions/39777751/cant-bind-to-formgroup-since-it-isnt-a-known-property-of-form-angular-2-f)
+shows how to use a shared module.
+Is that really necessary for this?
+The sample is working without a shared module.
+
+The dynamic-form.component.html is the template, and 
+dynamic-form-question.component.ts must be where the problem is.
+This class is exactly like it is in the sample, where it works.
+
+Shouldn't we also import these?
+```
+import { FormsModule }         from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+```
+
+Doesn't help.
+
+Do we also need this in the app.modules.ts?
+```
+import { FormGroup }        from '@angular/forms';
+```
+No.  Doesn't help.
+
+Do we need to have all these in the app.module.ts?
+```
+import { FormGroup }           from '@angular/forms';
+import { FormsModule }         from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+...
+@NgModule({
+  imports: [
+    FormGroup
+    FormsModule,
+    ReactiveFormsModule,
+```    
+
+The plunker only has ReactiveFormsModule, 
+and including those above and running the app again (the watch is failing due to the error?) has no effect on the error.
+
+Need to learn more about modules in general to clear up this at least.
+The official docs say:
+    
+    exports - the subset of declarations that should be visible and usable in the component templates of other modules.
+    imports - other modules whose exported classes are needed by component templates declared in this module.
+
+So based on that, we should need this:
+```
+exports: [ ReactiveFormsModule ]
+```
+But this does not appear in the plunker, and, it doesn't solve our problem.
+So get rid of it.  
+
+Let's say we get rid off all the form stuff in app.component.ts, the error will not go away.
+So that may not be where the problem lies.
+Say we want the form to appear in a different part of the application (we do).
+How would that work?
+
+Currently we have this:
+```
+<router-outlet></router-outlet>
+<dynamic-form [questions]="questions"></dynamic-form>
+```
+That might be the problem, a conflict between the router outlet and the dynamic form.
+
+If we get rid of the dynamic form directive (is it still called a directive?) and the app still crashes with the same error.
+
+So is it worth eventrying to move the form somewhere?
+
+The root cause is a Template parse error.
+
+If the app can't bind to 'formGroup' then we should look in the
+dynamic-form-question.component.ts
+
+The setup in the plunker of this class is pretty simple:
+```
+import { Component, Input } from '@angular/core';
+import { FormGroup }        from '@angular/forms';
+import { QuestionBase }     from './question-base';
+@Component({
+  moduleId: module.id,
+  selector: 'df-question',
+  templateUrl: 'dynamic-form-question.component.html'
+})
+```
+
+The error says formGroup isn't a known property of 'form'. ("<div>
+  <form (ngSubmit)="onSubmit()" [ERROR ->][formGroup]="form">
+```
+
+So let's look at the docs for formGroup and find out how to make it a known property.
+
+Reading a bit about [Angular 2 architecture](https://angular.io/docs/ts/latest/guide/architecture.html):
+1. You install Angular libraries with npm.
+2. There are two unrelated module systems at work: Javascript and Angular
+3. JavaScript import statements: import { x } from '@angular/x';
+4, Angular import statements: @NgModule { imports: [ x ] }
+
+If this seems confusing, listen to the words of wisdom from the above page:
+    confusion yields to clarity with time and experience - Angular team
+
+    The @Component configuration option 'providers' is array of dependency injection providers for 
+services that the component requires to tell Angular that the component's constructor requires a service.
+
+So why isn't the QuestionService needed in the app.module providers array?
+It is included in the app.components.ts file.
+But putting it in the app.module.ts file does not help.
+
+
 
 ## <a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>
 Following [the router documentation tutorial](https://angular.io/docs/ts/latest/guide/router.html).

@@ -81,7 +81,16 @@
     "templateUrl",
     "HeroService",
     "AppComponent",
-    "AppModule"
+    "AppModule",
+    "formGroup",
+    "ReactiveFormsModule",
+    "plunker",
+    "ngOnInit",
+    "Lifecycle",
+    "pagination",
+    "VSCode",
+    "ReferenceError",
+    "FetchEvent"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",
