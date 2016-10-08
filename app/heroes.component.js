@@ -11,12 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var hero_service_1 = require('./hero.service');
+var question_service_1 = require('./question.service');
 /** This component uses moduleId to set Component-Relative Path. */
 var HeroesComponent = (function () {
-    function HeroesComponent(heroService, router) {
+    function HeroesComponent(heroService, router, service) {
         this.heroService = heroService;
         this.router = router;
-        console.log('hero.component constructed');
+        this.questions = service.getQuestions();
+        console.log('yo hero.component constructed with ', this.questions);
     }
     HeroesComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -71,9 +73,9 @@ var HeroesComponent = (function () {
             selector: 'my-heroes',
             styleUrls: ['hero-styles.css'],
             templateUrl: 'heroes.component.html',
-            providers: []
+            providers: [hero_service_1.HeroService, question_service_1.QuestionService]
         }), 
-        __metadata('design:paramtypes', [hero_service_1.HeroService, router_1.Router])
+        __metadata('design:paramtypes', [hero_service_1.HeroService, router_1.Router, question_service_1.QuestionService])
     ], HeroesComponent);
     return HeroesComponent;
 }());

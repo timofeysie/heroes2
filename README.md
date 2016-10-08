@@ -262,7 +262,8 @@ Currently we have this:
 ```
 That might be the problem, a conflict between the router outlet and the dynamic form.
 
-If we get rid of the dynamic form directive (is it still called a directive?) and the app still crashes with the same error.
+If we get rid of the dynamic form directive (is it still called a directive?) and the app still crashes with the same error. 
+(updte: A component is a directive-with-a-template)
 
 So is it worth eventrying to move the form somewhere?
 
@@ -296,6 +297,7 @@ Reading a bit about [Angular 2 architecture](https://angular.io/docs/ts/latest/g
 4, Angular import statements: @NgModule { imports: [ x ] }
 
 If this seems confusing, listen to the words of wisdom from the above page:
+
     confusion yields to clarity with time and experience - Angular team
 
     The @Component configuration option 'providers' is array of dependency injection providers for 
@@ -305,6 +307,63 @@ So why isn't the QuestionService needed in the app.module providers array?
 It is included in the app.components.ts file.
 But putting it in the app.module.ts file does not help.
 
+In the Dependency injection section of the architecture document, it says:
+    
+    Register providers in modules or in components.  
+    In general, add providers to the root module so that the same instance of a service is available everywhere.
+
+That's all good and nice, but for kicks we uploaded the app to Heroku to see if the error was still the same, and the app works fine.
+The error in the template was obviously cached.
+If I put the dynamic-form [questions]="questions"></dynamic-form> back in the app.component.ts and do a refresh, the error comes back.
+Comment it out again, do a hard refresh, and the app works again.
+
+The hero search directive is in the dashboard.component.html.
+But in that controller (sorry for the old terms, directive, controller, but it is Angular after all...)
+there is no import of that functionality.
+```
+  <hero-search></hero-search>
+  <dynamic-form [questions]="questions"></dynamic-form>
+```
+That import is in the app.module.ts.
+So if we move all the question form setup to the app.module.ts, what will happen?
+Well the good news is the app is not totally broken anymore, it's partially broken now.
+The bad news is the partially broken error of course:
+```
+The FetchEvent for "http://localhost:3000/browser-sync/socket.io/?EIO=3&transport=polling&t=LUYiojI" 
+resulted in a network error response: an object that was not a Response was passed to respondWith().
+heroes.component.ts:34 hero.component constructed
+core.umd.js:3462 EXCEPTION: Uncaught (in promise): Error: 
+Error in http://localhost:3000/app/heroes.component.html:5:16 caused by: 
+Cannot read property 'forEach' of undefined
+```
+
+Oh and the form is not there as it's broken.
+
+There are still some lessons to be learned about Angular 2 here.
+If we want to have a lot of forms on a site, then where do we import them.
+Where do we set up the variables they will used?
+
+Whereever you want the questions to go, you must:
+```
+import { QuestionService } from './question.service';
+@Component({
+    providers: [HeroService,QuestionService],
+})
+export class Wherever { 
+  questions: any[];
+  constructor(service: QuestionService) {
+    this.questions = service.getQuestions();
+  }
+}
+```
+
+Still getting problems without doing hard cache busting reloads.
+With browser sync, after changes, the broken app is loaded.
+Doing a hard refresh brings up the new code.
+
+But, yay! We have the form working!  Time to party!
+Maybe not a party, but still what a relief to have a working app since Thusday night.  
+It's now Satruday.
 
 
 ## <a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>

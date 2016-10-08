@@ -20,7 +20,7 @@ import { HeroDetailComponent } from './hero-detail.component';
 import { DashboardComponent }  from './dashboard.component';
 import { routing }             from './app.routing';
 import { HeroSearchComponent } from './hero-search.component';
-import {QuestionService} from './question.service';
+import { QuestionService } from './question.service';
 
 @NgModule({
   imports: [
@@ -39,11 +39,13 @@ import {QuestionService} from './question.service';
     DynamicFormComponent, 
     DynamicFormQuestionComponent 
   ],
-  providers: [HeroService, QuestionService],
+  providers: [HeroService,QuestionService],
   bootstrap: [ AppComponent ],
   exports: [ ReactiveFormsModule ]
 })
 export class AppModule { 
-  constructor() {
+  questions: any[];
+  constructor(service: QuestionService) {
+    this.questions = service.getQuestions();
   }
 }

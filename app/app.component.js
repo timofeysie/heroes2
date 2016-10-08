@@ -9,20 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var question_service_1 = require('./question.service');
+// import { QuestionService } from './question.service';
 var AppComponent = (function () {
-    function AppComponent(service) {
+    function AppComponent() {
+        // questions: any[];
         this.title = 'Myra the ferryboat';
-        this.questions = service.getQuestions();
     }
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
             templateUrl: 'app/app.component.html',
             styleUrls: ['app/app.component.css'],
-            providers: [question_service_1.QuestionService]
         }), 
-        __metadata('design:paramtypes', [question_service_1.QuestionService])
+        __metadata('design:paramtypes', [])
     ], AppComponent);
     return AppComponent;
 }());

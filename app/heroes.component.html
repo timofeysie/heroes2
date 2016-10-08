@@ -3,6 +3,7 @@
   <img src="/app/images/buttons/details-button.png"
     height="30px">
 </button>
+<dynamic-form [questions]="questions"></dynamic-form>
 <div *ngIf="selectedHero">
   <h2>
     {{selectedHero.name | uppercase}}.

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Hero } from './hero';
 import { HeroService } from './hero.service';
 import { OnInit } from '@angular/core';
+import { QuestionService } from './question.service';
 
 /** This component uses moduleId to set Component-Relative Path. */
 @Component({
@@ -10,11 +11,12 @@ import { OnInit } from '@angular/core';
     selector: 'my-heroes',
     styleUrls: ['hero-styles.css'],
     templateUrl: 'heroes.component.html',
-    providers: []
+    providers: [HeroService,QuestionService]
 })
 export class HeroesComponent implements OnInit {
     selectedHero: Hero;
     heroes: Hero[];
+    questions: any[];
 
     ngOnInit(): void {
         this.getHeroes();
@@ -30,8 +32,10 @@ export class HeroesComponent implements OnInit {
 
     constructor(
         private heroService: HeroService,
-        private router: Router) {
-            console.log('hero.component constructed');
+        private router: Router,
+        service: QuestionService) {
+            this.questions = service.getQuestions();
+            console.log('yo hero.component constructed with ',this.questions);
     }
 
     getHeroes(): void {
