@@ -44,8 +44,6 @@ import { QuestionService } from './question.service';
   exports: [ ReactiveFormsModule ]
 })
 export class AppModule { 
-  questions: any[];
-  constructor(service: QuestionService) {
-    this.questions = service.getQuestions();
+  constructor() {
   }
 }

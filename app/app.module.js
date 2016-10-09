@@ -28,8 +28,7 @@ var app_routing_1 = require('./app.routing');
 var hero_search_component_1 = require('./hero-search.component');
 var question_service_1 = require('./question.service');
 var AppModule = (function () {
-    function AppModule(service) {
-        this.questions = service.getQuestions();
+    function AppModule() {
     }
     AppModule = __decorate([
         core_1.NgModule({
@@ -53,7 +52,7 @@ var AppModule = (function () {
             bootstrap: [app_component_1.AppComponent],
             exports: [forms_1.ReactiveFormsModule]
         }), 
-        __metadata('design:paramtypes', [question_service_1.QuestionService])
+        __metadata('design:paramtypes', [])
     ], AppModule);
     return AppModule;
 }());
