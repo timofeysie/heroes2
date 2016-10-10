@@ -6,6 +6,10 @@ The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.co
 
 Currently we are adding form validation rules dynamically depends on user selection to our dynamic model driven forms.
 
+Going back to the routing tutorial to create create a Routing Module, 
+a special type of Service Module dedicating for the purpose of routing in feature modules.
+
+
 See the [Model driven forms](#model-drive-forms) section below.
 
 ## Table of Contents
@@ -233,6 +237,33 @@ Form changes:
 ```
 
 We will want to change form validation rules dynamically depending on user selection, so this method is the way to go.
+
+On to the nested forms tutorial on Scotch.io.
+
+It has the following model for the demo:
+
+```JavaScript
+export interface Customer {
+    name: string; // required field with minimum 5 characters
+    addresses: Address[]; // user can have one or more addresses
+}
+export interface Address {
+    street: string;  // required field
+    postcode: string;
+}
+```
+
+What we will want however, is a Form interface, and a Field interface.
+For the FormModel, we need a title, and probably a host of other housekeeping info such as id, created and updated dates, authors, etc.
+The FieldModel should have the same members the QuestionBase:
+  value: T;
+  key: string;
+  label: string;
+  required: boolean;
+  order: number;
+  controlType: string;
+
+
 
 
 ## <a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>
