@@ -1,41 +1,53 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Hero } from './hero';
 import { HeroService } from './hero.service';
 import { OnInit } from '@angular/core';
-import { QuestionService } from './question.service';
+// import { QuestionService } from '../question.service';
 
 /** This component uses moduleId to set Component-Relative Path. */
 @Component({
     moduleId: module.id,
     selector: 'my-heroes',
-    styleUrls: ['hero-styles.css'],
-    templateUrl: 'heroes.component.html',
-    providers: [HeroService,QuestionService]
+    styleUrls: ['../hero-styles.css'],
+    templateUrl: 'hero-list.component.html',
+    // providers: [HeroService,QuestionService]
 })
-export class HeroesComponent implements OnInit {
+export class HeroListComponent implements OnInit {
+    private selectedId: number;
     selectedHero: Hero;
     heroes: Hero[];
-    questions: any[];
+    // questions: any[];
 
     ngOnInit(): void {
-        this.getHeroes();
-        this.heroService.getHero(1)
-                .then(hero => 
-                    this.selectedHero = hero);
+        // this.getHeroes();
+        // this.heroService.getHero(1)
+        //         .then(hero => 
+        //             this.selectedHero = hero);
+        this.route.params.forEach((params: Params) => {
+        this.selectedId = +params['id'];
+        this.heroService.getHeroes()
+          .then(heroes => this.heroes = heroes);
+      });
     }
 
-    onSelect(hero: Hero): void {
-        console.log('hero', hero);
-        this.selectedHero = hero;
+    onSelect(hero: Hero) {
+        this.router.navigate(['/hero', hero.id]);
+    }
+
+    isSelected(hero: Hero) { 
+        return hero.id === this.selectedId; 
     }
 
     constructor(
         private heroService: HeroService,
         private router: Router,
-        service: QuestionService) {
-            this.questions = service.getQuestions();
-            console.log('yo hero.component constructed with ',this.questions);
+        private route: ActivatedRoute
+        // private service: QuestionService
+        ) {
+            // this.questions = service.getQuestions();
+            // console.log('yo hero.component constructed with ',this.questions);
     }
 
     getHeroes(): void {
@@ -44,10 +56,8 @@ export class HeroesComponent implements OnInit {
                 this.heroes = heroes);
     }
 
-    /** Currently this navigation method does not work.  
-     * it jumps back to the provious route. */
     gotoDetail(): void {
-        this.router.navigate(['/detail', this.selectedHero.id]);
+        this.router.navigate(['/hero', this.selectedHero.id]);
     }
 
     add(name: string): void {

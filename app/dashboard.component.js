@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
-var hero_service_1 = require('./hero.service');
+var hero_service_1 = require('./heroes/hero.service');
 var DashboardComponent = (function () {
     function DashboardComponent(heroService, router) {
         this.heroService = heroService;
@@ -23,7 +23,7 @@ var DashboardComponent = (function () {
             .then(function (heroes) { return _this.heroes = heroes.slice(1, 5); });
     };
     DashboardComponent.prototype.gotoDetail = function (hero) {
-        var link = ['/detail', hero.id];
+        var link = ['/hero', hero.id];
         this.router.navigate(link);
     };
     DashboardComponent = __decorate([

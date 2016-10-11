@@ -3,7 +3,7 @@
   <img src="/app/images/buttons/details-button.png"
     height="30px">
 </button>
-<dynamic-form [questions]="questions"></dynamic-form>
+<!--<dynamic-form [questions]="questions"></dynamic-form>-->
 <div *ngIf="selectedHero">
   <h2>
     {{selectedHero.name | uppercase}}.
@@ -12,7 +12,7 @@
 <ul class="heroes">
   <li *ngFor="let hero of heroes" 
     (click)="onSelect(hero)"
-      [class.selected]="hero === selectedHero">
+      [class.selected]="isSelected(hero)">
     <span class="badge">{{hero.id}}</span>
     <span>{{hero.name}}</span>
     <button class="delete"

@@ -90,7 +90,11 @@
     "pagination",
     "VSCode",
     "ReferenceError",
-    "FetchEvent"
+    "FetchEvent",
+    "forRoot",
+    "forChild",
+    "ActivatedRoute",
+    "Params"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",

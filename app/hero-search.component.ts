@@ -3,7 +3,7 @@ import { Router }            from '@angular/router';
 import { Observable }        from 'rxjs/Observable';
 import { Subject }           from 'rxjs/Subject';
 import { HeroSearchService } from './hero-search.service';
-import { Hero } from './hero';
+import { Hero } from './heroes/hero';
 @Component({
   selector: 'hero-search',
   templateUrl: 'app/hero-search.component.html',
@@ -36,7 +36,7 @@ export class HeroSearchComponent implements OnInit {
       });
   }
   gotoDetail(hero: Hero): void {
-    let link = ['/detail', hero.id];
+    let link = ['/hero', hero.id];
     this.router.navigate(link);
   }
 }

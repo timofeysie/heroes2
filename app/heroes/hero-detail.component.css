@@ -1,7 +1,8 @@
 .detail-image {
     width: 100%;
-    max-width: 75%;
-    max-height: 75%;
+    height: auto;
+    /*max-width: 75%;*/
+    /*max-height: 75%;*/
     height: inherit !important;
     height: auto;
     margin-top: -100px;

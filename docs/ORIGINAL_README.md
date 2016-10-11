@@ -1,3 +1,12 @@
+# Ogirinal Readme file
+
+1. [Prerequisites](#prerequisites)
+2. [Install npm packages](#Iinstall-npm-packages)
+5. [npm scripts](#npm-scripts)
+5. [Testing](#testing)
+5. [Unit Tests](#unit-tests)
+5. [End-to-end (E2E) Tests](#end-to-end)
+
 
 ## <a name="original-angular-2-quickstart-source">Original Angular 2 QuickStart Source</a>
 [![Build Status][travis-badge]][travis-badge-url]

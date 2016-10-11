@@ -6,9 +6,6 @@ The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.co
 
 Currently we are adding form validation rules dynamically depends on user selection to our dynamic model driven forms.
 
-Going back to the routing tutorial to create create a Routing Module, 
-a special type of Service Module dedicating for the purpose of routing in feature modules.
-
 
 See the [Model driven forms](#model-drive-forms) section below.
 
@@ -18,21 +15,21 @@ See the [Model driven forms](#model-drive-forms) section below.
 2. [Current Work](#current-work)
 2. [Model driven forms](#model-drive-forms)
 2. [Advanced: Routing & Navigation](#advanced-routing-and-navigation">)
-2. [Tour of Heroes: Routing](#tour-of-heroes-routing)
+2. [Tour of Heroes: Routing](#tour-of-heroes-routing) (docs)
 2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official)
-2. [Tour of Heroes: Services](#tour-of-heroes-services)
+2. [Tour of Heroes: Services](#tour-of-heroes-services) (docs)
 2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components)
 2. [The ngOnInit Lifecycle Hook](lThe-ngOnInit-Lifecycle-Hook)
 2. [Detail view pagination](#detail-view-pagination)
-2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail)
+2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail) (docs)
 3. [The favicon.ico](#the-favicon.ico)
-5. [Setup](#setup)
-5. [Prerequisites](#prerequisites)
-5. [Install npm packages](#Iinstall-npm-packages)
-5. [npm scripts](#npm-scripts)
-5. [Testing](#testing)
-5. [Unit Tests](#unit-tests)
-5. [End-to-end (E2E) Tests](#end-to-end)
+5. [Setup](#setup) (docs)
+5. [Prerequisites](#prerequisites) (docs)
+5. [Install npm packages](#Iinstall-npm-packages) (docs)
+5. [npm scripts](#npm-scripts) (docs)
+5. [Testing](#testing) (docs)
+5. [Unit Tests](#unit-tests) (docs)
+5. [End-to-end (E2E) Tests](#end-to-end) (docs)
 
 
 ## <a name="development">Development</a>
@@ -57,6 +54,287 @@ Getting ready to create feature folders for the routing section.
 
 For a discussion regarding the unit tests and the compiling templates problem, se the separate document docs/BROKEN_TESTS.md.
 If a document is too long, the spelling checker in VSCode will not work.
+
+<a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>
+
+Since this is such a long tutorial, we have come and gone from it as needed.
+What we call feature modules covers the following sections:
+
+- Milestone #1: Getting Started with the Router
+- Milestone #2: The Routing Module
+- Milestone #3: The Heroes Feature
+
+That being done, we will add the crisis center module during these sections:
+
+- Milestone #4: The Crisis Center
+- Milestone #5: Route Guards
+- Milestone #6: Asynchronous Routing
+
+This is all in preparation to create our own dynamic model driven forms module.
+
+
+## Feature modules
+Going back to the routing tutorial to organize the app and routes into a feature area using modules.
+The [routing and navigation](https://angular.io/docs/ts/latest/guide/router.html) section is rather long.
+We read the section on feature modules but until now did not make the changes recommended.
+We though would should have working unit tests for regression testing but were unable to get those running.
+So now, here are the changes made to the app:
+
+1. we already created the heroes directory
+2. create a new hero-list.component.ts in the app/heroes/ folder using heroes.component.ts from the tutorial.
+2. also change the name of the template and styles used for this component.
+2. copy the hero-detail.component.ts to the heroes/ folder
+2. and the hero.ts class, even though the tutorial didn't mention that.
+2. the hero.service.ts files into the heroes/ folder
+2. Create a new heroes-routing.module.ts in the heroes/ folder
+2. change the forRoot method in the to to use the static forChild method.
+2. import ActivatedRoute and Params
+2. did not change heroService to service in hero-detail & hero-list components.  That would be ambiguous since we have the question service there now.  We should also call that questionService...
+2. changed detail route to hero route
+
+After all those changes, and removing the two routes from the app.routing file, here are the errors:
+
+```
+app/dashboard.component.ts(3,22): error TS2307: Cannot find module './hero'.
+app/dashboard.component.ts(4,29): error TS2307: Cannot find module './hero.service'.
+app/dashboard.component.ts(19,19): error TS7006: Parameter 'heroes' implicitly has an 'any' type.
+app/hero-search.component.ts(6,22): error TS2307: Cannot find module './hero'.
+app/hero-search.service.ts(4,32): error TS2307: Cannot find module './hero'.
+app/app.module.ts(17,37): error TS2307: Cannot find module './hero.service'.
+app/app.module.ts(18,37): error TS2307: Cannot find module './heroes.component'.
+app/app.module.ts(19,37): error TS2307: Cannot find module './hero-detail.component'.
+app/heroes/hero-detail.component.ts(5,33): error TS2307: Cannot find module './heroes.component'.
+```
+
+These errors involve adding the new route to the missing files,
+and changing HeroesComponent to HeroListComponent
+
+So then the app compiles, but does not run, with the following errors:
+
+```
+zone.js:1263GET http://localhost:3000/app/heroes/heroes.component.html 404 (Not Found)scheduleTask @ zone.js:1263ZoneDelegate.scheduleTask @ zone.js:205Zone.scheduleMacroTask @ zone.js:142(anonymous function) @ zone.js:1293send @ VM250:3ResourceLoaderImpl.get @ platform-browser-dynamic.umd.js:129DirectiveNormalizer._fetch @ compiler.umd.js:13455DirectiveNormalizer.normalizeTemplateAsync @ compiler.umd.js:13498DirectiveNormalizer.normalizeDirective @ compiler.umd.js:13473RuntimeCompiler._createCompiledTemplate @ compiler.umd.js:16869(anonymous function) @ compiler.umd.js:16807(anonymous function) @ compiler.umd.js:16805RuntimeCompiler._compileComponents @ compiler.umd.js:16804RuntimeCompiler._compileModuleAndComponents @ compiler.umd.js:16741RuntimeCompiler.compileModuleAsync @ compiler.umd.js:16732PlatformRef_._bootstrapModuleWithZone @ core.umd.js:6954PlatformRef_.bootstrapModule @ core.umd.js:6936(anonymous function) @ main.ts:4(anonymous function) @ main.ts:4(anonymous function) @ main.ts:4__exec @ system.src.js:1510entry.execute @ system.src.js:3926linkDynamicModule @ system.src.js:3252link @ system.src.js:3095execute @ system.src.js:3432doDynamicExecute @ system.src.js:798link @ system.src.js:1000doLink @ system.src.js:652updateLinkSetOnLoad @ system.src.js:700(anonymous function) @ system.src.js:512ZoneDelegate.invoke @ zone.js:192Zone.run @ zone.js:85(anonymous function) @ zone.js:451ZoneDelegate.invokeTask @ zone.js:225Zone.runTask @ zone.js:125drainMicroTaskQueue @ zone.js:357ZoneTask.invoke @ zone.js:297
+zone.js:344 Unhandled Promise rejection: Failed to load http://localhost:3000/app/heroes/heroes.component.html ; Zone: <root> ; Task: Promise.then ; Value: Failed to load http://localhost:3000/app/heroes/heroes.component.html undefinedconsoleError @ zone.js:344_loop_1 @ zone.js:371drainMicroTaskQueue @ zone.js:375ZoneTask.invoke @ zone.js:297
+zone.js:346 Error: Uncaught (in promise): Failed to load http://localhost:3000/app/heroes/heroes.component.html(…)
+```
+Cache problem?  No.
+Had to change the
+templateUrl: 'heroes.component.html' to 
+templateUrl: 'hero-list.component.html' 
+in the hero-list.component.ts.
+
+Then we have these errors:
+
+
+```
+zone.js:1263 GET http://localhost:3000/app/heroes/heroes.component.html 404 (Not Found)scheduleTask @ zone.js:1263ZoneDelegate.scheduleTask @ zone.js:205Zone.scheduleMacroTask @ zone.js:142(anonymous function) @ zone.js:1293send @ VM621:3ResourceLoaderImpl.get @ platform-browser-dynamic.umd.js:129DirectiveNormalizer._fetch @ compiler.umd.js:13455DirectiveNormalizer.normalizeTemplateAsync @ compiler.umd.js:13498DirectiveNormalizer.normalizeDirective @ compiler.umd.js:13473RuntimeCompiler._createCompiledTemplate @ compiler.umd.js:16869(anonymous function) @ compiler.umd.js:16807(anonymous function) @ compiler.umd.js:16805RuntimeCompiler._compileComponents @ compiler.umd.js:16804RuntimeCompiler._compileModuleAndComponents @ compiler.umd.js:16741RuntimeCompiler.compileModuleAsync @ compiler.umd.js:16732PlatformRef_._bootstrapModuleWithZone @ core.umd.js:6954PlatformRef_.bootstrapModule @ core.umd.js:6936(anonymous function) @ main.ts:4(anonymous function) @ main.ts:4(anonymous function) @ main.ts:4__exec @ system.src.js:1510entry.execute @ system.src.js:3926linkDynamicModule @ system.src.js:3252link @ system.src.js:3095execute @ system.src.js:3432doDynamicExecute @ system.src.js:798link @ system.src.js:1000doLink @ system.src.js:652updateLinkSetOnLoad @ system.src.js:700(anonymous function) @ system.src.js:512ZoneDelegate.invoke @ zone.js:192Zone.run @ zone.js:85(anonymous function) @ zone.js:451ZoneDelegate.invokeTask @ zone.js:225Zone.runTask @ zone.js:125drainMicroTaskQueue @ zone.js:357ZoneTask.invoke @ zone.js:297
+zone.js:344 Unhandled Promise rejection: Failed to load http://localhost:3000/app/heroes/heroes.component.html ; Zone: <root> ; Task: Promise.then ; Value: Failed to load http://localhost:3000/app/heroes/heroes.component.html undefinedconsoleError @ zone.js:344_loop_1 @ zone.js:371drainMicroTaskQueue @ zone.js:375ZoneTask.invoke @ zone.js:297
+zone.js:346 Error: Uncaught (in promise): Failed to load http://localhost:3000/app/heroes/heroes.component.html(…)consoleError @ zone.js:346_loop_1 @ zone.js:371drainMicroTaskQueue @ zone.js:375ZoneTask.invoke @ zone.js:297
+```
+
+But heroes.component.html  does not appear in any file (except this readme).
+So maybe now it is a cache problem.  The normal ctrl-refresh is not fixing it.
+
+Stop the server.  Start it again.
+App runs, but choosing the heores list causes this show-stopper:
+```
+core.umd.js:3462 EXCEPTION: Uncaught (in promise): Error: Cannot match any routes: 'heroes'
+```
+
+let link = ['/detail', hero.id]; should use hero and not detail.
+
+There is a bit of a disconnect between our code and the app in the router examples.
+Since we don't have the crisis center component, and our router is named
+app.routing.ts while in the tutorial it is named app-routing.module.ts
+Not sure how THAT happened ... someone might have to get fired over this!
+
+Our router has these route:
+```
+    { path: 'dashboard', component: DashboardComponent },
+    { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
+```
+
+The routing in the middle of the tutorial looks like this:
+
+```
+import { NgModule }     from '@angular/core';
+import { RouterModule } from '@angular/router';
+@NgModule({
+  imports: [
+    RouterModule.forRoot([
+    ])
+  ],
+  exports: [
+    RouterModule
+  ]
+})
+export class AppRoutingModule {}
+```
+
+It's probably a good idea to keep going along the trail before trying to debug the app in progress.
+Even after changing the route name from detail/:id to hero/:id, there is still this error:
+```
+core.umd.js:3462 EXCEPTION: Uncaught (in promise): Error: Cannot match any routes: 'hero/4'
+```
+We still don't know how to integrate the hero module routes into the app module routes.
+So on with the show!
+
+Continuing with the changes, we add a new isSelected method, and use it in the template.
+
+```
+  <li *ngFor="let hero of heroes" 
+    (click)="onSelect(hero)"
+      [class.selected]="hero === selectedHero">
+```
+
+becomes:
+
+```
+      [class.selected]="isSelected(hero)">
+```
+
+
+### OBSERVABLE PARAMS AND COMPONENT RE-USE
+For the pagination feature, we want to retrieve the route params from an Observable.
+We don't want the router to remove the current HeroDetailComponent instance from the DOM 
+only to re-create it for the next id. That could be visibly jarring. 
+Better to simply re-use the same component instance and update the parameter.
+Since ngOnInit is only called once per instantiation, 
+we need a way to detect when the route parameters change from within the same instance. 
+The observable params property handles that.
+
+The alternative is ```route.snapshot.params['id']``` that gives us the initial 
+value of the route parameters without subscribe or unsubscribe. 
+
+Tha snapshot method:
+
+```
+ngOnInit() {
+  let id = +this.route.snapshot.params['id']; // (+) converts string 'id' to a number
+  this.service.getHero(id).then(hero => this.hero = hero);
+```
+
+The observables method:
+```
+ngOnInit() {
+  this.route.params.forEach((params: Params) => {
+     let id = +params['id']; // (+) converts string 'id' to a number
+     this.service.getHero(id).then(hero => this.hero = hero);
+   });
+}
+```
+
+### matrix URL notation
+When a url parameter value is not necessary to distinguish one route path from another, 
+prefer an optional parameter.
+This is for when the value is optional, complex, and/or multi-variate.
+localhost:3000/heroes;id=15;foo=foo
+The id value appears in the URL as (;id=15;foo=foo), not in the URL path. 
+
+This method is used in the hero-detail.component.ts to go back to the list of heroes.
+
+Just so you know, I started with Angular 2 back in the alpha phases, at least 10 months ago.
+I have some plunkers that rely on this lib:
+<script src="https://code.angularjs.org/2.0.0-beta.0/angular2-polyfills.js">
+Anyhow, just showing off a bit.  Here is the link to the [example site for the router tutorial](http://plnkr.co/edit/0hU4oUea0rShCa2HWOCd?p=preview)
+
+
+### Transition animations
+To build animation triggers, control state and manage transitions between states to add 
+transitions to the route component as it moves between states/view. 
+The HostBinding decorator is for binding to route components.
+```
+import { HostBinding, trigger, transition, animate,
+         style, state } from '@angular/core';
+```
+
+The animations are configured like this:
+```
+@HostBinding('@routeAnimation') get routeAnimation() {
+    return true;
+}
+@HostBinding('style.display') get display() {
+    return 'block';
+}
+@HostBinding('style.position') get position() {
+    return 'absolute';
+}
+```
+
+
+### Finishing Milestone #3: The Heroes Feature
+
+After all those massive changes to get the heroes feature module in, 
+here are the remaining errors:
+```
+zone.js:1263GET http://localhost:3000/app/hero-detail.component.html 404 (Not Found)scheduleTask @ zone.js:1263ZoneDelegate.scheduleTask @ zone.js:205Zone.scheduleMacroTask @ zone.js:142(anonymous function) @ zone.js:1293send @ VM250:3ResourceLoaderImpl.get @ platform-browser-dynamic.umd.js:129DirectiveNormalizer._fetch @ compiler.umd.js:13455DirectiveNormalizer.normalizeTemplateAsync @ compiler.umd.js:13498DirectiveNormalizer.normalizeDirective @ compiler.umd.js:13473RuntimeCompiler._createCompiledTemplate @ compiler.umd.js:16869(anonymous function) @ compiler.umd.js:16807(anonymous function) @ compiler.umd.js:16805RuntimeCompiler._compileComponents @ compiler.umd.js:16804RuntimeCompiler._compileModuleAndComponents @ compiler.umd.js:16741RuntimeCompiler.compileModuleAsync @ compiler.umd.js:16732PlatformRef_._bootstrapModuleWithZone @ core.umd.js:6954PlatformRef_.bootstrapModule @ core.umd.js:6936(anonymous function) @ main.ts:4(anonymous function) @ main.ts:4(anonymous function) @ main.ts:4__exec @ system.src.js:1510entry.execute @ system.src.js:3926linkDynamicModule @ system.src.js:3252link @ system.src.js:3095execute @ system.src.js:3432doDynamicExecute @ system.src.js:798link @ system.src.js:1000doLink @ system.src.js:652updateLinkSetOnLoad @ system.src.js:700(anonymous function) @ system.src.js:512ZoneDelegate.invoke @ zone.js:192Zone.run @ zone.js:85(anonymous function) @ zone.js:451ZoneDelegate.invokeTask @ zone.js:225Zone.runTask @ zone.js:125drainMicroTaskQueue @ zone.js:357ZoneTask.invoke @ zone.js:297
+zone.js:344 Unhandled Promise rejection: Failed to load app/hero-detail.component.html ; Zone: ...
+```
+
+After a crash like that it takes a re-start of npm to get to the new code.
+Change that naughty old path, and the ctrl-refresh, then we get these interesting errors:
+```
+zone.js:344 Unhandled Promise rejection: Template parse errors:
+Can't bind to 'questions' since it isn't a known property of 'dynamic-form'.
+1. If 'dynamic-form' is an Angular component and it has 'questions' input, then verify that it is part of this module.
+2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message.
+ ("
+    height="30px">
+</button>
+<dynamic-form [ERROR ->][questions]="questions"></dynamic-form>
+<div *ngIf="selectedHero">
+  <h2>
+"): HeroListComponent@5:14
+'dynamic-form' is not a known element:
+1. If 'dynamic-form' is an Angular component, then verify that it is part of this module.
+2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message. ("
+    height="30px">
+</button>
+[ERROR ->]<dynamic-form [questions]="questions"></dynamic-form>
+<div *ngIf="selectedHero">
+  <h2>
+"): HeroListComponent@5:0 ; Zone: <root> ; Task: Promise.then ; Value: Error: Template parse errors:(…) Error: Template parse errors:
+Can't bind to 'questions' since it isn't a known property of 'dynamic-form'.
+1. If 'dynamic-form' is an Angular component and it has 'questions' input, then verify that it is part of this module.
+2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message.
+ ("
+    height="30px">
+</button>
+<dynamic-form [ERROR ->][questions]="questions"></dynamic-form>
+<div *ngIf="selectedHero">
+  <h2>
+"): HeroListComponent@5:14
+'dynamic-form' is not a known element:
+1. If 'dynamic-form' is an Angular component, then verify that it is part of this module.
+2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message. ("
+    height="30px">
+</button>
+[ERROR ->]<dynamic-form [questions]="questions"></dynamic-form>
+<div *ngIf="selectedHero">
+  <h2>
+"): HeroListComponent@5:0
+    at TemplateParser.parse 
+">```
+
+Not sure why all the repeats, but that's pretty par for the course with JavaScript error messages in general.
+
+But, clearly, now the dynamic model driven form module is not set up correctly.
+Really, it needs to be in it's own module, as we have just done with the heroes module.
+
+The next section in the sprawling advanced routing & navigation page will create another module called crisis center.
+So, all in favor of taking out the dynamic questions form until after we have more practice creating a module, say aye!
+
+The form never looked good where it was anyhow.
+The plan now is to create a form creation page with admin privlidges.
+And then have those created forms fillable by anyone.
+Yes, the features are half-baked, but this is a learning exercise, so we can let it slide for now.
+Really the form stuff should be its own project, but it is convenient to do all the practice here for now.
+
+Since we looked ahead, we know the crisis center will get those admin roles:
+
+- Milestone #4: The Crisis Center
+- Milestone #5: Route Guards
+- Milestone #6: Asynchronous Routing
+
 
 ## <a name="model-drive-forms">Model driven forms</a>
 
@@ -111,14 +389,17 @@ The [Using Angular 2’s Model-Driven Forms with FormGroup and FormControl](http
 tutorial starts off with instructions on installing forms.
 This is something we were never told to do in the official cookbook tutorial.
 We assumed that importing it would trigger a download when doing npm run.
+
 ```
 npm install @angular/forms --save
 ```
+
 Running this and then launching the app brings our validation back.
 However, the app still launches broken and requires a ctrl-refresh to work.
 
 The tuturoail is build on an interface like this:
-```
+
+```JavaScript
 export interface User {
     name: string; // required with minimum 5 chracters
     address?: {
@@ -129,7 +410,8 @@ export interface User {
 ```
 
 However, this model is hardwired on creation like this:
-```
+
+```JavaScript
 ngOnInit() {
 
     // the short way
@@ -390,404 +672,6 @@ Why not just bootstrap the application's root module in the root module?
 There must be a reason.  Something to look forward to learning about. 
 
 
-
-## <a name="tour-of-heroes-routing">Tour of Heroes: Routing</a>
-
-[routing section](https://angular.io/docs/ts/latest/tutorial/toh-pt5.html)
-This calls for some refactoring:
-
-1. Change app.component.ts file to heroes.component.ts
-2. Change AppComponent class to HeroesComponent
-2. Change the Selector my-app to my-heroes
-2. Create a new app.component.ts
-2. Define an exported AppComponent class.
-2. Add an @Component decorator above the class with a my-app selector.
-2. Move the following from HeroesComponent to AppComponent: title class property, @Component template h1 element, which contains a binding to title
-2. Add a <my-heroes> element to the app template just below the heading so we still see the heroes.
-2. Add HeroesComponent to the declarations array of AppModule so Angular recognizes the <my-heroes> tags.
-2. Add HeroService to the providers array of AppModule because we'll need it in every other view.
-2. Remove HeroService from the HeroesComponent providers array since it has been promoted.
-2. Add the supporting import statements for AppComponent.
-
-That's quite a bit to take in.
-
-During all those changes, of course the app breaks, but this is a great message that shows up:
-```
-core.umd.js:5995 EXCEPTION: Error in http://localhost:3000/app/app.component.html:1:0 caused by: Maximum call stack size exceededErrorHandler.handleError @ core.umd.js:5995(anonymous function) @ core.umd.js:9394ZoneDelegate.invoke @ zone.js:332onInvoke @ core.umd.js:8772ZoneDelegate.invoke @ zone.js:331Zone.run @ zone.js:225(anonymous function) @ zone.js:591ZoneDelegate.invokeTask @ zone.js:365onInvokeTask @ core.umd.js:8763ZoneDelegate.invokeTask @ zone.js:364Zone.runTask @ zone.js:265drainMicroTaskQueue @ zone.js:497ZoneTask.invoke @ zone.js:437
-core.umd.js:5997 ORIGINAL EXCEPTION: Maximum call stack size exceededErrorHandler.handleError @ core.umd.js:5997(anonymous function) @ core.umd.js:9394ZoneDelegate.invoke @ zone.js:332onInvoke @ core.umd.js:8772ZoneDelegate.invoke @ zone.js:331Zone.run @ zone.js:225(anonymous function) @ zone.js:591ZoneDelegate.invokeTask @ zone.js:365onInvokeTask @ core.umd.js:8763ZoneDelegate.invokeTask @ zone.js:364Zone.runTask @ zone.js:265drainMicroTaskQueue @ zone.js:497ZoneTask.invoke @ zone.js:437
-core.umd.js:6000 ORIGINAL STACKTRACE:ErrorHandler.handleError @ core.umd.js:6000(anonymous function) @ core.umd.js:9394ZoneDelegate.invoke @ zone.js:332onInvoke @ core.umd.js:8772ZoneDelegate.invoke @ zone.js:331Zone.run @ zone.js:225(anonymous function) @ zone.js:591ZoneDelegate.invokeTask @ zone.js:365onInvokeTask @ core.umd.js:8763ZoneDelegate.invokeTask @ zone.js:364Zone.runTask @ zone.js:265drainMicroTaskQueue @ zone.js:497ZoneTask.invoke @ zone.js:437
-core.umd.js:6001 RangeError: Maximum call stack size exceeded
-    at new ViewWrappedError (core.umd.js:8092)
-    at DebugAppView._rethrowWithContext (core.umd.js:12183)
-    at DebugAppView.create (core.umd.js:12129)
-    at DebugAppView._View_HeroesComponent0.createInternal (HeroesComponent.ngfactory.js:33)
-    at DebugAppView.AppView.create (core.umd.js:11914)
-```
-The browser appeared dead until that showed up.  The fan is going overtime and the notebook bottom is super hot.
-Seems like an infinate loop.  Unable to kill the page.  Open the page in a new tab trying to get the updated changes to show.
-Sometimes having everything running could cause problems like this.
-Then, after completing the changes, in a new tab, there is a new error:
-```
-core.umd.js:5995 EXCEPTION: 
-Error in ./AppComponent class AppComponent_Host
- - inline template:0:0 caused by: 
- The selector "my-app" did not match any elementsErrorHandler.handleError @ core.umd.js:5995
-core.umd.js:5997 ORIGINAL EXCEPTION: The selector "my-app" did not match any elements
-```
-Then, the grey screen of death.
-my-app is configured in the AppComponent class.
-So what is causing the dance of death?
-
-I confirmed that that class and the app.component.ts class are as expected in the doc.
-It even says this:
-```
-Our refactoring of AppComponent into a new AppComponent and a HeroesComponent worked! 
-We have done no harm.
-```
-I would say a crashing browser and crashing computer means harm was done.
-But it was due to the old template being used as the selector.
-Changed app.component to heroes.component for the templateUrl.
-Since it's the hero-detail.component, it should use the 'heroes.component.html'!
-
-There is one more small issue.  The name input is not being filled with the hero.
-That's becuase the selected hero functionality is still in the heroes.component.
-This will change because the router now will take the responsibility of passing the selected hero to the heroes page.
-
-Now we can get on with using the router.
-
-add <base href="/"> at the top of the <head> section of index.
-Tyring to find out why this is needed, found out the internet is down.
-Then, add the router, without the ability to install it, the running app showed this error in the console:
-```
-core.umd.js:5995 EXCEPTION: Uncaught (in promise): 
-Error: Cannot match any routes: ''ErrorHandler.handleError @ ...
-Error: Uncaught (in promise): 
-Error: Cannot match any routes: ''
-    at resolvePromise (zone.js:558)
-...
-    zone.js:484 Unhandled Promise rejection: 
-Cannot match any routes: '' ; 
-Zone: angular ; 
-Task: Promise.then ; 
-Value: Error: Cannot match any routes: ''(…) 
-Error: Cannot match any routes: ''
-```
-Just curious that it mentions promise there.
-
-Anyhow, the reason for the base tag?
-
-### history.pushState
-```
-The Router uses the browser's history.pushState for navigation. 
-in-app URLs can be indistinguishable from server URLs.
-HTML 5 browsers support pushState which is why many people say "HTML 5 style" URLs.
-```
-
-the app.component template changes from this:
-```
-<my-heroes></my-heroes>
-```
-
-to this:
-```
-<a routerLink="/heroes">Heroes</a>
-<router-outlet></router-outlet>
-```
-
-Not as cool as my-heroes for a tag, but whatever.
-The routerLink="/heroes" is cool however.
-
-The component router seems pretty straight forward.  Now it's on toe http.
-
-Curratnly at: Setting the route parameters in the list view
-
-
-## <a name="upgrade-to-angular-2-official">Upgrade to Angular 2 Official</a>
-Yesterday avo the officual announcemnt came out amidst a shower of red balloons that the Angular2 release is now official.
-I checked the [API References](https://angular.io/docs/ts/latest/api/core/testing/index/TestBed-class.html) says this about that:
-`TestBed Class Stability: Experimental` has now been changed to just the work `experimental`.
-
-Following the Julie Ralph commit for her [upgrade commit](https://github.com/juliemr/ng2-test-seed/commit/84d591bc9b8dee172c4fc4ac816b72da8aa5503f).
-```
- -    "@angular/common": "2.0.0-rc.7",
- -    "@angular/compiler": "2.0.0-rc.7",
- -    "@angular/core": "2.0.0-rc.7",
- -    "@angular/platform-browser": "2.0.0-rc.7",
- -    "@angular/platform-browser-dynamic": "2.0.0-rc.7",
-```
-becomes
-```
- +    "@angular/common": "2.0.0",
- +    "@angular/compiler": "2.0.0",
- +    "@angular/core": "2.0.0",
- +    "@angular/platform-browser": "2.0.0",
- +    "@angular/platform-browser-dynamic": "2.0.0",
-```
-Then, the errors:
-```
-$ npm i
-npm WARN peerDependencies The peer dependency rxjs@5.0.0-beta.12 included from @angular/router will no
-npm WARN peerDependencies longer be automatically installed to fulfill the peerDependency 
-npm WARN peerDependencies in npm 3+. Your application will need to depend on it explicitly.
-npm ERR! Darwin 14.5.0
-npm ERR! argv "/Users/tim/.nvm/versions/node/v4.4.3/bin/node" "/Users/tim/.nvm/versions/node/v4.4.3/bin/npm" "i"
-npm ERR! node v4.4.3
-npm ERR! npm  v2.15.1
-npm ERR! code EPEERINVALID
-
-npm ERR! peerinvalid The package @angular/core@2.0.0 does not satisfy its siblings' peerDependencies requirements!
-npm ERR! peerinvalid Peer @angular/common@2.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer @angular/compiler@2.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer @angular/forms@2.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer @angular/http@2.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer @angular/platform-browser@2.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer @angular/platform-browser-dynamic@2.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer @angular/router@3.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer @angular/upgrade@2.0.0 wants @angular/core@^2.0.0
-npm ERR! peerinvalid Peer angular2-in-memory-web-api@0.0.18 wants @angular/core@2.0.0-rc.6
-
-npm ERR! Please include the following file with any support request:
-npm ERR!     /Users/tim/angular/ng2/heroes2/npm-debug.log
-```
-I left a comment on the commit page since there was no issues tab on the repo.
-Felt like I am a little bit out of line with that, but anyhow, it's done.  
-See if she notices and responds.
-Tried this: `$ npm install npm -g`
-Then, after starting the app again:
-```
-zone.js:484 Unhandled Promise rejection: Zone.assertZonePatched is not a function ; 
-Zone: <root> ; Task: Promise.then ; 
-Value: TypeError: Zone.assertZonePatched is not a function(…) 
-TypeError: Zone.assertZonePatched is not a function
-    at new NgZoneImpl 
-```
-Again with the Promise.
-SO: You need to update zone.js pakage by zone.js@0.6.21 for RC7
-```
-<script src="https://unpkg.com/zone.js@0.6.21/dist/zone.js"></script>
-```
-(SO stands for StackOverflow b.t.w.)
-
-Looked at the current quickstart package.json.
-Changed this: `"rxjs": "5.0.0-beta.11",` from beta.11 to 12.
-Then got these problems with $ npm i
-```
-symbol-observable@1.0.2 node_modules/rxjs/node_modules/symbol-observable -> node_modules/symbol-observable
-angular2-quickstart@1.0.0 /Users/tim/angular/ng2/heroes2
-├── UNMET PEER DEPENDENCY @angular/core@2.0.0
-├── UNMET PEER DEPENDENCY @angular/http@2.0.0
-├── UNMET PEER DEPENDENCY rxjs@5.0.0-beta.12
-└── UNMET PEER DEPENDENCY zone.js@0.6.17
-npm WARN @angular/core@2.0.0 requires a peer of zone.js@^0.6.21 but none was installed.
-npm WARN angular2-in-memory-web-api@0.0.18 requires a peer of @angular/core@2.0.0-rc.6 but none was installed.
-npm WARN angular2-in-memory-web-api@0.0.18 requires a peer of @angular/http@2.0.0-rc.6 but none was installed.
-npm WARN angular2-in-memory-web-api@0.0.18 requires a peer of rxjs@5.0.0-beta.11 but none was installed.
-npm ERR! code 1
-```
-
-Besides this change, here are some other mods in the quickstarter:
-```
- -    "rxjs": "5.0.0-beta.11"
- +    "rxjs": "5.0.0-beta.12"
- -    "zone.js": "^0.6.21",
- +    "zone.js": "^0.6.23", 
- -    "angular2-in-memory-web-api": "0.0.19",
- +    "angular2-in-memory-web-api": "0.0.20",
-```
-After doing the npm i, then npm start, the app runs again.
-Then we're back to implementing routes!
-
-
-## <a name="tour-of-heroes-services">Tour of Heroes: Services</a>
-
-The services part was pretty straight forward.  This just records an error that will happen halfway through the step.
-After a half implemented promise, the app breaks with the following (partial!) error:
-```
-zone.js:484 Unhandled Promise rejection: Error in app/app.template.html:11:8 caused by: 
-Cannot find a differ supporting object '[object Object]' of type 'object'. 
-NgFor only supports binding to Iterables such as Arrays. ; 
-Zone: <root> ; 
-Task: Promise.then ; 
-Value: ViewWrappedError {_nativeError: Error: Error in app/app.template.html:11:8 
-caused by: Cannot find a differ supporting object 
-'[objec…, originalError: Error: Cannot find a differ supporting object '[object Object]' of type 
-'object'. NgFor only support…, context: DebugContext} 
-Error: Cannot find a differ supporting object '[object Object]' of type 'object'. 
-NgFor only supports binding to Iterables such as Arrays.
-    at NgFor.ngOnChanges (http://localhost:3000/node_modules/@angular/common/bundles/common.umd.js:2309:31)
-    at DebugAppView._View_AppComponent0.detectChangesInternal (AppComponent.ngfactory.js:130:46)
-    at DebugAppView.AppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12061:18)
-    at DebugAppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12166:48)
-    at DebugAppView.AppView.detectViewChildrenChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12087:23)
-    at DebugAppView._View_AppComponent_Host0.detectChangesInternal (AppComponent_Host.ngfactory.js:37:8)
-    at DebugAppView.AppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12061:18)
-    at DebugAppView.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:12166:48)
-    at ViewRef_.detectChanges (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:10159:69)
-    at eval (http://localhost:3000/node_modules/@angular/core/bundles/core.umd.js:9623:88)consoleError @ zone.js:484_loop_1 @ zone.js:511drainMicroTaskQueue @ zone.js:515ZoneTask.invoke @ zone.js:437
-zone.js:486 Error: Uncaught (in promise): Error: Error in app/app.template.html:11:8 caused by: Cannot find a differ supporting object '[object Object]' of type 'object'. NgFor only supports binding to Iterables such as Arrays.(…)
-```
-
-Obviously no improvement from Angular 1 on the errors.
-But, yes, we need to use the promise now being returned by the service.
-Implemnt the .then function to use the promise, and the app is back up and running.
-
-
-## <a name="The-ngOnInit-Lifecycle-Hook">The ngOnInit Lifecycle Hook</a>
-In the Tour of Heroes Services chapter, there is a discussion regarding a constructor vs. ngInit.
-This comes directly from the tutorial:
-```
-AppComponent should fetch and display heroes without a fuss. 
-Where do we call the getHeroes method? In a constructor? We do not!
-
-Years of experience and bitter tears have taught us to keep complex logic out of the constructor, 
-especially anything that might call a server as a data access method is sure to do.
-
-The constructor is for simple initializations like wiring constructor parameters to properties. 
-It's not for heavy lifting. 
-We should be able to create a component in a test and not worry that it might do real work 
-— like calling a server! — before we tell it to do so.
-
-If not the constructor, something has to call getHeroes.
-Angular will call it if we implement the Angular ngOnInit Lifecycle Hook. 
-Angular offers a number of interfaces for tapping into critical moments in the component lifecycle: 
-at creation, after each change, and at its eventual destruction.
-```
-
-## Errata
-In the Hero service, there is a lot going on which is glossed over in the tutorial.  Keeping it simple do doubt.
-Here are some of the things I am talking about.
-```
-  getHeroes(): Promise<Hero[]> {
-    return this.http.get(this.heroesUrl)
-               .toPromise()
-               .then(response => response.json().data as Hero[])
-               .catch(this.handleError);
-  }
-```
-That's a pretty nifty bit of code there.  
-Mapping an Ajax json file to a TypeScript object.
-But say I wanted to add some logging in there:
-```
-.then(response => {
-    console.log('response',response);
-    response.json().data as Hero[];
-})
-```
-XCode doesn't like that.  I has the whole and surrounding block in red squigglies, and a mouseover hint says this:
-```
-[ts] Type 'Promise<void>' is not assignable to type 'Promise<Hero[]>'.
-  Type 'void' is not assignable to type 'Hero[]'.
-(parameter) response: Response
-```
-I think it a combination of the fat arrow and, what, destructuring?  I'm not even clear on the 'as' format used there.
-I remeber learning this about the fat arrow and restructuring, and this was a note I took at the time:
-```
-.then({data} => data.item; do not use the fat arrow function with desctructuring (DI function)
-```
-But that's not a destructuring syntax, I know I've seen it before but never used it myself.
-It's not easy searching for a simple word like 'as' and getting useful responses.
-Searching with the phrase 'response.json().data as ' yeilded [this answer](http://stackoverflow.com/questions/38708703/whats-the-best-way-to-cast-json-to-generic-object-in-angular-2-typescript) on stack overflow.
-The question asked is 'Whats the best way to cast JSON to generic Object[] in angular 2 typescript?'
-The answer, by @r3m0t sates: The correct way is as any[]:
-```
-return this.http.get(URL)
-    .toPromise()
-    .then(response => response.json().data as any[]) 
-    .catch(this.handleError);
-```
-This will let you access everything that was in the JSON response 
-(as well as everything that wasn't in the JSON response. You'll get an error at runtime).
-It would be better to cast the result to a specific type, see [How do I cast a JSON object to a typescript class](http://stackoverflow.com/questions/22875636/how-do-i-cast-a-json-object-to-a-typescript-class)
-
-So it's a TypeScript thing.  And the link above looks like a good read.
-There are two camps on this:
-1. a number of techniques for doing it that generally involve copying data.
-2. cast to an interface (as it's purely a compile time structure), this would require that you use a TypeScript class which uses the data instance and performs operations with that data.
-
-Anyhow, it does not actually include a sample with the obj as somthing[] syntax.
-There is the accepted answer:
-```
-var d = new MyRichObject();
-d.copyInto(jsonResult);
-```
-or this:
-```
-MapUtils.deserialize(Person, example);
-```
-or this:
-```
-var json = Utilities.JSONLoader.loadFromFile("../docs/location_map.json");
-var locations: Array<ILocationMap> = JSON.parse(json).location;
-```
-from the second link.
-
-There is [another question](http://stackoverflow.com/questions/39326976/get-data-from-json-with-angular2-promise) which deals with the exact same bit of code from the tutorial above.
-There is debate about where to put the console.log in the notes.
-However, there is no answer to the question.  Tha asker answers the question in the comments.
-The method is wrapped in a return statement, so the result of that line is what will be returned.
-
-Anyhow, the main question here, besides how to structore the statement with a console log, [is discussed here](http://acdcjunior.github.io/typescript-cast-object-to-other-type-or-instanceof.html).
-It's a casting feature:
-```
-Use <> or the as keyword for casting:
-var myObject: TypeA;
-var otherObject: any;
-// values are assigned to them, and...
-myObject = <TypeA> otherObject;     // using <>
-myObject = otherObject as TypeA;    // using as keyword
-```
-For those who don't know, the <> is known as the 'Elvis' operatro, probably because Elvis like jewels.
-
-The 'as' syntax is detailed here:
-[TypeScript 1.6: JSX support](https://www.typescriptlang.org/docs/release-notes/typescript-1.6.html)
-the new as operator
-```
-var x = <any> foo;
-// is equivalent to:
-var x = foo as any;
-```
-There is also [this question]() which deals with the same operator:
-Is there any difference between what the TypeScript spec calls a type assertion:
-```
-var circle = <Circle> createShape("circle");
-```
-And the newer as operator:
-```
-var circle = createShape("circle") as Circle;
-```
-Both of which are typically used for compile-time casting?
-
-The Answer: The difference is that as Circle works in TSX files, but <Circle> conflicts with JSX syntax. 
-as was introduced for this reason.  For example, the following code in a .tsx file:
-```
-var circle = <Circle> createShape("circle");
-```
-Will result in the following error:
-```
-error TS17002: Expected corresponding JSX closing tag for 'Circle'.
-```
-However, as Circle will work just fine.
-Use as Circle from now on. It's the recommended syntax.
-
-I can see why they glossed over that syntax.
-
-
-The other piece of code I had a question about was this:
-```
-delete(hero: Hero): void {
-  this.heroService
-      .delete(hero.id)
-      .then(() => {
-        this.heroes = this.heroes.filter(h => h !== hero);
-        if (this.selectedHero === hero) { this.selectedHero = null; }
-      });
-}
-``` 
-What is the filter doing here?  It's a search and match function, but using the filter method with a fat arrow.
-That's an interesting why to perform a loop.
-That's a functional programming style from the rxjs observables library.
-
-
 ## <a name="tour-of-heroes-multiple-components">Tour of Heroes: Multiple Components</a>
 
 After getting through part 3: Multiple Components, I got this error:
@@ -815,166 +699,3 @@ declarations: [
     HeroDetailComponent
 ],
 ```
-
-
-## <a name="detail-view-pagination">Detail view pagination</a>
-Not sure how to use the router to programmatically go to a specific route.
-This code goes to the next image, but then jumps back to the previous one.
-This code it from the hero-detail.component:
-```
-<button (click)="goForward()"
-    style="margin-top: 3px;transform: scaleX(-1);">
-    <img src="/app/images/buttons/back-button.png"
-        height="30px">
-</button>
-...
-    goForward(): void {
-        let newId = this.hero.id++;
-        this.heroService.getHero(newId)
-                .then(hero => 
-                    this.hero = hero);
-                    //console.log('hero param', id);
-        this.router.navigate(['/detail',newId]);
-        //window.history.pushState('detail','/detail','/detail/'+newId);
-        console.log('goForward');
-    }
-```
-These version will do the same:
-```
-this.router.navigate(['/detail/'+newId]);
-this.router.navigateByUrl('/detail/'+newId);
-this.router.navigate(['/detail', { id: newId }]);
-```
-
-Also note that the url does not change unless you click a few times quickly.
-The router docs say:
-```
-The link parameters array has two items: the path of the destination route and a route parameter that specifies the id of the selected hero.
-```
-Why use an array?  Why not a function with two arguments?
-Anyhow this is how the heroes.component does it:
-```
-this.router.navigate(['/detail', this.selectedHero.id]);
-```
-So that is the correct way to do it.  
-What may be happening is that the selectedHero in the HeroesComponent class is not being changed.
-Tried importing that class in to the HeroDetailComponent class, 
-We could expose that class in the detail view and do this:
-```
-HeroesComponent.onSelect(this.hero);
-```
-But, then that would have to be a static function.  Not sure, in the JS world, since using the 'new' keyword is frowned upon and Angular has it's own way of creating these classes...
-What to do?
-
-The answer was not to call router.navigate at all, just change the hero object.
-Then, to update the history of the browser, we use the history pushState functiuon.
-Here is the API for that call:
-```
-(method) History.pushState(statedata: any, title?: string, url?: string): void
-```
-And an example use case:
-```
-var stateObj = { foo: "bar" };
-history.pushState(stateObj, "page 2", "bar.html");
-```
-Which in our case is just this:
-```
-history.pushState({}, this.hero.name, '/detail/'+newId);
-```
-And viola, we have pagination.  
-It's lacking validation at this point, but we'll deal with that once we know that this particulary implentation is going to stick around.
-
-
-## <a name="tour-of-heroes-master-detail">Tour of Heroes: Master/Detail</a>
-
-For part two, the master detail pattern, creating an array of heroes causes this error:
-```
-    const HEROES: Hero[] = [
-        { id: 11, name: 'Mr. Nice' },
-        ...
-        { id: 19, name: 'Magma' },
-        { id: 20, name: 'Tornado' }
-    ];
-```    
-[ts]
-A class member cannot have the 'const' keyword.
-
-If 'const' is changed to 'var', then most of the red squiggly lines are gone, but there is a red squiggly line under the var keyword, with the mouse-over message:
-[ts] 
-Unexpected token. A constructor, method, accessor, or property was expected.
-
-If the const keyword is removed altogether, there is no error.
-The problem was the location where this was.
-Originally, I put it in the AppComponent class.  But it should actually reside outside that class.
-It could be in it's own file, but putting it after the Hero class after the import statements works for now.
-
-On [StackOverflow, this answer said](http://stackoverflow.com/questions/36142879/const-keyword-in-typescript)
-Why a class member cannot have the 'const' keyword in TypeScript?
-const does not imply deep immutability so the following is valid:
-```
-const foo:any = {};
-foo.bar = 123;  // Okay
-```
-In that sense read only makes better sense for class members and that is supported :
-
-
-Completed [toh-pt1](https://angular.io/docs/ts/latest/tutorial/toh-pt1.html) step.
-Will jump ahead next and [add Webpack](https://angular.io/docs/ts/latest/guide/webpack.html) to replace SystemJS.
-
-
-## <a name="the-favicon.ico">The favicon.ico</a>
-
-The StackOverflow [#1 answer](http://stackoverflow.com/questions/2208933/how-do-i-force-a-favicon-refresh): 
-force browsers to download a new version using the link tag and a query string on your 
-filename. This is especially helpful in production environments to make sure your users 
-get the update.
-```
-<link rel="icon" href="http://www.yoursite.com/favicon.ico?v=2" />
-```
-We're using this variation:
-```
-<link rel="shortcut icon" href="favicon.ico?v=2" />
-```
-
-Answer #2:
-he easy way to fix it is close to that of line of birds
-
-1. type in www.yoursite.com/favicon.ico
-2. push enter
-3. ctrl+f5
-4. Restart Browser (for IE and Firefox)
-
-However, this is not working.  There is either no icon, or the old Angular icon.
-When using Node, there is a Spring leaf icon.
-
-
-## <a name="setup">Setup</a>
-Following the section below in the original Angular 2 Quickstart, with the following exception:
-```
-QuinquenniumF:heroes2 tim$ git remote add origin https://github.com/timofeysie/heroes2.git
-fatal: remote origin already exists.
-QuinquenniumF:heroes2 tim$ git remote add remote https://github.com/timofeysie/heroes2.git
-```
-
-Next, the typings folder didn't show up after npm install, so installed them manually with:
-```
-$ npm run typings -- install
-```
-
-Then, to push changes to GitHub:
-```
-$ git push -u remote master
-```
-
-To Deploy to Heroku
-```
-$ git push heroku master
-```
-
-## Using VSCode
-The editor of choice for working with TypeScript on this project.
-Updated VisualStudio code to v1.5.2:
-A version mismatch between the globally installed tsc compiler (1.5.3) and VS Code's language service (1.8.10) has been detected. This might result in inconsistent compile errors.
-The editor [opens this page](https://code.visualstudio.com/docs/languages/typescript#_using-newer-typescript-versions) for details.
-Might need to look at this later if there are any problems with the typings.
-
