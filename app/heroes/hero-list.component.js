@@ -12,17 +12,17 @@ var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var router_2 = require('@angular/router');
 var hero_service_1 = require('./hero.service');
-var question_service_1 = require('../question.service');
+// import { QuestionService } from '../question.service';
 /** This component uses moduleId to set Component-Relative Path. */
 var HeroListComponent = (function () {
-    function HeroListComponent(heroService, router, route, service) {
+    function HeroListComponent(heroService, router, route) {
         this.heroService = heroService;
         this.router = router;
         this.route = route;
-        this.service = service;
-        this.questions = service.getQuestions();
-        console.log('yo hero.component constructed with ', this.questions);
+        // this.questions = service.getQuestions();
+        // console.log('yo hero.component constructed with ',this.questions);
     }
+    // questions: any[];
     HeroListComponent.prototype.ngOnInit = function () {
         var _this = this;
         // this.getHeroes();
@@ -80,9 +80,8 @@ var HeroListComponent = (function () {
             selector: 'my-heroes',
             styleUrls: ['../hero-styles.css'],
             templateUrl: 'hero-list.component.html',
-            providers: [hero_service_1.HeroService, question_service_1.QuestionService]
         }), 
-        __metadata('design:paramtypes', [hero_service_1.HeroService, router_1.Router, router_2.ActivatedRoute, question_service_1.QuestionService])
+        __metadata('design:paramtypes', [hero_service_1.HeroService, router_1.Router, router_2.ActivatedRoute])
     ], HeroListComponent);
     return HeroListComponent;
 }());

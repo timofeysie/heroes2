@@ -1,0 +1,27 @@
+
+<!--<button (click)="save()">Save</button>-->
+<div *ngIf="page" class="flex-grid">
+    <div class="col">
+        <button (click)="goBack()"
+        style="margin-top: 3px;">
+        <img src="/app/images/buttons/back-button.png"
+            height="30px">
+    </button>
+    <button (click)="goForward(page.id)"
+        style="margin-top: 3px;transform: scaleX(-1);">
+        <img src="/app/images/buttons/back-button.png"
+            height="30px">
+    </button>
+        <h4 class="page-text">{{page.text}}</h4>
+        <h5>{{page.name}}</h5>
+        <!--<div><label>id: </label>{{page.id}}</div>-->
+        <!--<div>
+            <label>name: </label>
+            <input [(ngModel)]="page.name" placeholder="name"/>
+        </div>-->
+    </div>
+    <div class="col">
+        <img class="detail-image" 
+        src="/app/images/pages/page-{{page.id}}.png">
+    </div>
+</div>

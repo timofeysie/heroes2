@@ -13,40 +13,44 @@ import { AppComponent }        from './app.component';
 import { AppRoutingModule }    from './app-routing.module';
 
 // Imported for the model driven forms
-import { DynamicFormComponent }         from './dynamic-form.component';
-import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
+// import { DynamicFormComponent }         from './dynamic-form.component';
+// import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
 
 import { HeroesModule }         from './heroes/heroes.module';
-import { HeroService }         from './heroes/hero.service';
-import { HeroListComponent }     from './heroes/hero-list.component';
-import { DashboardComponent }  from './dashboard.component';
+// import { HeroService }         from './heroes/hero.service';
+// import { HeroListComponent }     from './heroes/hero-list.component';
+// import { DashboardComponent }  from './dashboard.component';
 import { routing }             from './app.routing';
-import { HeroSearchComponent } from './hero-search.component';
-import { QuestionService } from './question.service';
+// import { HeroSearchComponent } from './hero-search.component';
+// import { QuestionService } from './question.service';
 //import { CrisisListComponent }  from './crisis-list.component';
+import { PagesModule }     from './pages/pages.module';
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     HeroesModule,
+    PagesModule,
     AppRoutingModule,
     ReactiveFormsModule,
     HttpModule,
-    InMemoryWebApiModule.forRoot(InMemoryDataService),
-    routing
+    InMemoryWebApiModule.forRoot(InMemoryDataService)
   ],
   declarations: [
     AppComponent,
     //CrisisListComponent
     //HeroListComponent, its being provided by the HeroesModule now
     // there can be only one owner for a declared component
-    DashboardComponent,
-    HeroSearchComponent,
-    DynamicFormComponent, 
-    DynamicFormQuestionComponent 
+    // DashboardComponent,
+    // HeroSearchComponent,
+    // DynamicFormComponent, 
+    // DynamicFormQuestionComponent 
   ],
-  providers: [HeroService,QuestionService],
+  providers: [
+    // HeroService,
+    // QuestionService
+    ],
   bootstrap: [ AppComponent ],
   exports: [ ReactiveFormsModule ]
 })

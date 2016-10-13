@@ -20,15 +20,13 @@ var in_memory_data_service_1 = require('./in-memory-data.service');
 var app_component_1 = require('./app.component');
 var app_routing_module_1 = require('./app-routing.module');
 // Imported for the model driven forms
-var dynamic_form_component_1 = require('./dynamic-form.component');
-var dynamic_form_question_component_1 = require('./dynamic-form-question.component');
+// import { DynamicFormComponent }         from './dynamic-form.component';
+// import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
 var heroes_module_1 = require('./heroes/heroes.module');
-var hero_service_1 = require('./heroes/hero.service');
-var dashboard_component_1 = require('./dashboard.component');
-var app_routing_1 = require('./app.routing');
-var hero_search_component_1 = require('./hero-search.component');
-var question_service_1 = require('./question.service');
+// import { HeroSearchComponent } from './hero-search.component';
+// import { QuestionService } from './question.service';
 //import { CrisisListComponent }  from './crisis-list.component';
+var pages_module_1 = require('./pages/pages.module');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -38,23 +36,16 @@ var AppModule = (function () {
                 platform_browser_1.BrowserModule,
                 forms_1.FormsModule,
                 heroes_module_1.HeroesModule,
+                pages_module_1.PagesModule,
                 app_routing_module_1.AppRoutingModule,
                 forms_2.ReactiveFormsModule,
                 http_1.HttpModule,
-                angular2_in_memory_web_api_1.InMemoryWebApiModule.forRoot(in_memory_data_service_1.InMemoryDataService),
-                app_routing_1.routing
+                angular2_in_memory_web_api_1.InMemoryWebApiModule.forRoot(in_memory_data_service_1.InMemoryDataService)
             ],
             declarations: [
                 app_component_1.AppComponent,
-                //CrisisListComponent
-                //HeroListComponent, its being provided by the HeroesModule now
-                // there can be only one owner for a declared component
-                dashboard_component_1.DashboardComponent,
-                hero_search_component_1.HeroSearchComponent,
-                dynamic_form_component_1.DynamicFormComponent,
-                dynamic_form_question_component_1.DynamicFormQuestionComponent
             ],
-            providers: [hero_service_1.HeroService, question_service_1.QuestionService],
+            providers: [],
             bootstrap: [app_component_1.AppComponent],
             exports: [forms_2.ReactiveFormsModule]
         }), 

@@ -1,0 +1,27 @@
+<button (click)="gotoDetail()"
+  class="details__button--position">
+  <img src="/app/images/buttons/details-button.png"
+    height="30px">
+</button>
+<!--<dynamic-form [questions]="questions"></dynamic-form>-->
+<div *ngIf="selectedHero">
+  <h2>
+    {{selectedHero.name | uppercase}}.
+  </h2>
+</div>
+<ul class="heroes">
+  <li *ngFor="let hero of heroes" 
+    (click)="onSelect(hero)"
+      [class.selected]="isSelected(hero)">
+    <span class="badge">{{hero.id}}</span>
+    <span>{{hero.name}}</span>
+    <button class="delete"
+      (click)="delete(hero); $event.stopPropagation()">x</button>
+  </li>
+</ul>
+<div>
+  <label>Hero name:</label> <input #heroName />
+  <button (click)="add(heroName.value); heroName.value=''">
+    Add
+  </button>
+</div>

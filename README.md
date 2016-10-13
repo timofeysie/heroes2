@@ -4,8 +4,7 @@ Based on the official Angular 2 Tour of Heroes tutorial with samples from variou
 
 The running app is available [on Heroku](https://myra-the-ferryboat.herokuapp.com/).
 
-Currently we are adding form validation rules dynamically depends on user selection to our dynamic model driven forms.
-
+Currently working through the humungeous [Advanced: Routing & Navigation](https://angular.io/docs/ts/latest/guide/router.html) page.
 
 See the [Model driven forms](#model-drive-forms) section below.
 
@@ -16,11 +15,11 @@ See the [Model driven forms](#model-drive-forms) section below.
 2. [Model driven forms](#model-drive-forms)
 2. [Advanced: Routing & Navigation](#advanced-routing-and-navigation">)
 2. [Tour of Heroes: Routing](#tour-of-heroes-routing) (docs)
-2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official)
+2. [Upgrade to Angular 2 Official](#upgrade-to-angular-2-official) (docs)
 2. [Tour of Heroes: Services](#tour-of-heroes-services) (docs)
-2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components)
+2. [Tour of Heroes: Multiple Components](#tour-of-heroes-multiple-components) (docs)
 2. [The ngOnInit Lifecycle Hook](lThe-ngOnInit-Lifecycle-Hook)
-2. [Detail view pagination](#detail-view-pagination)
+2. [Detail view pagination](#detail-view-pagination) (docs)
 2. [Tour of Heroes: Master/Detail](#tour-of-heroes-master-detail) (docs)
 3. [The favicon.ico](#the-favicon.ico)
 5. [Setup](#setup) (docs)
@@ -50,10 +49,10 @@ See the [npm scripts](#npm-scripts) for other commands.
 Completed the Angular2 Tour of Heroes.
 
 Working on refactoring for the [routing and navigation](https://angular.io/docs/ts/latest/guide/router.html).
-Getting ready to create feature folders for the routing section.
 
 For a discussion regarding the unit tests and the compiling templates problem, se the separate document docs/BROKEN_TESTS.md.
 If a document is too long, the spelling checker in VSCode will not work.
+
 
 <a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>
 
@@ -272,6 +271,7 @@ zone.js:344 Unhandled Promise rejection: Failed to load app/hero-detail.componen
 
 After a crash like that it takes a re-start of npm to get to the new code.
 Change that naughty old path, and the ctrl-refresh, then we get these interesting errors:
+
 ```
 zone.js:344 Unhandled Promise rejection: Template parse errors:
 Can't bind to 'questions' since it isn't a known property of 'dynamic-form'.
@@ -320,12 +320,12 @@ Not sure why all the repeats, but that's pretty par for the course with JavaScri
 But, clearly, now the dynamic model driven form module is not set up correctly.
 Really, it needs to be in it's own module, as we have just done with the heroes module.
 
-The next section in the sprawling advanced routing & navigation page will create another module called crisis center.
+The next section in the sprawling advanced routing and navigation page will create another module called crisis center.
 So, all in favor of taking out the dynamic questions form until after we have more practice creating a module, say aye!
 
 The form never looked good where it was anyhow.
-The plan now is to create a form creation page with admin privlidges.
-And then have those created forms fillable by anyone.
+The plan now is to create a form creation page with admin privileges.
+And then have those created forms fill-able by anyone.
 Yes, the features are half-baked, but this is a learning exercise, so we can let it slide for now.
 Really the form stuff should be its own project, but it is convenient to do all the practice here for now.
 
@@ -336,219 +336,69 @@ Since we looked ahead, we know the crisis center will get those admin roles:
 - Milestone #6: Asynchronous Routing
 
 
-## <a name="model-drive-forms">Model driven forms</a>
 
-Giving the testing and router refactoring a break to try out the [model driven forms](https://angular.io/docs/ts/latest/cookbook/dynamic-form.html) 
-in the Angular 2 docs Cookbook section.
-What a great example of OOP in the front end!
-Dynamic data binding of metadata used to render the form without making any hardcoded assumptions about specific questions.
-In addition to control metadata, we are also adding validation dynamically.
+## <a name="advanced-routing-and-navigation-milestone-4">Advanced: Routing and Navigation: The Crisis Center Module</a>
 
-After about two days of debugging, the form is working. 
-See the separate file in docs/<a name="fixing-the-drive-forms">Fixing the data driven forms</a> for that story.
-The problem seemed to be using the form  in the same view where the routing was happening:
-```
-  <hero-search></hero-search>
-  <dynamic-form [questions]="questions"></dynamic-form>
-```
-Moved the form to the heroes.component.ts.
-The form shows now, but there are still a few problems.
+Here we go, Milestone #4: The Crisis Center.
 
-1. The page initially starts broken.
-Doing a ctrl-refresh fixes this.
-2. On Heroku this does not happen, but the data from the old form is cached.
-3. The validation is broken.
+Since we have to copy the entire directory and change every mention of "hero" to "crisis", we will do it a little differently.
+hero -> page
+heroes -> pages
+Hero -> page
+Heroes -> Pages
 
-So, there are a few options as to what to do next.
+crisis-center - pages-center.
 
-1. There is the Cookbook [form validation](https://angular.io/docs/ts/latest/cookbook/form-validation.html) section.
-2. The OOP dance of objects that create the form needs a diagram.
-3. We could also go back and cover the first [forms tutorial](https://angular.io/docs/ts/latest/guide/forms.html)
-for a better understanding of how to fix the validation.
-4. There is still the refactoring of class into feature folders in [the routing & navigation](https://angular.io/docs/ts/latest/guide/router.html) section of the advanced tutorial.
-5. It would be great to write some unit tests for the forms, specifically to show the failing validation, 
-and thereby practice BDD, but the unit tests are still broken because the templateUrls are not compiled.
-6. This project is all going well, but it's not the only game on GitHub.  
-We are starting a new role using Ionic 2 in a few days, and it was intended to use this dynamic forms feature in Ionic.  
-Ionic 2 is in rc.1, so actually, the documentation is not there to support easy pickup of features yet.  
-This is shown in the difficulty we had creating working unit tests for a sample Ionic 2 app.
-7. There is also the Serene-brushlands project to test before pushing into production.
+Add a new component:
+CrisisCenterComponent -> PagesComponent (pages.componente.ts) is much like the AppComponent shell.
+CrisisCenterComponent is much like the AppComponent shell.
 
-Given that there is only today and tomorrow to before the role starts, estimates show that only one of these things could be accomplished in that time.
-So what's it going to be?
-We <i>should</i> do no.7.  We want to do no.1.  So since it's our time here, no.1 it is!
+The naming differences, between page and pages is a little unclear.
+pages-home.component.ts was created.  Should it have be page-home.component.ts?  Not sure...
 
-That tutorial took most of the day to cover.
-It handled validation using the ReactiveFormsModule in the second half.
-It didn't cover the model driven part, so it would take some time to implement it's solutions in the Heroes 2 code.
-
-Now I'm looking now at [the Scotch.io tutorial](https://scotch.io/tutorials/using-angular-2s-model-driven-forms-with-formgroup-and-formcontrol) on the subject,
-which also has an updated [tutiral on nested forms](https://scotch.io/tutorials/how-to-build-nested-model-driven-forms-in-angular-2) also using model driven forms.
-
-The [Using Angular 2’s Model-Driven Forms with FormGroup and FormControl](https://scotch.io/tutorials/using-angular-2s-model-driven-forms-with-formgroup-and-formcontrol) 
-tutorial starts off with instructions on installing forms.
-This is something we were never told to do in the official cookbook tutorial.
-We assumed that importing it would trigger a download when doing npm run.
+What is the DialogService?  The example app.module.ts has that as an import and a provider.
+What it doesn't have after all those changes is PagesComponent:
 
 ```
-npm install @angular/forms --save
+zone.js:344 Unhandled Promise rejection: 
+Component PagesComponent is not part of any NgModule or the module has not been imported into your module. ; Zone: <root> ; Task: Promise.then ; Value: Error: Component PagesComponent is not part of any NgModule or the module has not been imported into your module.(…) Error: Component PagesComponent is not part of any NgModule or the module has not been imported into your module.
 ```
 
-Running this and then launching the app brings our validation back.
-However, the app still launches broken and requires a ctrl-refresh to work.
+For some reason the pages component is not transpiled down to it's Javascript file.
+Oh, had to refresh the directory.
+So where does this component ned to be configrued.
+Look at its counterpart.
+There is only the hero-detial.component and the hero-list.component.
 
-The tuturoail is build on an interface like this:
+Right, right up there is says it's a new file.
+OK.  It just wasn't imported into the pages.module.
 
-```JavaScript
-export interface User {
-    name: string; // required with minimum 5 chracters
-    address?: {
-        street?: string; // required
-        postcode?: string;
-    }
-}
+Next error:
+```
+Component PagesHomeComponent is not part of any NgModule or the module has not been imported into your module.
+```
+Same as the pages component.
+
+Next up:
+
+```
+core.umd.js:3462 EXCEPTION: Uncaught (in promise): Error: Cannot match any routes: ''
 ```
 
-However, this model is hardwired on creation like this:
+So the home page route is not working.
+Going to the list of heroes works, with the hero details.
 
-```JavaScript
-ngOnInit() {
-
-    // the short way
-    this.myForm = this._fb.group({
-            name: ['', [<any>Validators.required, <any>Validators.minLength(5)]],
-            address: this._fb.group({
-                street: ['', <any>Validators.required],
-                postcode: ['']
-            })
-        });
-
-}
+The next part of the tut deals with that":
+```
+    {
+        path: '',
+        redirectTo: '/crisis-center',
+        pathMatch: 'full'
+      },
 ```
 
-The validation is handled like this:
 
-```htm
-<div>
-    <label>Name</label>
-    <input type="text" formControlName="name">
-    <small [hidden]="myForm.controls.name.valid || (myForm.controls.name.pristine && !submitted)">
-        Name is required (minimum 5 characters).
-    </small>
-</div>
-```
-
-formGroupName can be used multiple times in the same form:
-
-```htm
-    <div formGroupName="address">
-        <input formControlName="street">
-        <input formControlName="postcode">
-    </div>
-```
-
-This is the same as:
-
-```htm
-    <div formGroupName="address">
-        <input formControlName="street">
-    </div>
-    <div formGroupName="address">
-        <input formControlName="postcode">
-    </div>
-```    
-
-There is a trick shown to use a default value.  
-
-```javascript
-(<FormControl>this.myForm.controls['name'])
-    .setValue('John', { onlySelf: true });
-```
-
-{ onlySelf: true }, mean this change will only affect the validation of this control and 
-not its parent component.
-
-By default this.myForm.controls['name'] is of type AbstractControl. 
-AbstractControl is the base class of FormGroup and FormControl. 
-Therefore, we need to cast it to FormControl in order to utilize control specific function.
-
-The whole model could be updated like this:
-
-```javascript
-    const people = {
-            name: 'Jane',
-            address: {
-                street: 'High street',
-                postcode: '94043'
-            }
-        };
-
-        (<FormGroup>this.myForm)
-            .setValue(people, { onlySelf: true });
-```
-
-Each form group or form control expose a few events which we can subscribe to (e.g. statusChanges, valuesChanges, etc).
-
-Let say we want to do something every time when any form values changed. We can do this:-
-```
-subcribeToFormChanges() {
-    // initialize stream
-    const myFormValueChanges$ = this.myForm.valueChanges;
-
-    // subscribe to the stream 
-    myFormValueChanges$.subscribe(x => this.events
-        .push({ event: ‘STATUS CHANGED’, object: x }));
-}
-```
-
-subscribe to form changes 
-
-```javascript
-ngOnInit() {
-    this.subcribeToFormChanges();
-}
-```
-
-Then display all value changes event in our view.
-
-```html
-Form changes:
-<div *ngFor="let event of events">
-    <pre> {{ event | json }} </pre>
-</div>
-```
-
-We will want to change form validation rules dynamically depending on user selection, so this method is the way to go.
-
-On to the nested forms tutorial on Scotch.io.
-
-It has the following model for the demo:
-
-```JavaScript
-export interface Customer {
-    name: string; // required field with minimum 5 characters
-    addresses: Address[]; // user can have one or more addresses
-}
-export interface Address {
-    street: string;  // required field
-    postcode: string;
-}
-```
-
-What we will want however, is a Form interface, and a Field interface.
-For the FormModel, we need a title, and probably a host of other housekeeping info such as id, created and updated dates, authors, etc.
-The FieldModel should have the same members the QuestionBase:
-  value: T;
-  key: string;
-  label: string;
-  required: boolean;
-  order: number;
-  controlType: string;
-
-
-
-
-## <a name="advanced-routing-and-navigation">Advanced: Routing & Navigation</a>
+## <a name="advanced-routing-and-navigation-feature-modules">Advanced: Routing & Navigation: Feature module</a>
 Following [the router documentation tutorial](https://angular.io/docs/ts/latest/guide/router.html).
 
 They say `We recommend giving each feature area its own route configuration file`.
@@ -660,7 +510,7 @@ heroes.component
 in-memory-data.service
 main
 rxjs-extension
-```
+```">
 
 Even without the 8 files for each and every component, this is getting out of hand quickly.
 The beta 1 quick start compiled the .js files to a dist directory, functionality which they have since removed.
@@ -670,32 +520,3 @@ I don't mind them right now.  It's still interesting to take a look at what the 
 It's still a little strange to have app.module.ts, app.component.ts, and main.ts.
 Why not just bootstrap the application's root module in the root module?  
 There must be a reason.  Something to look forward to learning about. 
-
-
-## <a name="tour-of-heroes-multiple-components">Tour of Heroes: Multiple Components</a>
-
-After getting through part 3: Multiple Components, I got this error:
-```
-zone.js:484 Unhandled Promise rejection: Template parse errors:
-Can't bind to 'hero' since it isn't a known property of 'my-hero-detail'.
-1. If 'my-hero-detail' is an Angular component and it has 'hero' input, 
-then verify that it is part of this module.
-2. If 'my-hero-detail' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message.
- ("
-    </li>
-</ul>
-<my-hero-detail [ERROR ->][hero]="selectedHero"></my-hero-detail>
-"): AppComponent@19:16
-```
-This is definately case 1.
-We had forgotten to import the new detail view in the app.module.ts file:
-```
-import { HeroDetailComponent } from './hero-detail.component';
-```
-But this did not solve the error.  We had to also declare it in the declarations section:
-```
-declarations: [
-    AppComponent,
-    HeroDetailComponent
-],
-```
