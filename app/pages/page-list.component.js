@@ -37,6 +37,9 @@ var PageListComponent = (function () {
     };
     PageListComponent.prototype.onSelect = function (page) {
         this.router.navigate(['/page', page.id]);
+        // Navigate with relative link
+        this.selectedId = page.id;
+        this.router.navigate([page.id], { relativeTo: this.route });
     };
     PageListComponent.prototype.isSelected = function (page) {
         return page.id === this.selectedId;

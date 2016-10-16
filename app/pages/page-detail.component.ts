@@ -85,7 +85,10 @@ export class PageDetailComponent implements OnInit {
         // Pass along the page id if available
         // so that the PageList component can select that page.
         this.router.navigate(['/pages', { id: pageId, foo: 'foo' }]);
-        //this.router.navigate(['/pages']); // from the tut
+        //this.router.navigate(['/pages']); // from the tut (old version)
+        // Add a totally useless `foo` parameter for kicks.
+        // Relative navigation back to the crises
+        this.router.navigate(['../', { id: pageId, foo: 'foo' }], { relativeTo: this.route });
     }
 
     save(): void {

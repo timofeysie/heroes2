@@ -23,7 +23,10 @@ var app_routing_module_1 = require('./app-routing.module');
 // import { DynamicFormComponent }         from './dynamic-form.component';
 // import { DynamicFormQuestionComponent } from './dynamic-form-question.component';
 var heroes_module_1 = require('./heroes/heroes.module');
-// import { HeroSearchComponent } from './hero-search.component';
+// import { HeroService }         from './heroes/hero.service';
+// import { HeroListComponent }     from './heroes/hero-list.component';
+var dashboard_component_1 = require('./dashboard.component');
+var hero_search_component_1 = require('./hero-search.component');
 // import { QuestionService } from './question.service';
 //import { CrisisListComponent }  from './crisis-list.component';
 var pages_module_1 = require('./pages/pages.module');
@@ -44,6 +47,11 @@ var AppModule = (function () {
             ],
             declarations: [
                 app_component_1.AppComponent,
+                //CrisisListComponent
+                //HeroListComponent, its being provided by the HeroesModule now
+                // there can be only one owner for a declared component
+                dashboard_component_1.DashboardComponent,
+                hero_search_component_1.HeroSearchComponent,
             ],
             providers: [],
             bootstrap: [app_component_1.AppComponent],

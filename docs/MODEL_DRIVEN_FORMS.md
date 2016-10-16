@@ -60,7 +60,7 @@ npm install @angular/forms --save
 Running this and then launching the app brings our validation back.
 However, the app still launches broken and requires a ctrl-refresh to work.
 
-The tuturoail is build on an interface like this:
+The tutorial is build on an interface like this:
 
 ```JavaScript
 export interface User {

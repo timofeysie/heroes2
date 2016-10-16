@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
+var dashboard_component_1 = require('./dashboard.component');
 // import { CrisisListComponent }  from './crisis-list.component';
 var AppRoutingModule = (function () {
     function AppRoutingModule() {
@@ -17,7 +18,11 @@ var AppRoutingModule = (function () {
     AppRoutingModule = __decorate([
         core_1.NgModule({
             imports: [
-                router_1.RouterModule.forRoot([])
+                router_1.RouterModule.forRoot([
+                    //   { path: 'crisis-center', component: CrisisListComponent },
+                    { path: 'dashboard', component: dashboard_component_1.DashboardComponent },
+                    { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
+                ])
             ],
             exports: [
                 router_1.RouterModule

@@ -272,52 +272,16 @@ zone.js:344 Unhandled Promise rejection: Failed to load app/hero-detail.componen
 After a crash like that it takes a re-start of npm to get to the new code.
 Change that naughty old path, and the ctrl-refresh, then we get these interesting errors:
 
-```
+
 zone.js:344 Unhandled Promise rejection: Template parse errors:
-Can't bind to 'questions' since it isn't a known property of 'dynamic-form'.
-1. If 'dynamic-form' is an Angular component and it has 'questions' input, then verify that it is part of this module.
-2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message.
- ("
-    height="30px">
-</button>
-<dynamic-form [ERROR ->][questions]="questions"></dynamic-form>
-<div *ngIf="selectedHero">
-  <h2>
-"): HeroListComponent@5:14
-'dynamic-form' is not a known element:
-1. If 'dynamic-form' is an Angular component, then verify that it is part of this module.
-2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message. ("
-    height="30px">
-</button>
-[ERROR ->]<dynamic-form [questions]="questions"></dynamic-form>
-<div *ngIf="selectedHero">
-  <h2>
-"): HeroListComponent@5:0 ; Zone: <root> ; Task: Promise.then ; Value: Error: Template parse errors:(…) Error: Template parse errors:
-Can't bind to 'questions' since it isn't a known property of 'dynamic-form'.
-1. If 'dynamic-form' is an Angular component and it has 'questions' input, then verify that it is part of this module.
-2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message.
- ("
-    height="30px">
-</button>
-<dynamic-form [ERROR ->][questions]="questions"></dynamic-form>
-<div *ngIf="selectedHero">
-  <h2>
-"): HeroListComponent@5:14
-'dynamic-form' is not a known element:
-1. If 'dynamic-form' is an Angular component, then verify that it is part of this module.
-2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message. ("
-    height="30px">
-</button>
-[ERROR ->]<dynamic-form [questions]="questions"></dynamic-form>
-<div *ngIf="selectedHero">
-  <h2>
-"): HeroListComponent@5:0
-    at TemplateParser.parse 
-">```
 
-Not sure why all the repeats, but that's pretty par for the course with JavaScript error messages in general.
+Can't bind to 'questions' since it isn't a known property of 'dynamic-form'.
 
-But, clearly, now the dynamic model driven form module is not set up correctly.
+1. If 'dynamic-form' is an Angular component and it has 'questions' input, then verify that it is part of this module.
+
+2. If 'dynamic-form' is a Web Component then add "CUSTOM_ELEMENTS_SCHEMA" to the '@NgModule.schema' of this component to suppress this message.
+
+Clearly, now the dynamic model driven form module is not set up correctly.
 Really, it needs to be in it's own module, as we have just done with the heroes module.
 
 The next section in the sprawling advanced routing and navigation page will create another module called crisis center.
@@ -337,7 +301,7 @@ Since we looked ahead, we know the crisis center will get those admin roles:
 
 
 
-## <a name="advanced-routing-and-navigation-milestone-4">Advanced: Routing and Navigation: The Crisis Center Module</a>
+## Advanced: Routing and Navigation: The Crisis Center Module
 
 Here we go, Milestone #4: The Crisis Center.
 
@@ -361,7 +325,12 @@ What it doesn't have after all those changes is PagesComponent:
 
 ```
 zone.js:344 Unhandled Promise rejection: 
-Component PagesComponent is not part of any NgModule or the module has not been imported into your module. ; Zone: <root> ; Task: Promise.then ; Value: Error: Component PagesComponent is not part of any NgModule or the module has not been imported into your module.(…) Error: Component PagesComponent is not part of any NgModule or the module has not been imported into your module.
+Component PagesComponent is not part of any NgModule or the module has 
+not been imported into your module. ; Zone: root ; Task: Promise.then ; 
+Value: Error: Component PagesComponent is not part of any NgModule or the 
+module has not been imported into your module.(…) Error: Component 
+PagesComponent is not part of any NgModule or the module has not been 
+imported into your module.
 ```
 
 For some reason the pages component is not transpiled down to it's Javascript file.
@@ -388,7 +357,7 @@ core.umd.js:3462 EXCEPTION: Uncaught (in promise): Error: Cannot match any route
 So the home page route is not working.
 Going to the list of heroes works, with the hero details.
 
-The next part of the tut deals with that":
+The next part of the tut deals with that:
 ```
     {
         path: '',
@@ -397,6 +366,207 @@ The next part of the tut deals with that":
       },
 ```
 
+So after finishing milestone #4: Crises center/Pages, we have some errors.
+
+```
+core.umd.js:3462 EXCEPTION: Uncaught (in promise): 
+Error: Cannot find primary outlet to load 'PagesHomeComponent'
+```
+
+And when choosing the home page/dashbaord:
+```
+core.umd.js:3462 EXCEPTION: Uncaught (in promise): 
+Error: Cannot match any routes: 'dashboard'
+```
+
+
+### Cannot find primary outlet to load 'PagesHomeComponent'
+SO: In your app.component you are missing the router outlet directive.
+
+
+### Cannot match any routes: 'dashboard'
+SO: You should try
+```
+routerLink='/home'
+```
+instead of :
+```
+[routerLink]="['home']"
+```
+
+We are infact using routerLink="/dashboard" so will try this: 
+[routerLink]="['dashboard']"
+
+Same error unfortunately.  We do have that route, don't we?
+Well, we added app-routing.module.ts during the last milestone.
+But we already had app.routing.ts.
+
+So which is the one to use?  Check the demo plunker.
+It has no app-routing.module.ts.
+
+So tyring to add dahsboard to app-routing.module.ts:
+```
+    { path: 'dashboard', component: DashboardComponent },
+    { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
+```
+
+give the following error:
+```
+zone.js:344 Unhandled Promise rejection: 
+Component DashboardComponent is not part of any NgModule or the module has 
+not been imported into your module. 
+```
+
+So following the trail of app-routing.module.ts.
+It was created in Milestone #2: The Routing Module
+
+And app.routing.ts?
+No hint of that file in the routing tutorial.
+
+app-routing.module.ts was also in the tour of heroes routing section.
+So where did app.routing.ts come from?
+
+We have both imported in the app.module:
+import { AppRoutingModule }    from './app-routing.module';
+import { routing }             from './app.routing';
+
+The app.routing.ts has this:
+```
+export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+```
+
+So what the hell?  Now the routing is all screwed up.  The various disparate tour of heroes apps aren't helping here.
+The docus need a consistent thread that involves the evolution of a single app, not separate branches with different features.
+We're getting farther and farther away from the dynamic model driven forms we wanted to implement as a module.
+
+OK.  Rant over.  Back to the problem.
+The tour of heroes routing tutorial says this:
+    The current RouterModule.forRoot() produces an Angular ModuleWithProviders which 
+    suggests that a class dedicated to routing should be some kind of module. 
+    It should be a Routing Module.
+
+Going to use SourceTree to look at the history of app.routing.ts.
+
+2016/09/16 Begin router work commit has the entire file added.
+2016/09/16 Finish router work commit shows adding more routes.
+2016/10/12 Finish heroes feature morule show removing the components which are now presumably in separate module routing.
+
+So it was definitely done during the tour of heroes routing section.
+But now that file has disappeard from the tutorial.
+
+Trying to get rid of the app.routing.ts breaks the whole site.
+Really, what happened to that file?
+Let's check the commits on the angular.io site where we made out [wonderful pull request](https://github.com/angular/angular.io/pull/2594) (it's still open, even though all checks have passed.  I know, they must be busy...)
+That's the ticket~
+app.routing.ts was replaced by app.module.ts on October 6th:
+Author: Brandon <robertsbt@gmail.com>
+Date: 6 October 2016 8:59:09 am 
+Committer: Ward Bell <wardbell@hotmail.com>
+
+-    We'll export a `routing` constant initialized using the `RouterModule.forRoot` method applied to our !{_array} of routes.
+-    This method returns a **configured router module** that we'll add to our root NgModule, `AppModule`.
+-
+-  +makeExcerpt('app/app.routing.1.ts (excerpt)', 'routing-export')
+-
+-  .l-sub-section
+-    :marked
+-      We call the `forRoot` method because we're providing a configured router at the _root_ of the application.
+-      The `forRoot` method gives us the Router service providers and directives needed for routing.
+-
+-  :marked
+     ### Make the router available
+
+-    We've setup initial routes in the `app.routing.ts` file. Now we'll add it to our root NgModule.
++    We've setup the initial route configuration. Now we'll add it to our `AppModule`.
++    We'll add our configured `RouterModule` to the `AppModule` imports !{_array}.
+
+-    Import the `routing` constant from `app.routing.ts` and add it the `imports` !{_array} of `AppModule`.
++  +makeExcerpt('app/app.module.2.ts (app routing)', '')
+
+-  +makeExcerpt('app/app.module.ts', 'routing')
++  .l-sub-section
++    :marked
++      We use the `forRoot` method because we're providing a configured router at the _root_ of the application.
++      The `forRoot` method gives us the Router service providers and directives needed for routing, and
++      performs the initial navigation based on the current browser URL.
+
+This was added on October 5th:
+  ## Refactor routes to a _Routing Module_
+
+  Almost 20 lines of `AppModule` are devoted to configuring four routes.
+  Most application have many more routes and they [add guard services](../guide/router.html#guards)
+  to protect against unwanted or unauthorized navigations.
+  Routing considerations could quickly dominate this module and obscure its primary purpose which is to
+  establish key facts about the entire app for the Angular compiler.
+
+  We should refactor the routing configuration into its own class.
+  What kind of class?
+  The current `RouterModule.forRoot()` produces an Angular `ModuleWithProviders` which suggests that a
+  class dedicated to routing should be some kind of module.
+  It should be a [_Routing Module_](../guide/router.htm#routing-module).
+
+  By convention the name of a _Routing Module_ contains the word "Routing" and
+  aligns with the name of the module that declares the components navigated to".
+
+  Create an `app-routing.module.ts` file as a sibling to `app.module.ts`. Give it the following contents extracted from the `AppModule` class:
+
++makeExample('app/app-routing.module.ts')
+:marked
+  Noteworthy points, typical of _Routing Modules_:
+  * Pull the routes into a variable. You might export it in future and it clarifies the _Routing Module_ pattern.
+
+  * Add `RouterModule.forRoot(routes)` to `imports`.
+
+  * Add `RouterModule` to `exports` so that the components in the companion module have access to Router declarables
+  such as `RouterLink` and `RouterOutlet`.
+
+  * No `declarations`!  Declarations are the responsibility of the companion module.
+
+  * Add module `providers` for guard services if you have them; there are none in this example.
+...
++
++  ### Update _AppModule_
++
++  Now delete the routing configuration from `AppModule` and import the `AppRoutingModule`
++  (_both_ with an ES `import` statement _and_ by adding it to the `NgModule.imports` list).
++
++  Here is the revised `AppModule`, compared to its pre-refactor state:
+++makeTabs(
++  `toh-5/ts/app/app.module.ts, toh-5/ts/app/app.module.3.ts`,
++   null,
++  `app/app.module.ts (after), app/app.module.ts (before)`)
++:marked
++  It's simpler and focused on indentifying the key pieces of the application.
++.l-main-section
++:marked
+   ## Select a Hero in the *HeroesComponent*
+
++  Earlier we added the ability to select a hero from the dashboard.
+   We'll do something similar in the `HeroesComponent`.
+
+-  That component's current template exhibits a "master/detail" style with the list of heroes
++  The `HeroesComponent` template exhibits a "master/detail" style with the list of heroes
+...
+  Our goal is to move the detail to its own view and navigate to it when the user decides to edit a selected hero.
+...
+-  When the user selects a hero from the list, we *won't* go to the detail page.
+-  We'll show a *mini-detail* on *this* page instead and make the user click a button to navigate to the *full detail *page.
++  We are keeping the "master/detail" style but shrinking the detail to a "mini", read-only version.
++  When the user selects a hero from the list, we *don't* go to the detail page.
++  We show a *mini-detail* on *this* page instead and make the user click a button to navigate to the *full detail *page.
+
+So you can see for yourself.  We were not going crazy.
+app.routing.ts -> app.module.ts
+
+The app.module.ts just imports AppRoutingModule
+But, there is no dashboard, and the routes are all based on the route guard, whcih is a future section of the routing module.
+We want to get back to the dynamic forms, not keep messing around with the router.
+What to do?
+Go back to something that works, for now.
+I would say that the life of this current app is nearing it's end.
+It should be replaced by an app created with the CLI, and an Ionic version that will use the dynamic forms with validation.
+This whole project has lost its focus now anyhow.
+So to wind things up, just go back to the app.router.ts.
 
 ## <a name="advanced-routing-and-navigation-feature-modules">Advanced: Routing & Navigation: Feature module</a>
 Following [the router documentation tutorial](https://angular.io/docs/ts/latest/guide/router.html).

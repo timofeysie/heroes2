@@ -34,6 +34,9 @@ export class PageListComponent implements OnInit {
 
     onSelect(page: Page) {
         this.router.navigate(['/page', page.id]);
+        // Navigate with relative link
+        this.selectedId = page.id;
+         this.router.navigate([page.id], { relativeTo: this.route });
     }
 
     isSelected(page: Page) { 

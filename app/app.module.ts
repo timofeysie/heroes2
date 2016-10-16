@@ -11,6 +11,7 @@ import { InMemoryDataService }  from './in-memory-data.service';
 
 import { AppComponent }        from './app.component';
 import { AppRoutingModule }    from './app-routing.module';
+import { routing }             from './app.routing';
 
 // Imported for the model driven forms
 // import { DynamicFormComponent }         from './dynamic-form.component';
@@ -19,9 +20,9 @@ import { AppRoutingModule }    from './app-routing.module';
 import { HeroesModule }         from './heroes/heroes.module';
 // import { HeroService }         from './heroes/hero.service';
 // import { HeroListComponent }     from './heroes/hero-list.component';
-// import { DashboardComponent }  from './dashboard.component';
-import { routing }             from './app.routing';
-// import { HeroSearchComponent } from './hero-search.component';
+import { DashboardComponent }  from './dashboard.component';
+
+import { HeroSearchComponent } from './hero-search.component';
 // import { QuestionService } from './question.service';
 //import { CrisisListComponent }  from './crisis-list.component';
 import { PagesModule }     from './pages/pages.module';
@@ -42,8 +43,8 @@ import { PagesModule }     from './pages/pages.module';
     //CrisisListComponent
     //HeroListComponent, its being provided by the HeroesModule now
     // there can be only one owner for a declared component
-    // DashboardComponent,
-    // HeroSearchComponent,
+    DashboardComponent,
+    HeroSearchComponent,
     // DynamicFormComponent, 
     // DynamicFormQuestionComponent 
   ],
